@@ -8,5 +8,5 @@ public:
     void run();
 
 private:
-    World world;
+    World _world;
 };

@@ -18,6 +18,10 @@ set(MAIN_SOURCES
     src/rope.cpp
     src/sprite.cpp
     src/asset_cache.cpp
+    src/engine.cpp
+    src/scenes/main_menu.cpp
+    src/scenes/dev_menu.cpp
+    src/scenes/sprite_editor.cpp
 )
 
 set(DEPS_SOURCES
@@ -31,6 +35,6 @@ set(DEPS_SOURCES
 
 add_executable(death_and_rope_exe ${MAIN_SOURCES} ${DEPS_SOURCES})
 
-target_include_directories(death_and_rope_exe PUBLIC 3rdparty/imgui 3rdparty/imgui-sfml)
+target_include_directories(death_and_rope_exe PUBLIC src 3rdparty/imgui 3rdparty/imgui-sfml)
 
-target_link_libraries(death_and_rope_exe PUBLIC sfml-graphics sfml-audio nlohmann_json cereal::cereal)
+target_link_libraries(death_and_rope_exe PUBLIC GL GLU sfml-graphics sfml-audio nlohmann_json cereal::cereal)

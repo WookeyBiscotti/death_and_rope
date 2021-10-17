@@ -2,6 +2,7 @@
 
 #include <SFML/System/Vector2.hpp>
 #include <cmath>
+#include <functional>
 
 using Vector2f = sf::Vector2f;
 using Vector2u = sf::Vector2u;
@@ -44,3 +45,15 @@ void serialize(Archive& archive, sf::Vector2<T>& m)
 {
     archive(m.x, m.y);
 }
+
+namespace std {
+template<class T>
+struct hash<sf::Vector2<T>>
+{
+    std::size_t operator()(const sf::Vector2u& k) const
+    {
+        using std::hash;
+        return hash<T>()(k.x) ^ (hash<T>()(k.y) << 1);
+    }
+};
+} // namespace std

@@ -12,6 +12,8 @@
 class World
 {
 public:
+    World() = default;
+
     void draw(sf::RenderWindow& window, const sf::View& camera);
 
     const WorldCell& getCell(const sf::Vector2i& cell);
@@ -20,10 +22,11 @@ private:
     std::unordered_map<Vector2u, std::shared_ptr<WorldCell>> _loadedCells;
 
 private:
-    struct
-    {
-        std::atomic_bool haveNewCache;
-        std::mutex mutex;
-        std::vector<std::shared_ptr<WorldCell>> newCells;
-    } cacheLoader_;
+    //     struct
+    //     {
+    //         std::atomic_bool haveNewCache;
+    //         std::mutex mutex;
+    //         std::vector<std::shared_ptr<WorldCell>> newCells;
+    //     } cacheLoader_;
+    //
 };

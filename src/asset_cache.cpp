@@ -3,6 +3,10 @@
 #include <streambuf>
 #include <string>
 
+#include <scenes/dev_menu.hpp>
+#include <scenes/main_menu.hpp>
+#include <scenes/sprite_editor.hpp>
+
 std::shared_ptr<Texture> AssetCache::texture(const std::string& name)
 {
     if (auto found = _textures.find(name); found != _textures.end()) {
@@ -50,4 +54,43 @@ std::vector<uint8_t> AssetCache::readBinaryFile(const std::string& filePath)
 std::ifstream AssetCache::getBinaryFileStream(const std::string& filePath)
 {
     return std::ifstream(filePath, std::ios::binary);
+}
+
+std::shared_ptr<Scene> AssetCache::scene(const std::string& name)
+{
+    if (name == "main_menu") {
+        if (_scenes.contains(name)) {
+            return _scenes[name];
+        }
+        else {
+            auto scene = std::make_shared<MainMenu>(*_context);
+            _scenes.emplace(name, scene);
+
+            return scene;
+        }
+    }
+    else if (name == "dev_menu") {
+        if (_scenes.contains(name)) {
+            return _scenes[name];
+        }
+        else {
+            auto scene = std::make_shared<DevMenu>(*_context);
+            _scenes.emplace(name, scene);
+
+            return scene;
+        }
+    }
+    else if (name == "sprite_editor") {
+        if (_scenes.contains(name)) {
+            return _scenes[name];
+        }
+        else {
+            auto scene = std::make_shared<SpriteEditor>(*_context);
+            _scenes.emplace(name, scene);
+
+            return scene;
+        }
+    }
+
+    return nullptr;
 }

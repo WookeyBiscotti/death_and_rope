@@ -15,4 +15,4 @@ struct WorldCell
     {
         ar(cellPosition, tiles);
     }
-}
+};
