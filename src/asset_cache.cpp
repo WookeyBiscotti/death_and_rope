@@ -3,11 +3,14 @@
 #include <streambuf>
 #include <string>
 
+#include <filesystem>
 #include <scenes/dev_menu.hpp>
 #include <scenes/main_menu.hpp>
 #include <scenes/sprite_editor.hpp>
+#include <scenes/sprites_view.hpp>
 
 constexpr auto TEXTURE_PATH = "assets/textures/";
+constexpr auto SPRITE_PATH = "assets/sprites/";
 
 std::shared_ptr<Texture> AssetCache::texture(const std::string& name)
 {
@@ -15,10 +18,26 @@ std::shared_ptr<Texture> AssetCache::texture(const std::string& name)
         return found->second;
     }
 
-    auto texture = std::make_shared<Texture>(TEXTURE_PATH + name);
+    auto texture = std::make_shared<Texture>(name);
     if (texture->load(*this)) {
-        _textures.emplace(name, std::move(texture));
+        _textures.emplace(name, texture);
         return texture;
+    }
+
+    //return fake texture
+    return nullptr;
+}
+
+std::shared_ptr<Sprite> AssetCache::sprite(const std::string& name)
+{
+    if (auto found = _sprites.find(name); found != _sprites.end()) {
+        return found->second;
+    }
+
+    auto sprite = std::make_shared<Sprite>(name);
+    if (sprite->load(*this)) {
+        _sprites.emplace(name, sprite);
+        return sprite;
     }
 
     //return fake texture
@@ -45,7 +64,7 @@ std::vector<uint8_t> AssetCache::readBinaryFile(const std::string& filePath)
     std::vector<uint8_t> data;
 
     t.seekg(0, std::ios::end);
-    data.reserve(t.tellg());
+    data.resize(t.tellg());
     t.seekg(0, std::ios::beg);
 
     t.read(reinterpret_cast<char*>(data.data()), data.size());
@@ -53,9 +72,29 @@ std::vector<uint8_t> AssetCache::readBinaryFile(const std::string& filePath)
     return data;
 }
 
-std::ifstream AssetCache::getBinaryFileStream(const std::string& filePath)
+std::vector<uint8_t> AssetCache::readBinaryTextureFile(const std::string& filePath)
 {
-    return std::ifstream(filePath, std::ios::binary);
+    return readBinaryFile(TEXTURE_PATH + filePath);
+}
+
+std::ifstream AssetCache::getITextureFileStream(const std::string& filePath)
+{
+    return std::ifstream(TEXTURE_PATH + filePath, std::ios::binary);
+}
+
+std::ofstream AssetCache::getOTextureFileStream(const std::string& filePath)
+{
+    return std::ofstream(TEXTURE_PATH + filePath, std::ios::binary);
+}
+
+std::ifstream AssetCache::getISpriteFileStream(const std::string& filePath)
+{
+    return std::ifstream(SPRITE_PATH + filePath, std::ios::binary);
+}
+
+std::ofstream AssetCache::getOSpriteFileStream(const std::string& filePath)
+{
+    return std::ofstream(SPRITE_PATH + filePath, std::ios::binary);
 }
 
 std::shared_ptr<Scene> AssetCache::scene(const std::string& name)
@@ -93,6 +132,29 @@ std::shared_ptr<Scene> AssetCache::scene(const std::string& name)
             return scene;
         }
     }
+    else if (name == "sprites_view") {
+        if (_scenes.contains(name)) {
+            return _scenes[name];
+        }
+        else {
+            auto scene = std::make_shared<SpritesView>(*_context);
+            _scenes.emplace(name, scene);
+
+            return scene;
+        }
+    }
 
     return nullptr;
+}
+
+std::vector<std::string> AssetCache::sprites() const
+{
+    std::vector<std::string> result;
+    for (const auto& entry : std::filesystem::directory_iterator(SPRITE_PATH)) {
+        if (entry.is_regular_file()) {
+            result.push_back(entry.path().filename().string());
+        }
+    }
+
+    return result;
 }

@@ -12,6 +12,9 @@ void DevMenu::onFrame()
     if (ImGui::Button("Sprite editor")) {
         context().nextScene = context().cache.scene("sprite_editor");
     }
+    if (ImGui::Button("Sprite view")) {
+        context().nextScene = context().cache.scene("sprites_view");
+    }
     if (ImGui::Button("Back")) {
         context().nextScene = context().cache.scene("main_menu");
     }

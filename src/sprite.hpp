@@ -23,9 +23,8 @@ public:
     sf::Sprite& sprite() { return _sprite; }
 
 private:
-    Vector2i _size;
-
-    sf::Sprite _sprite;
     std::shared_ptr<Texture> _texture;
     Recti _textureRect;
+
+    sf::Sprite _sprite;
 };

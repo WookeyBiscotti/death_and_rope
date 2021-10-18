@@ -6,10 +6,8 @@
 bool Sprite::load(AssetCache& cache)
 {
     //TODO: add error checks
-    auto stream = cache.getBinaryFileStream(name());
+    auto stream = cache.getISpriteFileStream(name());
     IArchive archive(stream);
-
-    archive >> _size;
 
     std::string textureName;
     archive >> textureName;
@@ -25,18 +23,11 @@ bool Sprite::load(AssetCache& cache)
 bool Sprite::save(AssetCache& cache)
 {
     //TODO: add error checks
-    auto stream = cache.getBinaryFileStream(name());
-    IArchive archive(stream);
+    auto stream = cache.getOSpriteFileStream(name());
+    OArchive archive(stream);
 
-    archive >> _size;
-
-    std::string textureName;
-    archive >> textureName;
-    _texture = cache.texture(textureName);
-    archive >> _textureRect;
-
-    _sprite.setTexture(_texture->texture());
-    _sprite.setTextureRect(_textureRect);
+    archive << _texture->name();
+    archive << _textureRect;
 
     return true;
 }

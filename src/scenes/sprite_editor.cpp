@@ -5,13 +5,29 @@
 #include <imgui_utils.hpp>
 #include <imgui-SFML.h>
 #include <imgui.h>
+#include <imgui_stdlib.h>
 
 void SpriteEditor::onFrame()
 {
+    if (_showSaveDialog) {
+        ImGui::InputText("Asset name", &_saveName);
+        if (ImGui::Button("Ok")) {
+            _showSaveDialog = false;
+            _sprite->name(_saveName);
+            _sprite->save(context().cache);
+        }
+        return;
+    }
+
     ImGui::Begin("Sprite editor");
     ImGui::Text("Sprite editor");
     if (ImGui::Button("Open texture")) {
         _fileDialog.Open();
+    }
+
+    if (_texture && ImGui::Button("Save")) {
+        _showSaveDialog = true;
+        _saveName.clear();
     }
     if (ImGui::Button("Back")) {
         context().nextScene = context().cache.scene("dev_menu");
@@ -23,7 +39,7 @@ void SpriteEditor::onFrame()
             _texture.reset();
             _texture = std::move(texture);
             if (!_sprite) {
-                _sprite = std::make_shared<Sprite>("test");
+                _sprite = std::make_shared<Sprite>("");
             }
             _sprite->_texture = _texture;
             _sprite->sprite().setTexture(_texture->texture());

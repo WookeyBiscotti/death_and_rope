@@ -22,6 +22,9 @@ public:
     void active(bool active) override;
 
 private:
+    bool _showSaveDialog = false;
+    std::string _saveName;
+
     bool _active = false;
     std::shared_ptr<Sprite> _sprite;
     std::shared_ptr<Texture> _texture;

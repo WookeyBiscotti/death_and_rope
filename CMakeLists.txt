@@ -22,6 +22,7 @@ set(MAIN_SOURCES
     src/scenes/main_menu.cpp
     src/scenes/dev_menu.cpp
     src/scenes/sprite_editor.cpp
+    src/scenes/sprites_view.cpp
 )
 
 set(DEPS_SOURCES
@@ -31,11 +32,12 @@ set(DEPS_SOURCES
     3rdparty/imgui/imgui.cpp
     
     3rdparty/imgui-sfml/imgui-SFML.cpp
+    3rdparty/imgui/misc/cpp/imgui_stdlib.cpp
 )
 
 add_executable(death_and_rope_exe ${MAIN_SOURCES} ${DEPS_SOURCES})
 
-target_include_directories(death_and_rope_exe PUBLIC src 3rdparty/imgui 3rdparty/imgui-sfml  3rdparty/imgui-filebrowser)
+target_include_directories(death_and_rope_exe PUBLIC src 3rdparty/imgui 3rdparty/imgui-sfml  3rdparty/imgui-filebrowser 3rdparty/imgui/misc/cpp)
 
 target_link_libraries(death_and_rope_exe PUBLIC GL GLU sfml-graphics sfml-audio nlohmann_json cereal::cereal)
 

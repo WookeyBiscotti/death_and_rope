@@ -10,6 +10,7 @@ public:
         : Asset(std::move(name)){};
 
     bool load(AssetCache&) override;
+    bool save(AssetCache& cache) override;
 
     sf::Texture& texture() { return _texture; }
 
