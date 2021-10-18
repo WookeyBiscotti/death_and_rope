@@ -7,13 +7,15 @@
 #include <scenes/main_menu.hpp>
 #include <scenes/sprite_editor.hpp>
 
+constexpr auto TEXTURE_PATH = "assets/textures/";
+
 std::shared_ptr<Texture> AssetCache::texture(const std::string& name)
 {
     if (auto found = _textures.find(name); found != _textures.end()) {
         return found->second;
     }
 
-    auto texture = std::make_shared<Texture>(name);
+    auto texture = std::make_shared<Texture>(TEXTURE_PATH + name);
     if (texture->load(*this)) {
         _textures.emplace(name, std::move(texture));
         return texture;

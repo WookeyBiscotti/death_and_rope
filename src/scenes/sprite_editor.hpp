@@ -1,12 +1,20 @@
 #pragma once
 #include <scene.hpp>
 
+#include <sprite.hpp>
+#include <imgui.h>
+//
+#include <imfilebrowser.h>
+
 class SpriteEditor : public Scene
 {
 public:
     SpriteEditor(Context& context)
         : Scene(context)
-    {}
+    {
+        _fileDialog.SetTitle("Select texture");
+        _fileDialog.SetTypeFilters({ ".png" });
+    }
 
     void onFrame() override;
 
@@ -15,4 +23,7 @@ public:
 
 private:
     bool _active = false;
+    std::shared_ptr<Sprite> _sprite;
+    std::shared_ptr<Texture> _texture;
+    ImGui::FileBrowser _fileDialog;
 };

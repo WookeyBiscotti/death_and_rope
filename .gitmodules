@@ -13,3 +13,6 @@
 [submodule "3rdparty/cereal"]
 	path = 3rdparty/cereal
 	url = https://github.com/USCiLab/cereal.git
+[submodule "3rdparty/imgui-filebrowser"]
+	path = 3rdparty/imgui-filebrowser
+	url = https://github.com/AirGuanZ/imgui-filebrowser.git
