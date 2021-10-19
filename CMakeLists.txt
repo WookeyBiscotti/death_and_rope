@@ -23,6 +23,7 @@ set(MAIN_SOURCES
     src/scenes/dev_menu.cpp
     src/scenes/sprite_editor.cpp
     src/scenes/sprites_view.cpp
+    src/scenes/world_editor.cpp
 )
 
 set(DEPS_SOURCES

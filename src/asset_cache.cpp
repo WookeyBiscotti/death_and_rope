@@ -8,6 +8,7 @@
 #include <scenes/main_menu.hpp>
 #include <scenes/sprite_editor.hpp>
 #include <scenes/sprites_view.hpp>
+#include <scenes/world_editor.hpp>
 
 constexpr auto TEXTURE_PATH = "assets/textures/";
 constexpr auto SPRITE_PATH = "assets/sprites/";
@@ -138,6 +139,17 @@ std::shared_ptr<Scene> AssetCache::scene(const std::string& name)
         }
         else {
             auto scene = std::make_shared<SpritesView>(*_context);
+            _scenes.emplace(name, scene);
+
+            return scene;
+        }
+    }
+    else if (name == "world_editor") {
+        if (_scenes.contains(name)) {
+            return _scenes[name];
+        }
+        else {
+            auto scene = std::make_shared<WorldEditor>(*_context);
             _scenes.emplace(name, scene);
 
             return scene;

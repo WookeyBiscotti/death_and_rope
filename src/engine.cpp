@@ -14,7 +14,7 @@ void Engine::run()
 
     AssetCache cache;
 
-    Context context(cache);
+    Context context(cache, window);
     cache.setContext(&context);
 
     context.isRuning = true;
@@ -28,6 +28,9 @@ void Engine::run()
         sf::Event event;
         while (window.pollEvent(event)) {
             ImGui::SFML::ProcessEvent(event);
+            if (event.type == sf::Event::Closed) {
+                context.isRuning = false;
+            }
         }
         ImGui::SFML::Update(window, deltaClock.restart());
 
