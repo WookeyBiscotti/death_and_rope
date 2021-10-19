@@ -37,13 +37,11 @@ void World::draw(sf::RenderTarget& window, const sf::View& camera)
     const auto lower = position - 0.5f * size;
     const auto upper = lower + size;
 
-    const auto lowerIdxX = lower.x / (TILE_SIZE * TILES_IN_WORLD_CELL_W);
-    const auto lowerIdxY = lower.y / (TILE_SIZE * TILES_IN_WORLD_CELL_H);
-    const auto upperIdxX = upper.x / (TILE_SIZE * TILES_IN_WORLD_CELL_W);
-    const auto upperIdxY = upper.y / (TILE_SIZE * TILES_IN_WORLD_CELL_H);
+    const auto lowerIdx = worldCellFromPoint(lower);
+    const auto upperIdx = worldCellFromPoint(upper);
 
-    for (int cx = lowerIdxX; cx <= upperIdxX; ++cx) {
-        for (int cy = lowerIdxY; cy <= upperIdxY; ++cy) {
+    for (int cx = lowerIdx.x; cx <= upperIdx.x; ++cx) {
+        for (int cy = lowerIdx.y; cy <= upperIdx.y; ++cy) {
             const auto cell = cellGet({ cx, cy });
             if (!cell) {
                 continue;
