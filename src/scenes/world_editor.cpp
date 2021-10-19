@@ -5,6 +5,7 @@
 #include <config.hpp>
 #include <context.hpp>
 #include <imgui_utils.hpp>
+#include <tile_utils.hpp>
 #include <imgui-SFML.h>
 #include <imgui.h>
 #include <imgui_stdlib.h>
@@ -15,11 +16,32 @@ WorldEditor::WorldEditor(Context& context)
     _view = context.target.getView();
 }
 
+void WorldEditor::onEvent(const sf::Event& e)
+{
+    if (e.type == sf::Event::MouseButtonPressed) {
+        const auto p = context().target.mapPixelToCoords({ e.mouseButton.x, e.mouseButton.y });
+        paintPoint(p);
+    }
+}
+
+void WorldEditor::paintPoint(const Vector2f& p)
+{
+    auto& tile = _world.tileGetOrCreate(p);
+    tile.typeId = _currentTileType;
+}
+
 void WorldEditor::onFrame()
 {
     ImGui::Begin("World editor");
     if (ImGui::Button("Back")) {
         context().nextScene = context().cache.scene("dev_menu");
+    }
+    ImGui::End();
+
+    ImGui::Begin("Paint tool");
+    ImGui::InputInt("Type", &_currentTileType);
+    if (_currentTileType < 0) {
+        _currentTileType = 0;
     }
     ImGui::End();
 
@@ -63,4 +85,6 @@ void WorldEditor::onFrame()
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
         _view.move(0, -10);
     }
+
+    _world.draw(context().target, _view);
 }

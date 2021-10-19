@@ -31,6 +31,9 @@ void Engine::run()
             if (event.type == sf::Event::Closed) {
                 context.isRuning = false;
             }
+            if (currentScene) {
+                currentScene->onEvent(event);
+            }
         }
         ImGui::SFML::Update(window, deltaClock.restart());
 

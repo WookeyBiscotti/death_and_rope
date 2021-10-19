@@ -11,15 +11,20 @@
 
 class World
 {
+    friend class WorldEditor;
+
 public:
     World() = default;
 
-    void draw(sf::RenderWindow& window, const sf::View& camera);
+    void draw(sf::RenderTarget& window, const sf::View& camera);
 
-    const WorldCell& getCell(const sf::Vector2i& cell);
+    WorldCell& cellGetOrCreate(const sf::Vector2i& cell);
+    WorldCell* cellGet(const sf::Vector2i& cell);
+
+    TileInfo& tileGetOrCreate(const sf::Vector2f& p);
 
 private:
-    std::unordered_map<Vector2u, std::shared_ptr<WorldCell>> _loadedCells;
+    std::unordered_map<Vector2i, std::shared_ptr<WorldCell>> _loadedCells;
 
 private:
     //     struct

@@ -2,6 +2,10 @@
 
 class Context;
 
+namespace sf {
+struct Event;
+}
+
 class Scene
 {
 public:
@@ -12,6 +16,7 @@ public:
     {}
 
     virtual void onFrame() = 0;
+    virtual void onEvent(const sf::Event& e){};
 
     Context& context() { return _context; }
 

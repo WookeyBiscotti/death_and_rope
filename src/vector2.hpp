@@ -50,7 +50,7 @@ namespace std {
 template<class T>
 struct hash<sf::Vector2<T>>
 {
-    std::size_t operator()(const sf::Vector2u& k) const
+    std::size_t operator()(const sf::Vector2<T>& k) const
     {
         using std::hash;
         return hash<T>()(k.x) ^ (hash<T>()(k.y) << 1);

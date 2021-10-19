@@ -19,6 +19,7 @@ set(MAIN_SOURCES
     src/sprite.cpp
     src/asset_cache.cpp
     src/engine.cpp
+    src/world.cpp
     src/scenes/main_menu.cpp
     src/scenes/dev_menu.cpp
     src/scenes/sprite_editor.cpp
