@@ -3,6 +3,7 @@
 #include <streambuf>
 #include <string>
 
+#include <archive.hpp>
 #include <filesystem>
 #include <scenes/dev_menu.hpp>
 #include <scenes/main_menu.hpp>
@@ -12,6 +13,8 @@
 
 constexpr auto TEXTURE_PATH = "assets/textures/";
 constexpr auto SPRITE_PATH = "assets/sprites/";
+constexpr auto FONT_PATH = "assets/fonts/";
+constexpr auto WORLD_PATH = "assets/worlds/";
 
 std::shared_ptr<Texture> AssetCache::texture(const std::string& name)
 {
@@ -169,4 +172,34 @@ std::vector<std::string> AssetCache::sprites() const
     }
 
     return result;
+}
+
+std::shared_ptr<sf::Font> AssetCache::font(const std::string& name)
+{
+    if (auto found = _fonts.find(name); found != _fonts.end()) {
+        return found->second;
+    }
+
+    auto font = std::make_shared<sf::Font>();
+    font->loadFromFile(FONT_PATH + name);
+    _fonts.emplace(name, font);
+
+    return font;
+}
+
+World AssetCache::world(const std::string& name)
+{
+    std::ifstream f(WORLD_PATH + name);
+    IArchive ar(f);
+    World w;
+    ar >> w;
+
+    return w;
+}
+
+void AssetCache::world(const World& world, const std::string& name)
+{
+    std::ofstream f(WORLD_PATH + name);
+    OArchive ar(f);
+    ar << world;
 }

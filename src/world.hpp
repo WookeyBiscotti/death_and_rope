@@ -23,6 +23,28 @@ public:
 
     TileInfo& tileGetOrCreate(const sf::Vector2f& p);
 
+    template<class Archive>
+    void save(Archive& ar) const
+    {
+        ar(_loadedCells.size());
+        for (const auto& [k, v] : _loadedCells) {
+            ar(k, *v);
+        }
+    }
+
+    template<class Archive>
+    void load(Archive& ar)
+    {
+        size_t s;
+        ar(s);
+        while (s-- != 0) {
+            Vector2i k;
+            WorldCell v;
+            ar(k, v);
+            _loadedCells.emplace(k, std::make_shared<WorldCell>(v));
+        }
+    }
+
 private:
     std::unordered_map<Vector2i, std::shared_ptr<WorldCell>> _loadedCells;
 

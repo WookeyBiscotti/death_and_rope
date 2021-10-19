@@ -4,6 +4,7 @@
 #include "tile.hpp"
 #include "vector2.hpp"
 #include <array>
+#include <cereal/types/array.hpp>
 
 struct WorldCell
 {

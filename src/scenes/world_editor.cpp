@@ -32,7 +32,22 @@ void WorldEditor::paintPoint(const Vector2f& p)
 
 void WorldEditor::onFrame()
 {
+    if (_showSaveDialog) {
+        ImGui::InputText("World name", &_saveName);
+        if (ImGui::Button("Ok")) {
+            _showSaveDialog = false;
+            context().cache.world(_world, _saveName);
+        }
+        if (ImGui::Button("Cancel")) {
+            _showSaveDialog = false;
+        }
+        return;
+    }
+
     ImGui::Begin("World editor");
+    if (ImGui::Button("Save")) {
+        _showSaveDialog = true;
+    }
     if (ImGui::Button("Back")) {
         context().nextScene = context().cache.scene("dev_menu");
     }

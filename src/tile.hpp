@@ -1,6 +1,7 @@
 #pragma once
 
 #include <bitset>
+#include <cereal/types/bitset.hpp>
 #include <cinttypes>
 
 struct TileInfo
@@ -10,7 +11,7 @@ struct TileInfo
     std::bitset<32> collision;
 
     template<class Archive>
-    void serialize(Archive& ar) const
+    void serialize(Archive& ar)
     {
         ar(visualId, typeId, collision);
     }
