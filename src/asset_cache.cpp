@@ -11,6 +11,8 @@
 #include <scenes/sprites_view.hpp>
 #include <scenes/world_editor.hpp>
 
+#include <logging.hpp>
+
 constexpr auto TEXTURE_PATH = "assets/textures/";
 constexpr auto SPRITE_PATH = "assets/sprites/";
 constexpr auto FONT_PATH = "assets/fonts/";
@@ -18,7 +20,9 @@ constexpr auto WORLD_PATH = "assets/worlds/";
 
 std::shared_ptr<Texture> AssetCache::texture(const std::string& name)
 {
+    spdlog::info("Try to load: {} texture", name);
     if (auto found = _textures.find(name); found != _textures.end()) {
+        spdlog::info("Texture {} found in  cache", name);
         return found->second;
     }
 
@@ -28,23 +32,26 @@ std::shared_ptr<Texture> AssetCache::texture(const std::string& name)
         return texture;
     }
 
-    //return fake texture
+    spdlog::info("Texture {} not found", name);
     return nullptr;
 }
 
 std::shared_ptr<Sprite> AssetCache::sprite(const std::string& name)
 {
+    spdlog::info("Try to load: {} sprite", name);
     if (auto found = _sprites.find(name); found != _sprites.end()) {
+        spdlog::info("Sprite {} found in cache", name);
         return found->second;
     }
 
     auto sprite = std::make_shared<Sprite>(name);
     if (sprite->load(*this)) {
         _sprites.emplace(name, sprite);
+        spdlog::info("Sprite {} loaded", name);
         return sprite;
     }
 
-    //return fake texture
+    spdlog::info("Sprite {} not found in cache", name);
     return nullptr;
 }
 
@@ -189,17 +196,17 @@ std::shared_ptr<sf::Font> AssetCache::font(const std::string& name)
 
 World AssetCache::world(const std::string& name)
 {
-    std::ifstream f(WORLD_PATH + name);
-    IArchive ar(f);
+    // std::ifstream f(WORLD_PATH + name);
+    // IArchive ar(f);
     World w;
-    ar >> w;
+    // ar >> w;
 
     return w;
 }
 
 void AssetCache::world(const World& world, const std::string& name)
 {
-    std::ofstream f(WORLD_PATH + name);
-    OArchive ar(f);
-    ar << world;
+    // std::ofstream f(WORLD_PATH + name);
+    // OArchive ar(f);
+    // ar << world;
 }

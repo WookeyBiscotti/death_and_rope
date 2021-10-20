@@ -3,12 +3,19 @@
 #include "asset_cache.hpp"
 #include "context.hpp"
 #include <SFML/Graphics.hpp>
+#include <logging.hpp>
+#include <memory>
 #include <thread>
 #include <imgui-SFML.h>
 #include <imgui.h>
 
 void Engine::run()
 {
+    auto sink = std::make_shared<StSink>();
+    spdlog::default_logger()->sinks().clear();
+    spdlog::default_logger()->sinks().push_back(sink);
+    bool isLogShow = true;
+
     sf::RenderWindow window(sf::VideoMode(640, 480), "Death and rope");
     ImGui::SFML::Init(window);
 
@@ -27,8 +34,14 @@ void Engine::run()
         context.isRuning = false;
     }
 
-    sf::Clock deltaClock;
     float lastFps = 60;
+    constexpr auto updateFpsEveryFrame = 60;
+    auto currentFrame = 0;
+    sf::Text text;
+    text.setFont(font);
+    text.setCharacterSize(20);
+
+    sf::Clock deltaClock;
     while (context.isRuning) {
         const auto t1 = std::chrono::steady_clock::now();
         sf::Event event;
@@ -36,6 +49,9 @@ void Engine::run()
             ImGui::SFML::ProcessEvent(event);
             if (event.type == sf::Event::Closed) {
                 context.isRuning = false;
+            }
+            if (event.type == sf::Event::KeyPressed) {
+                spdlog::info("Key pressed: {}", event.key.code);
             }
             if (currentScene) {
                 currentScene->onEvent(event);
@@ -47,16 +63,22 @@ void Engine::run()
 
         currentScene->onFrame();
 
+        if (isLogShow) {
+            ImGui::Begin("Logs", &isLogShow);
+            for (const auto& l : sink->logs) {
+                ImGui::TextUnformatted(l.c_str());
+            }
+            ImGui::End();
+        }
+
         ImGui::SFML::Render(window);
 
+        if (currentFrame++ == updateFpsEveryFrame) {
+            currentFrame = 0;
+            text.setString(std::to_string(int(lastFps)));
+        }
         auto save = window.getView();
         window.setView(window.getDefaultView());
-
-        sf::Text text;
-        text.setString(std::to_string(int(lastFps)));
-        text.setFont(font);
-        text.setCharacterSize(20);
-
         window.draw(text);
         window.setView(save);
 

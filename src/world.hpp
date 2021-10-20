@@ -9,12 +9,15 @@
 #include <unordered_map>
 #include <vector>
 
+class Context;
+
 class World
 {
     friend class WorldEditor;
 
 public:
-    World() = default;
+    const std::string& name() const { return _name; }
+    void name(const std::string& name) { _name = name; }
 
     void draw(sf::RenderTarget& window, const sf::View& camera);
 
@@ -23,29 +26,12 @@ public:
 
     TileInfo& tileGetOrCreate(const sf::Vector2f& p);
 
-    template<class Archive>
-    void save(Archive& ar) const
-    {
-        ar(_loadedCells.size());
-        for (const auto& [k, v] : _loadedCells) {
-            ar(k, *v);
-        }
-    }
-
-    template<class Archive>
-    void load(Archive& ar)
-    {
-        size_t s;
-        ar(s);
-        while (s-- != 0) {
-            Vector2i k;
-            WorldCell v;
-            ar(k, v);
-            _loadedCells.emplace(k, std::make_shared<WorldCell>(v));
-        }
-    }
-
 private:
+    void save() const {}
+
+    void load() {}
+
+    std::string _name;
     std::unordered_map<Vector2i, std::shared_ptr<WorldCell>> _loadedCells;
 
 private:
