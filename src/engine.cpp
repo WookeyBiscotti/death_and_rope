@@ -11,10 +11,12 @@
 
 void Engine::run()
 {
+#if !defined(PROD_BUILD)
     auto sink = std::make_shared<StSink>();
     spdlog::default_logger()->sinks().clear();
     spdlog::default_logger()->sinks().push_back(sink);
     bool isLogShow = true;
+#endif
 
     sf::RenderWindow window(sf::VideoMode(640, 480), "Death and rope");
     ImGui::SFML::Init(window);
@@ -51,7 +53,7 @@ void Engine::run()
                 context.isRuning = false;
             }
             if (event.type == sf::Event::KeyPressed) {
-                spdlog::info("Key pressed: {}", event.key.code);
+                LINFO("Key pressed: {}", event.key.code);
             }
             if (currentScene) {
                 currentScene->onEvent(event);
@@ -63,6 +65,7 @@ void Engine::run()
 
         currentScene->onFrame();
 
+#if !defined(PROD_BUILD)
         if (isLogShow) {
             ImGui::Begin("Logs", &isLogShow);
             for (const auto& l : sink->logs) {
@@ -70,6 +73,7 @@ void Engine::run()
             }
             ImGui::End();
         }
+#endif
 
         ImGui::SFML::Render(window);
 

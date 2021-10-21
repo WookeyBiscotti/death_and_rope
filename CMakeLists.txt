@@ -45,3 +45,9 @@ target_include_directories(death_and_rope_exe PUBLIC src 3rdparty/imgui 3rdparty
 target_link_libraries(death_and_rope_exe PUBLIC GL GLU sfml-graphics sfml-audio nlohmann_json cereal::cereal spdlog::spdlog)
 
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/assets/ DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/assets/)
+
+set(PROD_BUILD OFF CACHE BOOL "make prod build withput loging for perfotmance")
+
+if(${PROD_BUILD})
+    target_compile_definitions(death_and_rope_exe PUBLIC PROD_BUILD)
+endif()

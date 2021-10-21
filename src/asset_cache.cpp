@@ -20,9 +20,9 @@ constexpr auto WORLD_PATH = "assets/worlds/";
 
 std::shared_ptr<Texture> AssetCache::texture(const std::string& name)
 {
-    spdlog::info("Try to load: {} texture", name);
+    LINFO("Try to load: {} texture", name);
     if (auto found = _textures.find(name); found != _textures.end()) {
-        spdlog::info("Texture {} found in  cache", name);
+        LINFO("Texture {} found in  cache", name);
         return found->second;
     }
 
@@ -32,26 +32,26 @@ std::shared_ptr<Texture> AssetCache::texture(const std::string& name)
         return texture;
     }
 
-    spdlog::info("Texture {} not found", name);
+    LINFO("Texture {} not found", name);
     return nullptr;
 }
 
 std::shared_ptr<Sprite> AssetCache::sprite(const std::string& name)
 {
-    spdlog::info("Try to load: {} sprite", name);
+    LINFO("Try to load: {} sprite", name);
     if (auto found = _sprites.find(name); found != _sprites.end()) {
-        spdlog::info("Sprite {} found in cache", name);
+        LINFO("Sprite {} found in cache", name);
         return found->second;
     }
 
     auto sprite = std::make_shared<Sprite>(name);
     if (sprite->load(*this)) {
         _sprites.emplace(name, sprite);
-        spdlog::info("Sprite {} loaded", name);
+        LINFO("Sprite {} loaded", name);
         return sprite;
     }
 
-    spdlog::info("Sprite {} not found in cache", name);
+    LINFO("Sprite {} not found in cache", name);
     return nullptr;
 }
 

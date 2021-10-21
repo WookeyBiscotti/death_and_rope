@@ -1,5 +1,7 @@
 #pragma once
 
+#if !defined(PROD_BUILD)
+
 #include <deque>
 #include <spdlog/sinks/base_sink.h>
 #include <spdlog/spdlog.h>
@@ -31,3 +33,11 @@ public:
 #include <mutex>
 using MtSink = Sink<std::mutex>;
 using StSink = Sink<spdlog::details::null_mutex>;
+
+#define LINFO(...) spdlog::info(__VA_ARGS__);
+
+#else
+
+#define LINFO(...) ;
+
+#endif
