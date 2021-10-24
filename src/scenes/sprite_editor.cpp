@@ -42,7 +42,7 @@ void SpriteEditor::onFrame()
                 _sprite = std::make_shared<Sprite>("");
             }
             _sprite->_texture = _texture;
-            _sprite->sprite().setTexture(_texture->texture());
+            _sprite->sf().setTexture(_texture->sf());
         }
         _fileDialog.ClearSelected();
     }
@@ -53,7 +53,7 @@ void SpriteEditor::onFrame()
 
     ImGui::Begin("Texture");
     if (_texture) {
-        ImGui::Image(_texture->texture());
+        ImGui::Image(_texture->sf());
     }
     ImGui::End();
 
@@ -65,14 +65,14 @@ void SpriteEditor::onFrame()
 
         ImGui::DragInt("width", &_sprite->_textureRect.width);
         ImGui::DragInt("height", &_sprite->_textureRect.height);
-        float scale = _sprite->sprite().getScale().x;
+        float scale = _sprite->sf().getScale().x;
         ImGui::DragFloat("scale", &scale);
-        _sprite->sprite().setScale(scale, scale);
+        _sprite->sf().setScale(scale, scale);
 
-        _sprite->sprite().setTextureRect(_sprite->_textureRect);
+        _sprite->sf().setTextureRect(_sprite->_textureRect);
         _sprite->_textureRect = _sprite->_textureRect;
 
-        ImGui::Image(_sprite->sprite());
+        ImGui::Image(_sprite->sf());
     }
     ImGui::End();
 }

@@ -20,7 +20,7 @@ public:
 
     void draw(sf::RenderTarget& target, const Vector2f& p);
 
-    sf::Sprite& sprite() { return _sprite; }
+    sf::Sprite& sf() { return _sprite; }
 
 private:
     std::shared_ptr<Texture> _texture;

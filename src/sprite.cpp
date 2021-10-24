@@ -14,7 +14,7 @@ bool Sprite::loadFromFile(const std::string& path, AssetCache& cache)
     _texture = cache.texture(textureName);
     archive >> _textureRect;
 
-    _sprite.setTexture(_texture->texture());
+    _sprite.setTexture(_texture->sf());
     _sprite.setTextureRect(_textureRect);
 
     return true;

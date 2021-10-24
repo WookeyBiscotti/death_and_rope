@@ -11,7 +11,7 @@ public:
 
     bool loadFromFile(const std::string& path);
 
-    sf::Texture& texture() { return _texture; }
+    sf::Texture& sf() { return _texture; }
 
 private:
     sf::Texture _texture;

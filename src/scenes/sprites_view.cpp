@@ -43,7 +43,7 @@ void SpritesView::onFrame()
     }
     for (const auto& s : _sprites) {
         ImGui::TextUnformatted(s->name().c_str());
-        ImGui::Image(s->sprite());
+        ImGui::Image(s->sf());
         ImGui::Separator();
     }
     ImGui::End();
