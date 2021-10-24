@@ -13,10 +13,15 @@
 
 #include <logging.hpp>
 
-constexpr auto TEXTURE_PATH = "assets/textures/";
-constexpr auto SPRITE_PATH = "assets/sprites/";
-constexpr auto FONT_PATH = "assets/fonts/";
-constexpr auto WORLD_PATH = "assets/worlds/";
+static const std::string TEXTURE_PATH = "assets/textures/";
+static const std::string SPRITE_PATH = "assets/sprites/";
+static const std::string FONT_PATH = "assets/fonts/";
+static const std::string WORLD_PATH = "assets/worlds/";
+
+const std::string& AssetCache::defaultSpritePath()
+{
+    return SPRITE_PATH;
+}
 
 std::shared_ptr<Texture> AssetCache::texture(const std::string& name)
 {
@@ -27,7 +32,7 @@ std::shared_ptr<Texture> AssetCache::texture(const std::string& name)
     }
 
     auto texture = std::make_shared<Texture>(name);
-    if (texture->load(*this)) {
+    if (texture->loadFromFile(TEXTURE_PATH + name)) {
         _textures.emplace(name, texture);
         return texture;
     }
@@ -45,7 +50,7 @@ std::shared_ptr<Sprite> AssetCache::sprite(const std::string& name)
     }
 
     auto sprite = std::make_shared<Sprite>(name);
-    if (sprite->load(*this)) {
+    if (sprite->loadFromFile(SPRITE_PATH + name, *this)) {
         _sprites.emplace(name, sprite);
         LINFO("Sprite {} loaded", name);
         return sprite;
@@ -83,90 +88,30 @@ std::vector<uint8_t> AssetCache::readBinaryFile(const std::string& filePath)
     return data;
 }
 
-std::vector<uint8_t> AssetCache::readBinaryTextureFile(const std::string& filePath)
-{
-    return readBinaryFile(TEXTURE_PATH + filePath);
-}
-
-std::ifstream AssetCache::getITextureFileStream(const std::string& filePath)
-{
-    return std::ifstream(TEXTURE_PATH + filePath, std::ios::binary);
-}
-
-std::ofstream AssetCache::getOTextureFileStream(const std::string& filePath)
-{
-    return std::ofstream(TEXTURE_PATH + filePath, std::ios::binary);
-}
-
-std::ifstream AssetCache::getISpriteFileStream(const std::string& filePath)
-{
-    return std::ifstream(SPRITE_PATH + filePath, std::ios::binary);
-}
-
-std::ofstream AssetCache::getOSpriteFileStream(const std::string& filePath)
-{
-    return std::ofstream(SPRITE_PATH + filePath, std::ios::binary);
-}
-
 std::shared_ptr<Scene> AssetCache::scene(const std::string& name)
 {
-    if (name == "main_menu") {
-        if (_scenes.contains(name)) {
-            return _scenes[name];
-        }
-        else {
-            auto scene = std::make_shared<MainMenu>(*_context);
-            _scenes.emplace(name, scene);
+    std::shared_ptr<Scene> scene;
 
-            return scene;
-        }
-    }
-    else if (name == "dev_menu") {
-        if (_scenes.contains(name)) {
-            return _scenes[name];
-        }
-        else {
-            auto scene = std::make_shared<DevMenu>(*_context);
-            _scenes.emplace(name, scene);
-
-            return scene;
-        }
-    }
-    else if (name == "sprite_editor") {
-        if (_scenes.contains(name)) {
-            return _scenes[name];
-        }
-        else {
-            auto scene = std::make_shared<SpriteEditor>(*_context);
-            _scenes.emplace(name, scene);
-
-            return scene;
-        }
-    }
-    else if (name == "sprites_view") {
-        if (_scenes.contains(name)) {
-            return _scenes[name];
-        }
-        else {
-            auto scene = std::make_shared<SpritesView>(*_context);
-            _scenes.emplace(name, scene);
-
-            return scene;
-        }
-    }
-    else if (name == "world_editor") {
-        if (_scenes.contains(name)) {
-            return _scenes[name];
-        }
-        else {
-            auto scene = std::make_shared<WorldEditor>(*_context);
-            _scenes.emplace(name, scene);
-
-            return scene;
-        }
+#define CHECK(T, NAME)                              \
+    if (name == NAME) {                             \
+        if (_scenes.contains(name)) {               \
+            scene = _scenes[name];                  \
+        }                                           \
+        else {                                      \
+            scene = std::make_shared<T>(*_context); \
+            _scenes.emplace(name, scene);           \
+        }                                           \
+        return scene;                               \
     }
 
-    return nullptr;
+    CHECK(MainMenu, "main_menu");
+    CHECK(DevMenu, "dev_menu");
+    CHECK(SpriteEditor, "sprite_editor");
+    CHECK(WorldEditor, "world_editor");
+    CHECK(DevMenu, "dev_menu");
+#undef CHECK
+
+    return scene;
 }
 
 std::vector<std::string> AssetCache::sprites() const

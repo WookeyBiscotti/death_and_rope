@@ -2,11 +2,11 @@
 
 #include "archive.hpp"
 #include "asset_cache.hpp"
+#include <fstream>
 
-bool Sprite::load(AssetCache& cache)
+bool Sprite::loadFromFile(const std::string& path, AssetCache& cache)
 {
-    //TODO: add error checks
-    auto stream = cache.getISpriteFileStream(name());
+    std::ifstream stream(path, std::ios::binary);
     IArchive archive(stream);
 
     std::string textureName;
@@ -20,10 +20,9 @@ bool Sprite::load(AssetCache& cache)
     return true;
 }
 
-bool Sprite::save(AssetCache& cache)
+bool Sprite::saveToFile(const std::string& path)
 {
-    //TODO: add error checks
-    auto stream = cache.getOSpriteFileStream(name());
+    std::ofstream stream(path, std::ios::binary);
     OArchive archive(stream);
 
     archive << _texture->name();

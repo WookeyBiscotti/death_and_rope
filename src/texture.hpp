@@ -9,8 +9,7 @@ public:
     Texture(std::string name)
         : Asset(std::move(name)){};
 
-    bool load(AssetCache&) override;
-    bool save(AssetCache& cache) override;
+    bool loadFromFile(const std::string& path);
 
     sf::Texture& texture() { return _texture; }
 

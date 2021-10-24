@@ -53,8 +53,9 @@ void Engine::run()
                 context.isRuning = false;
             }
             if (event.type == sf::Event::KeyPressed) {
-                LINFO("Key pressed: {}", event.key.code);
+                // LINFO("Key pressed: {}", event.key.code);
             }
+
             if (currentScene) {
                 currentScene->onEvent(event);
             }

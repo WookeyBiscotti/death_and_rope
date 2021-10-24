@@ -14,7 +14,7 @@ void SpriteEditor::onFrame()
         if (ImGui::Button("Ok")) {
             _showSaveDialog = false;
             _sprite->name(_saveName);
-            _sprite->save(context().cache);
+            _sprite->saveToFile(context().cache.defaultSpritePath() + _saveName);
         }
         return;
     }

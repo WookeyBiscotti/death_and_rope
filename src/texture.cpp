@@ -1,13 +1,7 @@
 #include "texture.hpp"
 #include "asset_cache.hpp"
 
-bool Texture::load(AssetCache& cache)
+bool Texture::loadFromFile(const std::string& path)
 {
-    auto data = cache.readBinaryTextureFile(name());
-    return _texture.loadFromMemory(data.data(), data.size());
-}
-
-bool Texture::save(AssetCache& cache)
-{
-    return true;
+    return _texture.loadFromFile(path);
 }

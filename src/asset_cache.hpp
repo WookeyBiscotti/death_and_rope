@@ -13,6 +13,8 @@
 class AssetCache
 {
 public:
+    static const std::string& defaultSpritePath();
+
     void setContext(Context* context) { _context = context; }
 
     std::shared_ptr<Texture> texture(const std::string& name);
@@ -27,16 +29,7 @@ public:
     std::string readFile(const std::string& filePath);
     std::vector<uint8_t> readBinaryFile(const std::string& filePath);
 
-    std::vector<uint8_t> readBinaryTextureFile(const std::string& filePath);
-
-    std::ifstream getITextureFileStream(const std::string& filePath);
-    std::ofstream getOTextureFileStream(const std::string& filePath);
-
-    std::ifstream getISpriteFileStream(const std::string& filePath);
-    std::ofstream getOSpriteFileStream(const std::string& filePath);
-
     std::shared_ptr<Scene> scene(const std::string& name);
-
     std::vector<std::string> sprites() const;
 
 private:

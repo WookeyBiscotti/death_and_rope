@@ -15,8 +15,8 @@ public:
     Sprite(std::string name)
         : Asset(std::move(name)){};
 
-    bool load(AssetCache& cache) override;
-    bool save(AssetCache& cache) override;
+    bool loadFromFile(const std::string& path, AssetCache& cache);
+    bool saveToFile(const std::string& path);
 
     void draw(sf::RenderTarget& target, const Vector2f& p);
 
