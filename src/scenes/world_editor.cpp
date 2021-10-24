@@ -36,7 +36,7 @@ void WorldEditor::onFrame()
         ImGui::InputText("World name", &_saveName);
         if (ImGui::Button("Ok")) {
             _showSaveDialog = false;
-            context().cache.world(_world, _saveName);
+            _world.saveToDir(context().cache.defaultWorldsPath() + _saveName);
         }
         if (ImGui::Button("Cancel")) {
             _showSaveDialog = false;

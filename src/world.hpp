@@ -26,9 +26,10 @@ public:
 
     TileInfo& tileGetOrCreate(const sf::Vector2f& p);
 
-private:
-    void save() const {}
+    void saveToDir(const std::string& path) const;
+    void loadFromDir(const std::string& path);
 
+private:
     void load() {}
 
     std::string _name;

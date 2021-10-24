@@ -23,6 +23,11 @@ const std::string& AssetCache::defaultSpritePath()
     return SPRITE_PATH;
 }
 
+const std::string& AssetCache::defaultWorldsPath()
+{
+    return WORLD_PATH;
+}
+
 std::shared_ptr<Texture> AssetCache::texture(const std::string& name)
 {
     LINFO("Try to load: {} texture", name);
@@ -101,6 +106,7 @@ std::shared_ptr<Scene> AssetCache::scene(const std::string& name)
             scene = std::make_shared<T>(*_context); \
             _scenes.emplace(name, scene);           \
         }                                           \
+        LINFO("Get scene: {}", name);               \
         return scene;                               \
     }
 

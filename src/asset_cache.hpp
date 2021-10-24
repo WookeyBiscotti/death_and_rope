@@ -14,6 +14,7 @@ class AssetCache
 {
 public:
     static const std::string& defaultSpritePath();
+    static const std::string& defaultWorldsPath();
 
     void setContext(Context* context) { _context = context; }
 
