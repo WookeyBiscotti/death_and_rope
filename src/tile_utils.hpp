@@ -18,10 +18,10 @@ inline Vector2i worldCellFromPoint(Vector2f p)
 {
     auto t = tileFromPoint(p);
     if (t.x < 0) {
-        t.x -= TILES_IN_WORLD_CELL_W;
+        t.x -= (TILES_IN_WORLD_CELL_W - 1);
     }
     if (t.y < 0) {
-        t.y -= TILES_IN_WORLD_CELL_H;
+        t.y -= (TILES_IN_WORLD_CELL_H - 1);
     }
     return { t.x / TILES_IN_WORLD_CELL_W, t.y / TILES_IN_WORLD_CELL_H };
 }

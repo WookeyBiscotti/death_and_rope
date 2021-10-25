@@ -16,7 +16,7 @@
 static const std::string TEXTURE_PATH = "assets/textures/";
 static const std::string SPRITE_PATH = "assets/sprites/";
 static const std::string FONT_PATH = "assets/fonts/";
-static const std::string WORLD_PATH = "assets/worlds/";
+static const std::string WORLDS_PATH = "assets/worlds/";
 
 const std::string& AssetCache::defaultSpritePath()
 {
@@ -25,7 +25,7 @@ const std::string& AssetCache::defaultSpritePath()
 
 const std::string& AssetCache::defaultWorldsPath()
 {
-    return WORLD_PATH;
+    return WORLDS_PATH;
 }
 
 std::shared_ptr<Texture> AssetCache::texture(const std::string& name)
@@ -125,6 +125,18 @@ std::vector<std::string> AssetCache::sprites() const
     std::vector<std::string> result;
     for (const auto& entry : std::filesystem::directory_iterator(SPRITE_PATH)) {
         if (entry.is_regular_file()) {
+            result.push_back(entry.path().filename().string());
+        }
+    }
+
+    return result;
+}
+
+std::vector<std::string> AssetCache::worlds() const
+{
+    std::vector<std::string> result;
+    for (const auto& entry : std::filesystem::directory_iterator(WORLDS_PATH)) {
+        if (entry.is_directory()) {
             result.push_back(entry.path().filename().string());
         }
     }

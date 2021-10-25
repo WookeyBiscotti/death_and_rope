@@ -19,6 +19,8 @@ public:
     const std::string& name() const { return _name; }
     void name(const std::string& name) { _name = name; }
 
+    void clear() { _loadedCells.clear(); }
+
     void draw(sf::RenderTarget& window, const sf::View& camera);
 
     WorldCell& cellGetOrCreate(const sf::Vector2i& cell);
@@ -30,8 +32,6 @@ public:
     void loadFromDir(const std::string& path);
 
 private:
-    void load() {}
-
     std::string _name;
     std::unordered_map<Vector2i, std::shared_ptr<WorldCell>> _loadedCells;
 

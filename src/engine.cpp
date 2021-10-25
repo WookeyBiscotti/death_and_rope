@@ -49,6 +49,7 @@ void Engine::run()
         sf::Event event;
         while (window.pollEvent(event)) {
             ImGui::SFML::ProcessEvent(event);
+
             if (event.type == sf::Event::Closed) {
                 context.isRuning = false;
             }
@@ -56,7 +57,7 @@ void Engine::run()
                 // LINFO("Key pressed: {}", event.key.code);
             }
 
-            if (currentScene) {
+            if (currentScene && !ImGui::GetIO().WantCaptureMouse && !ImGui::GetIO().WantCaptureKeyboard) {
                 currentScene->onEvent(event);
             }
         }

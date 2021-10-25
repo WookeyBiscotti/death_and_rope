@@ -31,7 +31,9 @@ public:
     std::vector<uint8_t> readBinaryFile(const std::string& filePath);
 
     std::shared_ptr<Scene> scene(const std::string& name);
+
     std::vector<std::string> sprites() const;
+    std::vector<std::string> worlds() const;
 
 private:
     std::unordered_map<std::string, std::shared_ptr<Texture>> _textures;

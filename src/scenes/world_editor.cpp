@@ -44,9 +44,35 @@ void WorldEditor::onFrame()
         return;
     }
 
+    if (_showLoadDialog) {
+        ImGui::Begin("Load");
+        for (const auto& name : _worldsList) {
+            ImGui::TextUnformatted(name.c_str());
+            ImGui::SameLine();
+            ImGui::PushID(&name);
+            if (ImGui::Button("Ok")) {
+                _showLoadDialog = false;
+                _world.clear();
+                _world.loadFromDir(context().cache.defaultWorldsPath() + name);
+            }
+            ImGui::PopID();
+            ImGui::Separator();
+        }
+
+        if (ImGui::Button("Cancel")) {
+            _showLoadDialog = false;
+        }
+        ImGui::End();
+        return;
+    }
+
     ImGui::Begin("World editor");
     if (ImGui::Button("Save")) {
         _showSaveDialog = true;
+    }
+    if (ImGui::Button("Load")) {
+        _worldsList = context().cache.worlds();
+        _showLoadDialog = true;
     }
     if (ImGui::Button("Back")) {
         context().nextScene = context().cache.scene("dev_menu");

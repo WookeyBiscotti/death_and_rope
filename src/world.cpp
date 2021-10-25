@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include <filesystem>
 #include <fstream>
+#include <logging.hpp>
 
 TileInfo& World::tileGetOrCreate(const sf::Vector2f& p)
 {
@@ -67,6 +68,8 @@ void World::draw(sf::RenderTarget& window, const sf::View& camera)
 
 void World::saveToDir(const std::string& path) const
 {
+    LINFO("Saving world to: {}", path);
+
     std::filesystem::create_directory(path);
     for (const auto& [idx, cell] : _loadedCells) {
         const auto name = std::to_string(idx.x) + "_" + std::to_string(idx.y);
@@ -79,6 +82,7 @@ void World::saveToDir(const std::string& path) const
 
 void World::loadFromDir(const std::string& path)
 {
+    LINFO("Loading world from: {}", path);
     for (const auto& entry : std::filesystem::directory_iterator(path)) {
         if (entry.is_regular_file()) {
             const auto name = entry.path().filename().string();
