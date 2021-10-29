@@ -5,6 +5,7 @@
 #include <SFML/Graphics.hpp>
 #include <logging.hpp>
 #include <memory>
+#include <systems/renderer/renderer.hpp>
 #include <thread>
 #include <imgui-SFML.h>
 #include <imgui.h>
@@ -20,11 +21,12 @@ void Engine::run()
 
     sf::RenderWindow window(sf::VideoMode(640, 480), "Death and rope");
     ImGui::SFML::Init(window);
-
     AssetCache cache;
+    Renderer renderer;
 
-    Context context(cache, window);
+    Context context(cache, window, renderer);
     cache.setContext(&context);
+    renderer.setContext(&context);
 
     context.isRuning = true;
 
@@ -87,6 +89,8 @@ void Engine::run()
         window.setView(window.getDefaultView());
         window.draw(text);
         window.setView(save);
+
+        renderer.render();
 
         window.display();
 

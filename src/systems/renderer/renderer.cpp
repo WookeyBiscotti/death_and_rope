@@ -7,6 +7,6 @@
 void Renderer::render()
 {
     for (auto& r : _drawables) {
-        r->draw(_context.target, RenderStates::Default);
+        r->draw(_context->target, RenderStates::Default);
     }
 }

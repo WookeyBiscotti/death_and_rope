@@ -18,6 +18,9 @@ void DevMenu::onFrame()
     if (ImGui::Button("World editor")) {
         context().nextScene = context().cache.scene("world_editor");
     }
+    if (ImGui::Button("Test scene")) {
+        context().nextScene = context().cache.scene("test_scene");
+    }
     if (ImGui::Button("Back")) {
         context().nextScene = context().cache.scene("main_menu");
     }

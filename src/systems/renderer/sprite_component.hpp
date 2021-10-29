@@ -13,6 +13,8 @@ public:
         : Drawable(entity)
     {}
 
+    void setSprite(const std::shared_ptr<Sprite>& sprite);
+
     void draw(RenderTarget& target, const RenderStates& state) override;
 
 private:

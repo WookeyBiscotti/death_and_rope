@@ -5,24 +5,30 @@
 
 #include <SFML/Graphics/View.hpp>
 
+#include <asset_cache.hpp>
+#include <context.hpp>
+#include <entity.hpp>
+#include <systems/position/position.hpp>
+#include <systems/renderer/renderer.hpp>
+#include <systems/renderer/sprite_component.hpp>
 class TestScene : public Scene
 {
 public:
-    WorldEditor(Context& context);
+    TestScene(Context& context)
+        : Scene(context){};
 
-    void onFrame() override;
+    void onFrame() override {}
+
+    void active(bool active) override
+    {
+        auto c = std::make_shared<SpriteComponent>(_entity);
+        c->setSprite(context().cache.sprite("test"));
+        _entity.add(std::make_shared<Position>(_entity));
+        _entity.get<Position>()->set({ 300, 300 });
+        _entity.add(c);
+        context().renderer.add(c);
+    };
 
 private:
-    void paintPoint(const Vector2f& p);
-
-private:
-    bool _showLoadDialog = false;
-    std::vector<std::string> _worldsList;
-
-    bool _showSaveDialog = false;
-    std::string _saveName;
-
-    int _currentTileType = 0;
-    sf::View _view;
-    World _world;
+    Entity _entity;
 };

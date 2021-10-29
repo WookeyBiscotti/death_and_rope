@@ -9,6 +9,7 @@
 #include <scenes/main_menu.hpp>
 #include <scenes/sprite_editor.hpp>
 #include <scenes/sprites_view.hpp>
+#include <scenes/test.hpp>
 #include <scenes/world_editor.hpp>
 
 #include <logging.hpp>
@@ -115,6 +116,7 @@ std::shared_ptr<Scene> AssetCache::scene(const std::string& name)
     CHECK(SpriteEditor, "sprite_editor");
     CHECK(WorldEditor, "world_editor");
     CHECK(DevMenu, "dev_menu");
+    CHECK(TestScene, "test_scene");
 #undef CHECK
 
     return scene;

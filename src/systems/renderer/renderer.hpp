@@ -10,9 +10,7 @@ class Context;
 class Renderer
 {
 public:
-    Renderer(Context& context)
-        : _context(context)
-    {}
+    void setContext(Context* context) { _context = context; }
 
     void add(std::shared_ptr<Drawable> drawable) { _drawables.insert(std::move(drawable)); }
 
@@ -21,5 +19,5 @@ public:
 private:
     std::set<std::shared_ptr<Drawable>> _drawables;
 
-    Context& _context;
+    Context* _context = nullptr;
 };

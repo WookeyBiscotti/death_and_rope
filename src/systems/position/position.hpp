@@ -9,8 +9,11 @@ public:
     Position(Entity& entity)
         : Component(entity){};
 
-    const Vector2f& position() const { return _position; }
-    void position(const Vector2f& position) { _position = position; }
+    const Vector2f& operator()() const { return _position; }
+    const Vector2f& get() const { return _position; }
+
+    void operator()(const Vector2f& position) { _position = position; }
+    void set(const Vector2f& position) { _position = position; }
 
 private:
     Vector2f _position{};

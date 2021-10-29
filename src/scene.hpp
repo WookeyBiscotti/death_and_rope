@@ -20,8 +20,8 @@ public:
 
     Context& context() { return _context; }
 
-    virtual bool active() const {};
-    virtual void active(bool active) { return true; };
+    virtual bool active() const { return true; };
+    virtual void active(bool active){};
 
 private:
     Context& _context;

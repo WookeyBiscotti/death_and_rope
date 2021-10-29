@@ -5,6 +5,7 @@
 #include <unordered_map>
 
 class Scene;
+class Renderer;
 class AssetCache;
 namespace sf {
 class RenderTarget;
@@ -12,9 +13,10 @@ class RenderTarget;
 struct Context
 {
 public:
-    Context(AssetCache& cache, sf::RenderTarget& target)
+    Context(AssetCache& cache, sf::RenderTarget& target, Renderer& renderer)
         : cache(cache)
         , target(target)
+        , renderer(renderer)
     {}
 
     bool isRuning;
@@ -22,6 +24,5 @@ public:
     AssetCache& cache;
     sf::RenderTarget& target;
 
-    // private:
-    // std::unordered_map<ctti::type_id_t>
+    Renderer& renderer;
 };
