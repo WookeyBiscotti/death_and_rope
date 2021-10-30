@@ -1,10 +1,5 @@
-#include "asset_cache.hpp"
+#include <systems/assets/asset_cache.hpp>
 
-#include <streambuf>
-#include <string>
-
-#include <archive.hpp>
-#include <filesystem>
 #include <scenes/dev_menu.hpp>
 #include <scenes/main_menu.hpp>
 #include <scenes/sprite_editor.hpp>
@@ -12,6 +7,12 @@
 #include <scenes/test.hpp>
 #include <scenes/world_editor.hpp>
 #include <systems/logging/logger.hpp>
+//
+#include <archive.hpp>
+//
+#include <filesystem>
+#include <streambuf>
+#include <string>
 
 static const std::string TEXTURE_PATH = "assets/textures/";
 static const std::string SPRITE_PATH = "assets/sprites/";
@@ -97,17 +98,17 @@ std::shared_ptr<Scene> AssetCache::scene(const std::string& name)
 {
     std::shared_ptr<Scene> scene;
 
-#define CHECK(T, NAME)                              \
-    if (name == NAME) {                             \
-        if (_scenes.contains(name)) {               \
-            scene = _scenes[name];                  \
-        }                                           \
-        else {                                      \
-            scene = std::make_shared<T>(*_context); \
-            _scenes.emplace(name, scene);           \
-        }                                           \
-        LINFO("Get scene: {}", name);               \
-        return scene;                               \
+#define CHECK(T, NAME)                             \
+    if (name == NAME) {                            \
+        if (_scenes.contains(name)) {              \
+            scene = _scenes[name];                 \
+        }                                          \
+        else {                                     \
+            scene = std::make_shared<T>(_context); \
+            _scenes.emplace(name, scene);          \
+        }                                          \
+        LINFO("Get scene: {}", name);              \
+        return scene;                              \
     }
 
     CHECK(MainMenu, "main_menu");

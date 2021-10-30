@@ -1,7 +1,8 @@
 #include "sprite.hpp"
 
 #include "archive.hpp"
-#include "asset_cache.hpp"
+#include <systems/assets/asset_cache.hpp>
+//
 #include <fstream>
 
 bool Sprite::loadFromFile(const std::string& path, AssetCache& cache)

@@ -1,5 +1,5 @@
 #include "texture.hpp"
-#include "asset_cache.hpp"
+#include <systems/assets/asset_cache.hpp>
 
 bool Texture::loadFromFile(const std::string& path)
 {

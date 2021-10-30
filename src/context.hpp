@@ -1,8 +1,11 @@
 #pragma once
 
+#include <prod_build_utils.hpp>
+#include <systems/logging/logger.hpp>
+#include <type_id.hpp>
+//
 #include <functional>
 #include <memory>
-#include <type_id.hpp>
 #include <unordered_map>
 
 class Scene;
@@ -14,15 +17,13 @@ class RenderTarget;
 class Context
 {
 public:
-    Context(AssetCache& cache, sf::RenderTarget& target, Renderer& renderer)
-        : cache(cache)
-        , target(target)
+    Context(sf::RenderTarget& target, Renderer& renderer)
+        : target(target)
         , renderer(renderer)
     {}
 
     bool isRuning;
     std::shared_ptr<Scene> nextScene;
-    AssetCache& cache;
     sf::RenderTarget& target;
 
     Renderer& renderer;
@@ -40,6 +41,13 @@ public:
             return static_cast<S*>(found.second);
         }
         return nullptr;
+    }
+
+    template<class S>
+    S& systemRef()
+    {
+        NONPROD_ASSERT(_systems.contains(TypeId<S>()));
+        return *static_cast<S*>(_systems[TypeId<S>()]);
     }
 
 private:

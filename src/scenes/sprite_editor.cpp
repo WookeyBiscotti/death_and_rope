@@ -1,8 +1,8 @@
 #include "sprite_editor.hpp"
 
-#include <asset_cache.hpp>
 #include <context.hpp>
 #include <imgui_utils.hpp>
+#include <systems/assets/asset_cache.hpp>
 #include <imgui-SFML.h>
 #include <imgui.h>
 #include <imgui_stdlib.h>
@@ -14,7 +14,7 @@ void SpriteEditor::onFrame()
         if (ImGui::Button("Ok")) {
             _showSaveDialog = false;
             _sprite->name(_saveName);
-            _sprite->saveToFile(context().cache.defaultSpritePath() + _saveName);
+            _sprite->saveToFile(context().systemRef<AssetCache>().defaultSpritePath() + _saveName);
         }
         return;
     }
@@ -30,11 +30,11 @@ void SpriteEditor::onFrame()
         _saveName.clear();
     }
     if (ImGui::Button("Back")) {
-        context().nextScene = context().cache.scene("dev_menu");
+        context().nextScene = context().systemRef<AssetCache>().scene("dev_menu");
     }
 
     if (_fileDialog.HasSelected()) {
-        auto texture = context().cache.texture(_fileDialog.GetSelected().filename().string());
+        auto texture = context().systemRef<AssetCache>().texture(_fileDialog.GetSelected().filename().string());
         if (texture) {
             _texture.reset();
             _texture = std::move(texture);

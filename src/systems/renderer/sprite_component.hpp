@@ -3,7 +3,7 @@
 #include "drawable.hpp"
 
 #include <memory>
-#include <sprite.hpp>
+#include <systems/assets/sprite.hpp>
 #include <vector2.hpp>
 
 class SpriteComponent : public Drawable

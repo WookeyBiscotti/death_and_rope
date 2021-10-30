@@ -1,7 +1,7 @@
 #pragma once
 #include <scene.hpp>
 
-#include <sprite.hpp>
+#include <systems/assets/sprite.hpp>
 #include <imgui.h>
 //
 #include <imfilebrowser.h>

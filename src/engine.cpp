@@ -1,7 +1,7 @@
 #include "engine.hpp"
 
-#include "asset_cache.hpp"
 #include "context.hpp"
+#include <systems/assets/asset_cache.hpp>
 #include <systems/logging/logger.hpp>
 #include <systems/renderer/renderer.hpp>
 //
@@ -14,18 +14,21 @@
 
 void Engine::run()
 {
+    Renderer renderer;
+
     sf::RenderWindow window(sf::VideoMode(640, 480), "Death and rope");
     ImGui::SFML::Init(window);
-    AssetCache cache;
-    Renderer renderer;
-    Context context(cache, window, renderer);
+    Context context(window, renderer);
 
+    AssetCache cache(context);
+    context.addSystem(&cache);
 #if !defined(PROD_BUILD)
     Logger logger;
+    context.addSystem(&logger);
     bool isLogShow = true;
 #endif
 
-    cache.setContext(&context);
+    // cache.setContext(&context);
     renderer.setContext(&context);
 
     context.isRuning = true;

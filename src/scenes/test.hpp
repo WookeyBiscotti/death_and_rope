@@ -5,9 +5,9 @@
 
 #include <SFML/Graphics/View.hpp>
 
-#include <asset_cache.hpp>
 #include <context.hpp>
 #include <entity.hpp>
+#include <systems/assets/asset_cache.hpp>
 #include <systems/position/position.hpp>
 #include <systems/renderer/renderer.hpp>
 #include <systems/renderer/sprite_component.hpp>
@@ -22,7 +22,7 @@ public:
     void active(bool active) override
     {
         auto c = std::make_shared<SpriteComponent>(_entity);
-        c->setSprite(context().cache.sprite("test"));
+        c->setSprite(context().systemRef<AssetCache>().sprite("test"));
         _entity.add(std::make_shared<Position>(_entity));
         _entity.get<Position>()->set({ 300, 300 });
         _entity.add(c);

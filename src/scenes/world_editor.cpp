@@ -1,10 +1,10 @@
 #include "world_editor.hpp"
 
 #include <SFML/Graphics.hpp>
-#include <asset_cache.hpp>
 #include <config.hpp>
 #include <context.hpp>
 #include <imgui_utils.hpp>
+#include <systems/assets/asset_cache.hpp>
 #include <tile_utils.hpp>
 #include <imgui-SFML.h>
 #include <imgui.h>
@@ -36,7 +36,7 @@ void WorldEditor::onFrame()
         ImGui::InputText("World name", &_saveName);
         if (ImGui::Button("Ok")) {
             _showSaveDialog = false;
-            _world.saveToDir(context().cache.defaultWorldsPath() + _saveName);
+            _world.saveToDir(context().systemRef<AssetCache>().defaultWorldsPath() + _saveName);
         }
         if (ImGui::Button("Cancel")) {
             _showSaveDialog = false;
@@ -53,7 +53,7 @@ void WorldEditor::onFrame()
             if (ImGui::Button("Ok")) {
                 _showLoadDialog = false;
                 _world.clear();
-                _world.loadFromDir(context().cache.defaultWorldsPath() + name);
+                _world.loadFromDir(context().systemRef<AssetCache>().defaultWorldsPath() + name);
             }
             ImGui::PopID();
             ImGui::Separator();
@@ -71,11 +71,11 @@ void WorldEditor::onFrame()
         _showSaveDialog = true;
     }
     if (ImGui::Button("Load")) {
-        _worldsList = context().cache.worlds();
+        _worldsList = context().systemRef<AssetCache>().worlds();
         _showLoadDialog = true;
     }
     if (ImGui::Button("Back")) {
-        context().nextScene = context().cache.scene("dev_menu");
+        context().nextScene = context().systemRef<AssetCache>().scene("dev_menu");
     }
     ImGui::End();
 

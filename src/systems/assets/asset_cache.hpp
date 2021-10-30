@@ -4,19 +4,24 @@
 #include "sprite.hpp"
 #include "texture.hpp"
 #include "world.hpp"
+//
+#include <SFML/Graphics/Font.hpp>
+//
 #include <fstream>
 #include <memory>
 #include <unordered_map>
 
-#include <SFML/Graphics/Font.hpp>
+class Context;
 
 class AssetCache
 {
 public:
+    AssetCache(Context& context)
+        : _context(context)
+    {}
+
     static const std::string& defaultSpritePath();
     static const std::string& defaultWorldsPath();
-
-    void setContext(Context* context) { _context = context; }
 
     std::shared_ptr<Texture> texture(const std::string& name);
 
@@ -41,5 +46,5 @@ private:
     std::unordered_map<std::string, std::shared_ptr<Scene>> _scenes;
     std::unordered_map<std::string, std::shared_ptr<sf::Font>> _fonts;
 
-    Context* _context;
+    Context& _context;
 };

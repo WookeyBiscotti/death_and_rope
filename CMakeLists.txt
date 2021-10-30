@@ -16,10 +16,7 @@ target_link_libraries(death_and_rope_exp PUBLIC sfml-graphics sfml-audio)
 
 set(MAIN_SOURCES
     src/main.cpp
-    src/texture.cpp
     src/rope.cpp
-    src/sprite.cpp
-    src/asset_cache.cpp
     src/engine.cpp
     src/world.cpp
     src/scenes/main_menu.cpp
@@ -30,8 +27,12 @@ set(MAIN_SOURCES
     
     src/systems/renderer/renderer.cpp
     src/systems/renderer/sprite_component.cpp
-
+    
     src/systems/logging/logger.cpp
+    
+    src/systems/assets/asset_cache.cpp
+    src/systems/assets/texture.cpp
+    src/systems/assets/sprite.cpp
 )
 
 set(DEPS_SOURCES
