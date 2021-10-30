@@ -1,5 +1,6 @@
 #pragma once
 
+#include "font.hpp"
 #include "sprite.hpp"
 #include "texture.hpp"
 #include "world.hpp"
@@ -22,9 +23,7 @@ class AssetCache {
 	static const std::string& defaultWorldsPath();
 
 	std::shared_ptr<Texture> texture(const std::string& name);
-
-	std::shared_ptr<sf::Font> font(const std::string& name);
-
+	std::shared_ptr<Font> font(const std::string& name);
 	std::shared_ptr<Sprite> sprite(const std::string& name);
 
 	World world(const std::string& name);
@@ -42,7 +41,7 @@ class AssetCache {
 	std::unordered_map<std::string, std::shared_ptr<Texture>> _textures;
 	std::unordered_map<std::string, std::shared_ptr<Sprite>> _sprites;
 	std::unordered_map<std::string, std::shared_ptr<Scene>> _scenes;
-	std::unordered_map<std::string, std::shared_ptr<sf::Font>> _fonts;
+	std::unordered_map<std::string, std::shared_ptr<Font>> _fonts;
 
 	Context& _context;
 };

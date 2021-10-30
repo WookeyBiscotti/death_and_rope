@@ -2,6 +2,7 @@
 #include "systems/scenes/scene_system.hpp"
 
 #include <context.hpp>
+#include <cstddef>
 #include <imgui.h>
 #include <imgui_utils.hpp>
 #include <systems/assets/asset_cache.hpp>
@@ -14,7 +15,8 @@ void MainMenu::onFrame() {
 		context().systemRef<SceneSystem>().next(context().systemRef<AssetCache>().scene("dev_menu"));
 	}
 	if (ImGui::Button("Exit")) {
-		context().isRuning = false;
+		context().systemRef<SceneSystem>().next(nullptr);
+		context().systemRef<SceneSystem>().applyNext();
 	}
 	ImGui::End();
 }

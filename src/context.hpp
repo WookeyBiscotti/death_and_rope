@@ -16,8 +16,6 @@ class RenderTarget;
 }
 class Context {
   public:
-	bool isRuning;
-
 	template<class S>
 	void addSystem(S* s) {
 		_systems.emplace(TypeId<S>(), s);
