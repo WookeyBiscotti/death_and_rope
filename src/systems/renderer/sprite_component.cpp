@@ -1,7 +1,6 @@
 #include "sprite_component.hpp"
 
 #include <entity.hpp>
-#include <logging.hpp>
 
 #include <SFML/Graphics.hpp>
 #include <systems/position/position.hpp>

@@ -4,7 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include <filesystem>
 #include <fstream>
-#include <logging.hpp>
+#include <systems/logging/logger.hpp>
 
 TileInfo& World::tileGetOrCreate(const sf::Vector2f& p)
 {

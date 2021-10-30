@@ -1,6 +1,6 @@
 #pragma once
 
-#include <ctti/type_id.hpp>
+#include <type_id.hpp>
 #include <unordered_map>
 
 #include "component.hpp"
@@ -11,19 +11,19 @@ public:
     template<class C>
     bool add(std::shared_ptr<C> component)
     {
-        return _components.emplace(ctti::type_id<C>(), std::move(component)).second;
+        return _components.emplace(TypeId<C>(), std::move(component)).second;
     }
 
     template<class C>
     bool remove()
     {
-        return _components.erase(ctti::type_id<C>()) != 0;
+        return _components.erase(TypeId<C>()) != 0;
     }
 
     template<class C>
     C* get()
     {
-        if (auto found = _components.find(ctti::type_id<C>()); found != _components.end()) {
+        if (auto found = _components.find(TypeId<C>()); found != _components.end()) {
             return static_cast<C*>(found->second.get());
         }
 
@@ -33,7 +33,7 @@ public:
     template<class C>
     std::shared_ptr<C> getShared()
     {
-        if (auto found = _components.find(ctti::type_id<C>()); found != _components.end()) {
+        if (auto found = _components.find(TypeId<C>()); found != _components.end()) {
             return found.second;
         }
 
@@ -41,5 +41,5 @@ public:
     }
 
 private:
-    std::unordered_map<ctti::type_id_t, std::shared_ptr<Component>> _components;
+    std::unordered_map<type_id_t, std::shared_ptr<Component>> _components;
 };

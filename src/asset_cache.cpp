@@ -11,8 +11,7 @@
 #include <scenes/sprites_view.hpp>
 #include <scenes/test.hpp>
 #include <scenes/world_editor.hpp>
-
-#include <logging.hpp>
+#include <systems/logging/logger.hpp>
 
 static const std::string TEXTURE_PATH = "assets/textures/";
 static const std::string SPRITE_PATH = "assets/sprites/";

@@ -10,7 +10,7 @@ add_subdirectory(3rdparty/SFML)
 add_subdirectory(3rdparty/json)
 add_subdirectory(3rdparty/cereal)
 add_subdirectory(3rdparty/spdlog)
-add_subdirectory(3rdparty/ctti)
+# add_subdirectory(3rdparty/ctti)
 
 target_link_libraries(death_and_rope_exp PUBLIC sfml-graphics sfml-audio)
 
@@ -30,6 +30,8 @@ set(MAIN_SOURCES
     
     src/systems/renderer/renderer.cpp
     src/systems/renderer/sprite_component.cpp
+
+    src/systems/logging/logger.cpp
 )
 
 set(DEPS_SOURCES
@@ -46,7 +48,7 @@ add_executable(death_and_rope_exe ${MAIN_SOURCES} ${DEPS_SOURCES})
 
 target_include_directories(death_and_rope_exe PUBLIC src 3rdparty/imgui 3rdparty/imgui-sfml  3rdparty/imgui-filebrowser 3rdparty/imgui/misc/cpp)
 
-target_link_libraries(death_and_rope_exe PUBLIC GL GLU sfml-graphics sfml-audio nlohmann_json cereal::cereal spdlog::spdlog ctti)
+target_link_libraries(death_and_rope_exe PUBLIC GL GLU sfml-graphics sfml-audio nlohmann_json cereal::cereal spdlog::spdlog)
 
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/assets/ DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/assets/)
 

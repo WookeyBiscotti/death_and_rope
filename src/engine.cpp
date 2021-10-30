@@ -2,29 +2,29 @@
 
 #include "asset_cache.hpp"
 #include "context.hpp"
-#include <SFML/Graphics.hpp>
-#include <logging.hpp>
-#include <memory>
+#include <systems/logging/logger.hpp>
 #include <systems/renderer/renderer.hpp>
-#include <thread>
+//
+#include <SFML/Graphics.hpp>
 #include <imgui-SFML.h>
 #include <imgui.h>
+//
+#include <memory>
+#include <thread>
 
 void Engine::run()
 {
-#if !defined(PROD_BUILD)
-    auto sink = std::make_shared<StSink>();
-    spdlog::default_logger()->sinks().clear();
-    spdlog::default_logger()->sinks().push_back(sink);
-    bool isLogShow = true;
-#endif
-
     sf::RenderWindow window(sf::VideoMode(640, 480), "Death and rope");
     ImGui::SFML::Init(window);
     AssetCache cache;
     Renderer renderer;
-
     Context context(cache, window, renderer);
+
+#if !defined(PROD_BUILD)
+    Logger logger;
+    bool isLogShow = true;
+#endif
+
     cache.setContext(&context);
     renderer.setContext(&context);
 
@@ -72,7 +72,7 @@ void Engine::run()
 #if !defined(PROD_BUILD)
         if (isLogShow) {
             ImGui::Begin("Logs", &isLogShow);
-            for (const auto& l : sink->logs) {
+            for (const auto& l : logger.logs()) {
                 ImGui::TextUnformatted(l.c_str());
             }
             ImGui::End();

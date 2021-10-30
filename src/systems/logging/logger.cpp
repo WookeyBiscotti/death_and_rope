@@ -1,8 +1,11 @@
-#pragma once
+#include "logger.hpp"
 
 #if !defined(PROD_BUILD)
 
 #include <deque>
+#include <mutex>
+//
+#include <spdlog/details/null_mutex.h>
 #include <spdlog/sinks/base_sink.h>
 #include <spdlog/spdlog.h>
 
@@ -29,15 +32,21 @@ public:
     std::deque<std::string> logs;
 };
 
-#include "spdlog/details/null_mutex.h"
-#include <mutex>
 using MtSink = Sink<std::mutex>;
 using StSink = Sink<spdlog::details::null_mutex>;
 
-#define LINFO(...) spdlog::info(__VA_ARGS__);
+Logger::Logger()
+{
+    _sink = std::make_shared<StSink>();
+    spdlog::default_logger()->sinks().push_back(_sink);
+}
 
-#else
+Logger::~Logger()
+{}
 
-#define LINFO(...) ;
+const std::deque<std::string>& Logger::logs() const
+{
+    return static_cast<StSink*>(_sink.get())->logs;
+}
 
 #endif
