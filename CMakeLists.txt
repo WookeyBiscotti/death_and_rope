@@ -25,14 +25,18 @@ set(MAIN_SOURCES
     src/scenes/sprites_view.cpp
     src/scenes/world_editor.cpp
     
-    src/systems/renderer/renderer.cpp
-    src/systems/renderer/sprite_component.cpp
+    src/systems/render/render.cpp
+    src/systems/render/sprite_component.cpp
     
     src/systems/logging/logger.cpp
     
     src/systems/assets/asset_cache.cpp
     src/systems/assets/texture.cpp
     src/systems/assets/sprite.cpp
+    
+    src/systems/window/window.cpp
+    
+    src/systems/imgui/imgui_system.cpp
 )
 
 set(DEPS_SOURCES

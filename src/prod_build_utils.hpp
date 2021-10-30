@@ -3,9 +3,7 @@
 #if defined(PROD_BUILD)
 
 #define IF_PROD_BUILD(EXEC) \
-    {                       \
-        EXEC;               \
-    }
+	{ EXEC; }
 
 #define NONPROD_ASSERT(COND) ;
 
@@ -15,5 +13,15 @@
 
 #include <cassert>
 #define NONPROD_ASSERT(COND) assert((COND));
+
+#endif
+
+#if !defined(PROD_BUILD)
+
+#define IF_NOT_PROD_BUILD(EXEC) EXEC;
+
+#else
+
+#define IF_NOT_PROD_BUILD(EXEC)
 
 #endif
