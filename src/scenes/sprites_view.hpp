@@ -1,6 +1,6 @@
 #pragma once
 
-#include <scene.hpp>
+#include <systems/scenes/scene.hpp>
 #include <systems/assets/sprite.hpp>
 
 #include <imgui.h>

@@ -21,7 +21,7 @@ class Receiver {
 	template<class Event>
 	void subscribe(std::function<void(const Event& event)> fn) {
 		subscribe(
-		    typeId<Event>(), [fn = std::move(fn)](const void* data) { fn(*reinterpret_cast<const Event*>(data)); });
+		    TypeId<Event>(), [fn = std::move(fn)](const void* data) { fn(*reinterpret_cast<const Event*>(data)); });
 	}
 
   private:

@@ -17,7 +17,6 @@ class RenderTarget;
 class Context {
   public:
 	bool isRuning;
-	std::shared_ptr<Scene> nextScene;
 
 	template<class S>
 	void addSystem(S* s) {

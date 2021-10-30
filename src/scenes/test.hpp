@@ -2,11 +2,11 @@
 
 #include <context.hpp>
 #include <entity.hpp>
-#include <scene.hpp>
 #include <systems/assets/asset_cache.hpp>
 #include <systems/position/position.hpp>
 #include <systems/render/render.hpp>
 #include <systems/render/sprite_component.hpp>
+#include <systems/scenes/scene.hpp>
 #include <world.hpp>
 //
 #include <SFML/Graphics/View.hpp>

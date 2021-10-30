@@ -1,15 +1,17 @@
 #include "world_editor.hpp"
 
-#include <SFML/Graphics.hpp>
 #include <config.hpp>
 #include <context.hpp>
-#include <imgui-SFML.h>
-#include <imgui.h>
-#include <imgui_stdlib.h>
 #include <imgui_utils.hpp>
 #include <systems/assets/asset_cache.hpp>
 #include <systems/render/render.hpp>
+#include <systems/scenes/scene_system.hpp>
 #include <tile_utils.hpp>
+//
+#include <SFML/Graphics.hpp>
+#include <imgui-SFML.h>
+#include <imgui.h>
+#include <imgui_stdlib.h>
 
 WorldEditor::WorldEditor(Context& context): Scene(context) {
 	_view = context.systemRef<Render>().target().getView();
@@ -71,7 +73,7 @@ void WorldEditor::onFrame() {
 		_showLoadDialog = true;
 	}
 	if (ImGui::Button("Back")) {
-		context().nextScene = context().systemRef<AssetCache>().scene("dev_menu");
+		context().systemRef<SceneSystem>().next(context().systemRef<AssetCache>().scene("dev_menu"));
 	}
 	ImGui::End();
 

@@ -3,9 +3,11 @@
 #include <context.hpp>
 #include <prod_build_utils.hpp>
 #include <systems/assets/asset_cache.hpp>
+#include <systems/broker/broker.hpp>
 #include <systems/imgui/imgui_system.hpp>
 #include <systems/logging/logger.hpp>
 #include <systems/render/render.hpp>
+#include <systems/scenes/scene_system.hpp>
 #include <systems/window/window.hpp>
 //
 #include <SFML/Graphics.hpp>
@@ -21,6 +23,9 @@ void Engine::run() {
 	IF_NOT_PROD_BUILD(Logger logger);
 	IF_NOT_PROD_BUILD(context.addSystem(&logger));
 
+	Broker broker;
+	context.addSystem(&broker);
+
 	Window window(context);
 	context.addSystem(&window);
 
@@ -33,12 +38,16 @@ void Engine::run() {
 	AssetCache cache(context);
 	context.addSystem(&cache);
 
+	SceneSystem scenes;
+	context.addSystem(&scenes);
+
 	context.isRuning = true;
 
 	IF_NOT_PROD_BUILD(bool isLogShow = true);
 
 	auto currentScene = cache.scene("main_menu");
-	currentScene->active(true);
+	scenes.next(std::move(currentScene));
+	scenes.applyNext();
 
 	sf::Font font;
 	if (!font.loadFromFile("assets/fonts/BLKCHCRY.TTF")) {
@@ -53,28 +62,27 @@ void Engine::run() {
 	text.setCharacterSize(20);
 
 	sf::Clock deltaClock;
-	while (context.isRuning) {
+	while (context.isRuning && scenes.current()) {
 		const auto t1 = std::chrono::steady_clock::now();
-		sf::Event event;
-		while (window.window().pollEvent(event)) {
-			ImGui::SFML::ProcessEvent(event);
 
-			if (event.type == sf::Event::Closed) {
-				context.isRuning = false;
-			}
-			if (event.type == sf::Event::KeyPressed) {
-				// LINFO("Key pressed: {}", event.key.code);
-			}
+		window.pullEvents();
+		imgui.update();
 
-			if (currentScene && !ImGui::GetIO().WantCaptureMouse && !ImGui::GetIO().WantCaptureKeyboard) {
-				currentScene->onEvent(event);
-			}
-		}
-		ImGui::SFML::Update(window.window(), deltaClock.restart());
+		// 	if (event.type == sf::Event::Closed) {
+		// 		context.isRuning = false;
+		// 	}
+		// 	if (event.type == sf::Event::KeyPressed) {
+		// 		// LINFO("Key pressed: {}", event.key.code);
+		// 	}
+
+		// 	if (currentScene && !ImGui::GetIO().WantCaptureMouse && !ImGui::GetIO().WantCaptureKeyboard) {
+		// 		currentScene->onEvent(event);
+		// 	}
+		// }
 
 		window.window().clear();
 
-		currentScene->onFrame();
+		scenes.current()->onFrame();
 
 #if !defined(PROD_BUILD)
 		if (isLogShow) {
@@ -86,7 +94,7 @@ void Engine::run() {
 		}
 #endif
 
-		ImGui::SFML::Render(window.window());
+		imgui.render();
 
 		if (currentFrame++ == updateFpsEveryFrame) {
 			currentFrame = 0;
@@ -101,10 +109,8 @@ void Engine::run() {
 
 		window.window().display();
 
-		if (context.nextScene) {
-			currentScene->active(false);
-			currentScene = std::move(context.nextScene);
-			currentScene->active(true);
+		if (scenes.next()) {
+			scenes.applyNext();
 		}
 
 		const auto t2 = std::chrono::steady_clock::now();

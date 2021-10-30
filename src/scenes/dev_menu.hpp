@@ -1,18 +1,15 @@
 #pragma once
-#include <scene.hpp>
+#include <systems/scenes/scene.hpp>
 
-class DevMenu : public Scene
-{
-public:
-    DevMenu(Context& context)
-        : Scene(context)
-    {}
+class DevMenu: public Scene {
+  public:
+	DevMenu(Context& context): Scene(context) {}
 
-    void onFrame() override;
+	void onFrame() override;
 
-    bool active() const override;
-    void active(bool active) override;
+	bool active() const override;
+	void active(bool active) override;
 
-private:
-    bool _active = false;
+  private:
+	bool _active = false;
 };
