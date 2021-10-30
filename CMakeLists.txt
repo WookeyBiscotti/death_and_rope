@@ -37,6 +37,9 @@ set(MAIN_SOURCES
     src/systems/window/window.cpp
     
     src/systems/imgui/imgui_system.cpp
+
+    src/systems/broker/receiver.cpp
+    src/systems/broker/sender.cpp
 )
 
 set(DEPS_SOURCES
