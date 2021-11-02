@@ -1,45 +1,50 @@
 #pragma once
 
-#include <type_id.hpp>
-#include <unordered_map>
-
 #include "component.hpp"
 
-class Entity
-{
-public:
-    template<class C>
-    bool add(std::shared_ptr<C> component)
-    {
-        return _components.emplace(TypeId<C>(), std::move(component)).second;
-    }
+#include <type_id.hpp>
+//
+#include <memory>
+#include <unordered_map>
 
-    template<class C>
-    bool remove()
-    {
-        return _components.erase(TypeId<C>()) != 0;
-    }
+class Context;
 
-    template<class C>
-    C* get()
-    {
-        if (auto found = _components.find(TypeId<C>()); found != _components.end()) {
-            return static_cast<C*>(found->second.get());
-        }
+class Entity {
+  public:
+	Entity(Context& context): _context(context) {}
 
-        return nullptr;
-    }
+	Context& context() { return _context; }
 
-    template<class C>
-    std::shared_ptr<C> getShared()
-    {
-        if (auto found = _components.find(TypeId<C>()); found != _components.end()) {
-            return found.second;
-        }
+	template<class C>
+	bool add(std::shared_ptr<C> component) {
+		return _components.emplace(TypeId<C>(), std::move(component)).second;
+	}
 
-        return nullptr;
-    }
+	template<class C>
+	bool remove() {
+		return _components.erase(TypeId<C>()) != 0;
+	}
 
-private:
-    std::unordered_map<type_id_t, std::shared_ptr<Component>> _components;
+	template<class C>
+	C* get() {
+		if (auto found = _components.find(TypeId<C>()); found != _components.end()) {
+			return static_cast<C*>(found->second.get());
+		}
+
+		return nullptr;
+	}
+
+	template<class C>
+	std::shared_ptr<C> getShared() {
+		if (auto found = _components.find(TypeId<C>()); found != _components.end()) {
+			return found.second;
+		}
+
+		return nullptr;
+	}
+
+  private:
+	Context& _context;
+
+	std::unordered_map<type_id_t, std::shared_ptr<Component>> _components;
 };

@@ -19,7 +19,7 @@ class DebugSystem: private Receiver {
 	std::shared_ptr<Font> _font;
 
 	sf::Text _text;
-	std::size_t _frameCounter{};
+	std::size_t _frameCounter = 60;
 	float _lastFps{};
 
 	bool _isLogShown{};

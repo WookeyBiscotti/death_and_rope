@@ -1,7 +1,9 @@
 #pragma once
 
+#include <components/player.hpp>
 #include <context.hpp>
 #include <entity.hpp>
+#include <memory>
 #include <systems/assets/asset_cache.hpp>
 #include <systems/position/position.hpp>
 #include <systems/render/render.hpp>
@@ -18,14 +20,17 @@ class TestScene: public Scene {
 	void onFrame() override {}
 
 	void active(bool active) override {
-		auto c = std::make_shared<SpriteComponent>(_entity);
-		c->setSprite(context().systemRef<AssetCache>().sprite("test"));
-		_entity.add(std::make_shared<Position>(_entity));
-		_entity.get<Position>()->set({300, 300});
-		_entity.add(c);
+		_entity = std::make_unique<Entity>(context());
+		auto c = std::make_shared<SpriteComponent>(*_entity);
+		c->setSprite(context().systemRef<AssetCache>().sprite("head"));
+		_entity->add(std::make_shared<Position>(*_entity));
+		_entity->get<Position>()->set({300, 300});
+		_entity->add(c);
 		context().systemRef<Render>().add(c);
+		auto p = std::make_shared<Player>(*_entity);
+		_entity->add(p);
 	};
 
   private:
-	Entity _entity;
+	std::unique_ptr<Entity> _entity;
 };
