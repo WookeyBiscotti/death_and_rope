@@ -60,10 +60,10 @@ Config::Config(const char** argv, int argc) {
 		}
 	} else {
 		configRoot = getHomeDir();
-		configRoot += appName;
+		configRoot /= appName;
 	}
 
-	LINFO("Config: config root: {}", configRoot.string());
+	LINFO("Config root: {}", configRoot.string());
 
 	if (args.contains(ROOT)) {
 		fs::path newRootPath(args[ROOT]);
@@ -78,9 +78,5 @@ Config::Config(const char** argv, int argc) {
 		_staticConfig.root = appPath.parent_path().string();
 	}
 
-	if (!_staticConfig.root.ends_with('/')) {
-		_staticConfig.root += '/';
-	}
-
-	LINFO("Config: root: {}", _staticConfig.root);
+	LINFO("Config: root: {}", _staticConfig.root.string());
 }

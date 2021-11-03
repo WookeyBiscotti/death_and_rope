@@ -1,9 +1,10 @@
 #pragma once
 
 #include <string>
+#include <types.hpp>
 
 struct StaticConfig {
-	std::string root;
+	Path root;
 
 	// std::string toString() const;
 	// void fromString(std::string& str);
