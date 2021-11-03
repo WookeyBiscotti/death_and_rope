@@ -58,9 +58,14 @@ Config::Config(const char** argv, int argc) {
 		} else {
 			configRoot = args[CONFIG_ROOT];
 		}
-	} else {
+	}
+	if (configRoot.empty()) {
 		configRoot = getHomeDir();
 		configRoot /= appName;
+
+		if (!fs::create_directories(configRoot)) {
+			LERR("Can't create config dir: {}", configRoot.string());
+		}
 	}
 
 	LINFO("Config root: {}", configRoot.string());
