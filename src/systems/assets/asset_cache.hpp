@@ -6,6 +6,7 @@
 #include "world.hpp"
 
 #include <systems/scenes/scene.hpp>
+#include <types.hpp>
 //
 #include <SFML/Graphics/Font.hpp>
 //
@@ -17,10 +18,12 @@ class Context;
 
 class AssetCache {
   public:
-	AssetCache(Context& context): _context(context) {}
+	AssetCache(Context& context);
 
-	static const std::string& defaultSpritePath();
-	static const std::string& defaultWorldsPath();
+	Path spritesPath() const;
+	Path texturesPath() const;
+	Path fontsPath() const;
+	Path worldsPath() const;
 
 	std::shared_ptr<Texture> texture(const std::string& name);
 	std::shared_ptr<Font> font(const std::string& name);
@@ -38,10 +41,12 @@ class AssetCache {
 	std::vector<std::string> worlds() const;
 
   private:
+	Context& _context;
+
+	const std::string _root;
+
 	std::unordered_map<std::string, std::shared_ptr<Texture>> _textures;
 	std::unordered_map<std::string, std::shared_ptr<Sprite>> _sprites;
 	std::unordered_map<std::string, std::shared_ptr<Scene>> _scenes;
 	std::unordered_map<std::string, std::shared_ptr<Font>> _fonts;
-
-	Context& _context;
 };

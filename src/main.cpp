@@ -1,8 +1,8 @@
 #include "engine.hpp"
 
-int main() {
+int main(int argc, const char** argv) {
 	Engine e;
-	e.run();
+	e.run(argv, argc);
 
 	return 0;
 }

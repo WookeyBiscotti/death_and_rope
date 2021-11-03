@@ -2,6 +2,7 @@
 
 #include <context.hpp>
 //
+#include <archive.hpp>
 #include <imgui_utils.hpp>
 #include <systems/assets/asset_cache.hpp>
 #include <systems/scenes/scene_system.hpp>

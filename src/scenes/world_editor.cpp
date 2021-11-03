@@ -34,7 +34,7 @@ void WorldEditor::onFrame() {
 		ImGui::InputText("World name", &_saveName);
 		if (ImGui::Button("Ok")) {
 			_showSaveDialog = false;
-			_world.saveToDir(context().systemRef<AssetCache>().defaultWorldsPath() + _saveName);
+			_world.saveToDir(context().systemRef<AssetCache>().worldsPath() / _saveName);
 		}
 		if (ImGui::Button("Cancel")) {
 			_showSaveDialog = false;
@@ -51,7 +51,7 @@ void WorldEditor::onFrame() {
 			if (ImGui::Button("Ok")) {
 				_showLoadDialog = false;
 				_world.clear();
-				_world.loadFromDir(context().systemRef<AssetCache>().defaultWorldsPath() + name);
+				_world.loadFromDir(context().systemRef<AssetCache>().worldsPath() / name);
 			}
 			ImGui::PopID();
 			ImGui::Separator();

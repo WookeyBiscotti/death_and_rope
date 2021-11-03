@@ -1,3 +1,5 @@
-#include <imconfig-SFML.h>
+#pragma once
 //
-#include <imgui.hpp>
+// #include <imconfig-SFML.h>
+//
+// #include <imgui.hpp>

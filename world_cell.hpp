@@ -1,8 +1,8 @@
 #pragma once
 
 #include "cell.hpp"
-#include "config.hpp"
 #include "vector_utils.hpp"
+#include "wconfig.hpp"
 
 #include <SFML/Graphics.hpp>
 #include <array>
@@ -52,7 +52,7 @@ class WorldCell {
 			if (points.size() < 2) {
 				return;
 			}
-			length = ::length(points[points.size() - 1], points[points.size() - 2]);
+			length = ::length(points[points.size() - 1] - points[points.size() - 2]);
 		}
 		float length;
 	} _rope;

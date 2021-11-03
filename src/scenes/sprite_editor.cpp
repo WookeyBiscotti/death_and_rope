@@ -1,7 +1,9 @@
 #include "sprite_editor.hpp"
 
+#include <archive.hpp>
 #include <context.hpp>
 #include <imgui_utils.hpp>
+#include <rect.hpp>
 #include <systems/assets/asset_cache.hpp>
 #include <systems/scenes/scene_system.hpp>
 //
@@ -15,7 +17,7 @@ void SpriteEditor::onFrame() {
 		if (ImGui::Button("Ok")) {
 			_showSaveDialog = false;
 			_sprite->name(_saveName);
-			_sprite->saveToFile(context().systemRef<AssetCache>().defaultSpritePath() + _saveName);
+			_sprite->saveToFile(context().systemRef<AssetCache>().spritesPath() / _saveName);
 		}
 		return;
 	}

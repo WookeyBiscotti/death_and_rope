@@ -42,6 +42,8 @@ set(MAIN_SOURCES
     src/systems/broker/sender.cpp
 
     src/systems/debug/debug_system.cpp
+ 
+    src/systems/config/config.cpp
 )
 
 set(DEPS_SOURCES

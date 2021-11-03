@@ -5,6 +5,7 @@
 #include <prod_build_utils.hpp>
 #include <systems/assets/asset_cache.hpp>
 #include <systems/broker/broker.hpp>
+#include <systems/config/config.hpp>
 #include <systems/debug/debug_system.hpp>
 #include <systems/imgui/imgui_system.hpp>
 #include <systems/logging/logger.hpp>
@@ -19,11 +20,14 @@
 #include <memory>
 #include <thread>
 
-void Engine::run() {
+void Engine::run(const char** argv, int argc) {
 	Context context;
 
 	IF_NOT_PROD_BUILD(Logger logger);
 	IF_NOT_PROD_BUILD(context.addSystem(&logger));
+
+	Config config(argv, argc);
+	context.addSystem(&config);
 
 	Broker broker;
 	context.addSystem(&broker);
