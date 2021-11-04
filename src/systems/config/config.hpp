@@ -1,5 +1,6 @@
 #pragma once
 
+#include <systems/broker/sender.hpp>
 #include <types.hpp>
 #include <vector2.hpp>
 //
@@ -14,17 +15,24 @@ struct StaticConfig {
 	struct Window {
 		Vector2u size{800, 600};
 		bool fullscreen{};
+		bool borderless{};
+
+		bool operator==(const Window& other) const = default;
 	} window;
+
+	bool operator==(const StaticConfig& other) const = default;
 
 	std::string toString() const;
 	bool fromString(const std::string& str);
 };
 
-class Config {
+class Context;
+class Config: public Sender {
   public:
-	Config(const char** argv, int argc);
+	Config(Context& context, const char** argv, int argc);
 
 	const StaticConfig& staticConfig() const { return _staticConfig; }
+	void staticConfig(const StaticConfig& newConfig);
 
 	void asyncSave();
 

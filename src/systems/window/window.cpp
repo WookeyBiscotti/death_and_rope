@@ -12,12 +12,15 @@
 Window::Window(Context& context): Sender(context.systemRef<Broker>()), _context(context) {
 	auto& config = context.systemRef<Config>().staticConfig();
 	sf::Uint32 flags{};
-	flags |= sf::Style::Close | sf::Style::Titlebar;
+	if (!config.window.borderless) {
+		flags |= sf::Style::Close | sf::Style::Titlebar;
+	}
 	if (config.window.fullscreen) {
 		flags |= sf::Style::Fullscreen;
 	}
 	_window = std::make_shared<RenderWindow>(
 	    sf::VideoMode(config.window.size.x, config.window.size.y), "Death and rope", flags);
+	_window->setPosition({});
 }
 
 Window::~Window(){};

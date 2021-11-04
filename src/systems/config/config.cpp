@@ -1,5 +1,8 @@
 #include "config.hpp"
+#include "events.hpp"
+#include "systems/broker/broker.hpp"
 
+#include <context.hpp>
 #include <file.hpp>
 #include <json.hpp>
 #include <systems/logging/logger.hpp>
@@ -55,6 +58,7 @@ std::string StaticConfig::toString() const {
 	JSON_WRITE(js, root);
 
 	JSON_WRITE(js, window.fullscreen);
+	JSON_WRITE(js, window.borderless);
 	JSON_WRITE(js, window.size.x);
 	JSON_WRITE(js, window.size.y);
 
@@ -69,11 +73,14 @@ bool StaticConfig::fromString(const std::string& str) {
 		return {};
 	}();
 
-	return JSON_READ(js, root) && JSON_READ(js, window.fullscreen) && JSON_READ(js, window.size.x) &&
+	return JSON_READ(js, root) &&              //
+	       JSON_READ(js, window.fullscreen) && //
+	       JSON_READ(js, window.borderless) && //
+	       JSON_READ(js, window.size.x) &&     //
 	       JSON_READ(js, window.size.y);
 }
 
-Config::Config(const char** argv, int argc) {
+Config::Config(Context& context, const char** argv, int argc): Sender(context.systemRef<Broker>()) {
 	const auto appPath = fs::path(argv[0]);
 	const auto appName = appPath.filename().replace_extension();
 
@@ -125,4 +132,13 @@ void Config::asyncSave() {
 			LERR("Save config: {}", _configPath.string());
 		}
 	}));
+}
+
+void Config::staticConfig(const StaticConfig& newConfig) {
+	if (newConfig != _staticConfig) {
+		send(ConfigOnChange{});
+	}
+
+	_staticConfig = newConfig;
+	asyncSave();
 }

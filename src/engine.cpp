@@ -26,11 +26,11 @@ void Engine::run(const char** argv, int argc) {
 	IF_NOT_PROD_BUILD(Logger logger);
 	IF_NOT_PROD_BUILD(context.addSystem(&logger));
 
-	Config config(argv, argc);
-	context.addSystem(&config);
-
 	Broker broker;
 	context.addSystem(&broker);
+
+	Config config(context, argv, argc);
+	context.addSystem(&config);
 
 	Window window(context);
 	context.addSystem(&window);
