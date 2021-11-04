@@ -27,11 +27,21 @@ class Logger {
 
 #include <spdlog/spdlog.h>
 
-#define LINFO(...) spdlog::info(__VA_ARGS__);
-#define LERR(...)  spdlog::error(__VA_ARGS__);
+#define LINFO(...) spdlog::info(__VA_ARGS__)
+#define LERR(...)  spdlog::error(__VA_ARGS__)
+
+#define LERR_IF(COND, ...)          \
+	if (COND) {                     \
+		spdlog::error(__VA_ARGS__); \
+	}
 
 #else
 
-#define LINFO(...) ;
+#define LINFO(...)
+#define LERR(...)
+
+// condition must executed
+#define LERR_IF(COND, ...) \
+	{ COND; }
 
 #endif

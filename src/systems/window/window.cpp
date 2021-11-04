@@ -1,14 +1,23 @@
-#include "window.hpp"
-
+#include "SFML/Config.hpp"
+#include "SFML/Window/WindowStyle.hpp"
 #include "events.hpp"
+#include "window.hpp"
 
 #include <context.hpp>
 #include <systems/broker/broker.hpp>
+#include <systems/config/config.hpp>
 //
 #include <SFML/Graphics.hpp>
 
 Window::Window(Context& context): Sender(context.systemRef<Broker>()), _context(context) {
-	_window = std::make_shared<RenderWindow>(sf::VideoMode(640, 480), "Death and rope");
+	auto& config = context.systemRef<Config>().staticConfig();
+	sf::Uint32 flags{};
+	flags |= sf::Style::Close | sf::Style::Titlebar;
+	if (config.window.fullscreen) {
+		flags |= sf::Style::Fullscreen;
+	}
+	_window = std::make_shared<RenderWindow>(
+	    sf::VideoMode(config.window.size.x, config.window.size.y), "Death and rope", flags);
 }
 
 Window::~Window(){};

@@ -44,7 +44,9 @@ Path AssetCache::texturesPath() const {
 	return fs::path(_root) / TEXTURES_PATH;
 }
 
-AssetCache::AssetCache(Context& context): _context(context), _root(context.systemRef<Config>().staticConfig().root){};
+AssetCache::AssetCache(Context& context): _context(context), _root(context.systemRef<Config>().staticConfig().root) {
+	LINFO("Asset cache root: {}", _root);
+};
 
 std::shared_ptr<Texture> AssetCache::texture(const std::string& name) {
 	LINFO("Try to load: {} texture", name);
@@ -60,6 +62,7 @@ std::shared_ptr<Texture> AssetCache::texture(const std::string& name) {
 	}
 
 	LINFO("Texture {} not found", name);
+
 	return nullptr;
 }
 
@@ -173,7 +176,7 @@ std::shared_ptr<Font> AssetCache::font(const std::string& name) {
 
 		return font;
 	} else {
-		LERR("Can't load font: {}", name);
+		LINFO("Can't load font file: {}. Try to check defaults", name);
 	}
 
 	if (auto found = FONT_DEFAULTS_MAP.find(name); found != FONT_DEFAULTS_MAP.end()) {
