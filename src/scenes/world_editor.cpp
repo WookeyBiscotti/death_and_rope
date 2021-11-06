@@ -1,8 +1,8 @@
 #include "world_editor.hpp"
 
+#include <common/imgui_utils.hpp>
 #include <config.hpp>
-#include <context.hpp>
-#include <imgui_utils.hpp>
+#include <engine/context.hpp>
 #include <systems/assets/asset_cache.hpp>
 #include <systems/render/render.hpp>
 #include <systems/scenes/scene_system.hpp>

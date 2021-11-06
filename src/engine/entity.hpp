@@ -2,7 +2,7 @@
 
 #include "component.hpp"
 
-#include <type_id.hpp>
+#include <common/type_id.hpp>
 //
 #include <memory>
 #include <unordered_map>

@@ -1,9 +1,9 @@
 #include "sprite_editor.hpp"
 
-#include <archive.hpp>
-#include <context.hpp>
-#include <imgui_utils.hpp>
-#include <rect.hpp>
+#include <common/imgui_utils.hpp>
+#include <common/rect.hpp>
+#include <common/types.hpp>
+#include <engine/context.hpp>
 #include <systems/assets/asset_cache.hpp>
 #include <systems/scenes/scene_system.hpp>
 //

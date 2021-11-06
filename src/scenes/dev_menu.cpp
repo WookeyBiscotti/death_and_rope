@@ -1,7 +1,7 @@
 #include "dev_menu.hpp"
 
-#include <context.hpp>
-#include <imgui_utils.hpp>
+#include <common/imgui_utils.hpp>
+#include <engine/context.hpp>
 #include <systems/assets/asset_cache.hpp>
 #include <systems/scenes/scene_system.hpp>
 

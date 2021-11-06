@@ -1,7 +1,8 @@
 #pragma once
 
-#include "vector2.hpp"
 #include "world_cell.hpp"
+
+#include <common/vector2.hpp>
 //
 #include <SFML/Graphics.hpp>
 //

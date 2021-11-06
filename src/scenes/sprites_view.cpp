@@ -1,9 +1,9 @@
 #include "sprites_view.hpp"
 
-#include <context.hpp>
+#include <engine/context.hpp>
 //
-#include <archive.hpp>
-#include <imgui_utils.hpp>
+#include <common/imgui_utils.hpp>
+#include <common/types.hpp>
 #include <systems/assets/asset_cache.hpp>
 #include <systems/scenes/scene_system.hpp>
 //

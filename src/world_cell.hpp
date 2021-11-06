@@ -2,10 +2,10 @@
 
 #include "config.hpp"
 #include "tile.hpp"
-#include "vector2.hpp"
 
 #include <array>
 #include <cereal/types/array.hpp>
+#include <common/vector2.hpp>
 
 struct WorldCell {
 	Vector2i cellPosition;

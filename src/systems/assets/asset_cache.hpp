@@ -5,8 +5,8 @@
 #include "texture.hpp"
 #include "world.hpp"
 
+#include <common/types.hpp>
 #include <systems/scenes/scene.hpp>
-#include <types.hpp>
 //
 #include <SFML/Graphics/Font.hpp>
 //

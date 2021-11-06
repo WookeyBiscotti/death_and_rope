@@ -2,8 +2,8 @@
 
 #pragma once
 
-#include <types.hpp>
-#include <vector2.hpp>
+#include <common/types.hpp>
+#include <common/vector2.hpp>
 //
 #include <nlohmann/json.hpp>
 

@@ -1,9 +1,10 @@
 #pragma once
 
 #include "asset.hpp"
-#include "rect.hpp"
 #include "texture.hpp"
-#include "vector2.hpp"
+
+#include <common/rect.hpp>
+#include <common/vector2.hpp>
 //
 #include <SFML/Graphics.hpp>
 //

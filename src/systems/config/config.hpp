@@ -1,8 +1,8 @@
 #pragma once
 
+#include <common/types.hpp>
+#include <common/vector2.hpp>
 #include <systems/broker/sender.hpp>
-#include <types.hpp>
-#include <vector2.hpp>
 //
 #include <future>
 #include <list>

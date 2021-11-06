@@ -1,8 +1,8 @@
 #pragma once
 
 #include <components/player.hpp>
-#include <context.hpp>
-#include <entity.hpp>
+#include <engine/context.hpp>
+#include <engine/entity.hpp>
 #include <memory>
 #include <systems/assets/asset_cache.hpp>
 #include <systems/position/position.hpp>

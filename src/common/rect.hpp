@@ -1,6 +1,6 @@
 #pragma once
 
-#include <vector2.hpp>
+#include <common/vector2.hpp>
 //
 #include <SFML/Graphics/Rect.hpp>
 

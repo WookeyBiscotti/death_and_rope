@@ -3,10 +3,10 @@
 #include "SFML/Window/Keyboard.hpp"
 #include "player.hpp"
 
-#include <component.hpp>
-#include <context.hpp>
-#include <entity.hpp>
-#include <events.hpp>
+#include <engine/component.hpp>
+#include <engine/context.hpp>
+#include <engine/entity.hpp>
+#include <engine/events.hpp>
 #include <systems/broker/receiver.hpp>
 #include <systems/position/position.hpp>
 

@@ -2,9 +2,9 @@
 #include "events.hpp"
 #include "systems/broker/broker.hpp"
 
-#include <context.hpp>
-#include <file.hpp>
-#include <json.hpp>
+#include <common/file.hpp>
+#include <common/json.hpp>
+#include <engine/context.hpp>
 #include <systems/logging/logger.hpp>
 //
 #include <filesystem>
@@ -101,16 +101,18 @@ Config::Config(Context& context, const char** argv, int argc): Sender(context.sy
 
 	LINFO("Config path: {}", _configPath.string());
 
+	if (!_staticConfig.fromString(readFromFile(_configPath))) {
+		LERR("Can't load config: {}", _configPath.string());
+		asyncSave();
+	} else {
+		LINFO("Config: {}", _staticConfig.toString());
+	}
+
 	if (_staticConfig.root.empty()) {
 		_staticConfig.root = appPath.parent_path().string();
 	}
 
-	LINFO("Config: root: {}", _staticConfig.root.string());
-
-	if (!_staticConfig.fromString(readFromFile(_configPath))) {
-		LERR("Can't load config: {}", _configPath.string());
-		asyncSave();
-	}
+	LINFO("App root: {}", _staticConfig.root.string());
 
 	if (args.contains(ROOT)) {
 		fs::path newRootPath(args[ROOT]);

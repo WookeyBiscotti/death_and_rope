@@ -17,7 +17,7 @@ target_link_libraries(death_and_rope_exp PUBLIC sfml-graphics sfml-audio)
 set(MAIN_SOURCES
     src/main.cpp
     src/rope.cpp
-    src/engine.cpp
+    src/engine/engine.cpp
     src/world.cpp
     src/scenes/main_menu.cpp
     src/scenes/dev_menu.cpp

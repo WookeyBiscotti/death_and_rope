@@ -1,7 +1,7 @@
 #pragma once
 
-#include <component.hpp>
-#include <vector2.hpp>
+#include <common/vector2.hpp>
+#include <engine/component.hpp>
 
 class Position: public Component {
   public:
