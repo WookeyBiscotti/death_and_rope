@@ -1,0 +1,55 @@
+#include "engine/component.hpp"
+
+#include <catch2/catch_test_macros.hpp>
+#include <engine/context.hpp>
+#include <engine/entity.hpp>
+#include <memory>
+
+template<size_t N>
+class ComponentNum: public Component {
+  public:
+	explicit ComponentNum(Entity& e, size_t val): Component(e), val(val){};
+
+	constexpr auto num() { return N; };
+
+	size_t val = 0;
+};
+
+TEST_CASE("General", "[Entity]") {
+	Context context;
+	Entity entity(context);
+
+	auto c2 = std::make_shared<ComponentNum<2>>(entity, 17);
+
+	entity.add<ComponentNum<1>>(13).add(c2);
+
+	SECTION("Check component") {
+		REQUIRE(entity.get<ComponentNum<1>>());
+		REQUIRE(entity.get<ComponentNum<2>>());
+
+		REQUIRE(entity.getShared<ComponentNum<1>>());
+		REQUIRE(entity.getShared<ComponentNum<2>>());
+
+		REQUIRE(entity.get<ComponentNum<1>>()->val == 13);
+		REQUIRE(entity.get<ComponentNum<2>>()->val == 17);
+	}
+
+	SECTION("Check component val") {
+		REQUIRE(entity.get<ComponentNum<1>>()->val == 13);
+		REQUIRE(entity.get<ComponentNum<2>>()->val == 17);
+
+		REQUIRE(entity.getShared<ComponentNum<1>>()->val == 13);
+		REQUIRE(entity.getShared<ComponentNum<2>>()->val == 17);
+
+		REQUIRE(entity.ref<ComponentNum<1>>().val == 13);
+		REQUIRE(entity.ref<ComponentNum<2>>().val == 17);
+	}
+
+	SECTION("Check component val") {
+		REQUIRE(entity.remove<ComponentNum<1>>());
+		REQUIRE(entity.remove<ComponentNum<2>>());
+
+		REQUIRE_FALSE(entity.get<ComponentNum<1>>());
+		REQUIRE_FALSE(entity.get<ComponentNum<2>>());
+	}
+}

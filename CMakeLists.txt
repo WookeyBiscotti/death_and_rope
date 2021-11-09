@@ -10,12 +10,11 @@ add_subdirectory(3rdparty/SFML)
 add_subdirectory(3rdparty/json)
 add_subdirectory(3rdparty/cereal)
 add_subdirectory(3rdparty/spdlog)
-# add_subdirectory(3rdparty/ctti)
+add_subdirectory(3rdparty/Catch2)
 
 target_link_libraries(death_and_rope_exp PUBLIC sfml-graphics sfml-audio)
 
 set(MAIN_SOURCES
-    src/main.cpp
     src/rope.cpp
     src/engine/engine.cpp
     src/world.cpp
@@ -24,48 +23,52 @@ set(MAIN_SOURCES
     src/scenes/sprite_editor.cpp
     src/scenes/sprites_view.cpp
     src/scenes/world_editor.cpp
-    
     src/systems/render/render.cpp
     src/systems/render/sprite_component.cpp
-    
     src/systems/logging/logger.cpp
-    
     src/systems/assets/asset_cache.cpp
     src/systems/assets/texture.cpp
     src/systems/assets/sprite.cpp
-    
     src/systems/window/window.cpp
-    
     src/systems/imgui/imgui_system.cpp
-
     src/systems/broker/receiver.cpp
     src/systems/broker/sender.cpp
-
     src/systems/debug/debug_system.cpp
- 
-    src/systems/config/config.cpp
-)
+    src/systems/config/config.cpp)
+
+set(TESTS_SOURCES src/tests/engine/entity_tests.cpp)
 
 set(DEPS_SOURCES
-    3rdparty/imgui/imgui_tables.cpp
-    3rdparty/imgui/imgui_widgets.cpp
-    3rdparty/imgui/imgui_draw.cpp
-    3rdparty/imgui/imgui.cpp
-    
-    3rdparty/imgui-sfml/imgui-SFML.cpp
-    3rdparty/imgui/misc/cpp/imgui_stdlib.cpp
-)
+    3rdparty/imgui/imgui_tables.cpp 3rdparty/imgui/imgui_widgets.cpp
+    3rdparty/imgui/imgui_draw.cpp 3rdparty/imgui/imgui.cpp
+    3rdparty/imgui-sfml/imgui-SFML.cpp 3rdparty/imgui/misc/cpp/imgui_stdlib.cpp)
 
-add_executable(death_and_rope_exe ${MAIN_SOURCES} ${DEPS_SOURCES})
+set(INCLUDES_DEPS_DIRS src 3rdparty/imgui 3rdparty/imgui-sfml
+                       3rdparty/imgui-filebrowser 3rdparty/imgui/misc/cpp)
 
-target_include_directories(death_and_rope_exe PUBLIC src 3rdparty/imgui 3rdparty/imgui-sfml  3rdparty/imgui-filebrowser 3rdparty/imgui/misc/cpp)
+set(DEPS_LIBS
+    GL
+    GLU
+    sfml-graphics
+    sfml-audio
+    nlohmann_json
+    cereal::cereal
+    spdlog::spdlog)
 
-target_link_libraries(death_and_rope_exe PUBLIC GL GLU sfml-graphics sfml-audio nlohmann_json cereal::cereal spdlog::spdlog)
+add_executable(death_and_rope_exe src/main.cpp ${MAIN_SOURCES} ${DEPS_SOURCES})
+target_include_directories(death_and_rope_exe PUBLIC ${INCLUDES_DEPS_DIRS})
+target_link_libraries(death_and_rope_exe PUBLIC ${DEPS_LIBS})
 
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/assets/ DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/assets/)
+add_executable(death_and_rope_tests ${TESTS_SOURCES} ${MAIN_SOURCES}
+                                    ${DEPS_SOURCES})
+target_include_directories(death_and_rope_tests PUBLIC ${INCLUDES_DEPS_DIRS})
+target_link_libraries(death_and_rope_tests PUBLIC Catch2::Catch2WithMain
+                                                  ${DEPS_LIBS})
 
-set(PROD_BUILD OFF CACHE BOOL "make prod build withput loging for perfotmance")
+set(PROD_BUILD
+    OFF
+    CACHE BOOL "make prod build withput loging for perfotmance")
 
 if(${PROD_BUILD})
-    target_compile_definitions(death_and_rope_exe PUBLIC PROD_BUILD)
+  target_compile_definitions(death_and_rope_exe PUBLIC PROD_BUILD)
 endif()

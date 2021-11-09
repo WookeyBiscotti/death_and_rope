@@ -2,16 +2,14 @@
 
 class Entity;
 
-class Component
-{
-public:
-    Component(Entity& entity)
-        : _entity(entity){};
+class Component {
+  public:
+	explicit Component(Entity& entity): _entity(entity){};
 
-    virtual ~Component() = default;
+	virtual ~Component() = default;
 
-    Entity& entity() { return _entity; }
+	Entity& entity() { return _entity; }
 
-private:
-    Entity& _entity;
+  private:
+	Entity& _entity;
 };
