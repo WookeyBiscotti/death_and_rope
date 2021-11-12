@@ -36,7 +36,7 @@ DebugSystem::DebugSystem(Context& context): Receiver(context.systemRef<Broker>()
 			ImGui::SetNextWindowBgAlpha(0.5f);
 			ImGui::Begin("Logs(F12 to open/close)", nullptr,
 			    ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse |
-			        ImGuiWindowFlags_NoBringToFrontOnFocus);
+			        ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBringToFrontOnFocus);
 			for (const auto& l : _context.systemRef<Logger>().logs()) {
 				ImGui::TextUnformatted(l.c_str());
 			}

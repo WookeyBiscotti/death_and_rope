@@ -11,6 +11,7 @@
 class Camera: public Component {
   public:
 	explicit Camera(Entity& entity): Component(entity) {}
+	~Camera();
 
 	void update() { _view.setCenter(entity().ref<Position>().get()); }
 

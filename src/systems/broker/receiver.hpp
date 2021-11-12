@@ -9,7 +9,7 @@ class Sender;
 
 class Receiver {
   public:
-	Receiver(Broker& broker): _broker(broker) {}
+	explicit Receiver(Broker& broker): _broker(broker) {}
 	virtual ~Receiver();
 
 	template<class Event>

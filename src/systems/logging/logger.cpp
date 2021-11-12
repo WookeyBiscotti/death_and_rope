@@ -6,47 +6,45 @@
 #include <mutex>
 //
 #include <spdlog/details/null_mutex.h>
+#include <spdlog/pattern_formatter.h>
 #include <spdlog/sinks/base_sink.h>
 #include <spdlog/spdlog.h>
 
 template<typename Mutex, size_t N = 1024>
-class Sink : public spdlog::sinks::base_sink<Mutex>
-{
-public:
-    Sink() { logs.resize(N); }
+class Sink: public spdlog::sinks::base_sink<Mutex> {
+  public:
+	Sink() { logs.resize(N); }
 
-protected:
-    void sink_it_(const spdlog::details::log_msg& msg) override
-    {
-        spdlog::memory_buf_t formatted;
-        spdlog::sinks::base_sink<Mutex>::formatter_->format(msg, formatted);
-        logs.push_front(fmt::to_string(formatted));
-        if (logs.size() == N) {
-            logs.pop_back();
-        }
-    }
+  protected:
+	void sink_it_(const spdlog::details::log_msg& msg) override {
+		spdlog::memory_buf_t formatted;
+		spdlog::sinks::base_sink<Mutex>::formatter_->format(msg, formatted);
+		logs.push_front(fmt::to_string(formatted));
+		if (logs.size() == N) {
+			logs.pop_back();
+		}
+	}
 
-    void flush_() override {}
+	void flush_() override {}
 
-public:
-    std::deque<std::string> logs;
+  public:
+	std::deque<std::string> logs;
 };
 
 using MtSink = Sink<std::mutex>;
 using StSink = Sink<spdlog::details::null_mutex>;
 
-Logger::Logger()
-{
-    _sink = std::make_shared<StSink>();
-    spdlog::default_logger()->sinks().push_back(_sink);
+Logger::Logger() {
+	_sink = std::make_shared<StSink>();
+	spdlog::default_logger()->sinks().push_back(_sink);
+	spdlog::set_pattern("[%T]%^[%l]%$: %v");
 }
 
-Logger::~Logger()
-{}
+Logger::~Logger() {
+}
 
-const std::deque<std::string>& Logger::logs() const
-{
-    return static_cast<StSink*>(_sink.get())->logs;
+const std::deque<std::string>& Logger::logs() const {
+	return static_cast<StSink*>(_sink.get())->logs;
 }
 
 #endif

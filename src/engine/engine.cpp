@@ -80,8 +80,8 @@ void Engine::run(const char** argv, int argc) {
 
 		broker.send(EngineOnFramePreRender{});
 
-		imgui.render();
 		render.render();
+		imgui.render();
 
 		broker.send(EngineOnFramePostRender{});
 

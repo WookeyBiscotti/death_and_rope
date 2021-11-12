@@ -6,7 +6,7 @@
 #include <unordered_set>
 
 class Context;
-
+class Camera;
 class Render {
   public:
 	explicit Render(Context& context);
@@ -14,12 +14,17 @@ class Render {
 	void add(Drawable* drawable) { _drawables.insert(drawable); }
 	void remove(Drawable* drawable) { _drawables.erase(drawable); }
 
+	void camera(Camera* camera) { _camera = camera; }
+	Camera* camera() const { return _camera; }
+
 	void render();
 
 	RenderTarget& target() { return _target; };
 
   private:
 	Context& _context;
+
+	Camera* _camera{};
 
 	std::unordered_set<Drawable*> _drawables;
 
