@@ -9,9 +9,10 @@ class Context;
 
 class Render {
   public:
-	Render(Context& context);
+	explicit Render(Context& context);
 
-	void add(std::shared_ptr<Drawable> drawable) { _drawables.insert(std::move(drawable)); }
+	void add(Drawable* drawable) { _drawables.insert(drawable); }
+	void remove(Drawable* drawable) { _drawables.erase(drawable); }
 
 	void render();
 
@@ -20,7 +21,7 @@ class Render {
   private:
 	Context& _context;
 
-	std::unordered_set<std::shared_ptr<Drawable>> _drawables;
+	std::unordered_set<Drawable*> _drawables;
 
 	RenderTarget& _target;
 };

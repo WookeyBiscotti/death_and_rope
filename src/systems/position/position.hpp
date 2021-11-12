@@ -5,7 +5,7 @@
 
 class Position: public Component {
   public:
-	Position(Entity& entity): Component(entity){};
+	explicit Position(Entity& entity, const Vector2f& vec = {}): Component(entity), _position(vec){};
 
 	const Vector2f& operator()() const { return _position; }
 	const Vector2f& get() const { return _position; }

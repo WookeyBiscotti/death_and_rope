@@ -25,6 +25,7 @@ set(MAIN_SOURCES
     src/scenes/world_editor.cpp
     src/systems/render/render.cpp
     src/systems/render/sprite_component.cpp
+    src/systems/render/drawable.cpp
     src/systems/logging/logger.cpp
     src/systems/assets/asset_cache.cpp
     src/systems/assets/texture.cpp

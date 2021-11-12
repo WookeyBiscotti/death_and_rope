@@ -10,6 +10,8 @@ class Component {
 
 	Entity& entity() { return _entity; }
 
+	virtual void removeFromSystem() {}
+
   private:
 	Entity& _entity;
 };

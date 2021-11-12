@@ -1,5 +1,7 @@
 #pragma once
 
+#include "common/vector2.hpp"
+
 #include <components/player.hpp>
 #include <engine/context.hpp>
 #include <engine/entity.hpp>
@@ -15,20 +17,15 @@
 
 class TestScene: public Scene {
   public:
-	TestScene(Context& context): Scene(context){};
-
-	void onFrame() override {}
+	explicit TestScene(Context& context): Scene(context){};
 
 	void active(bool active) override {
 		_entity = std::make_unique<Entity>(context());
-		auto c = std::make_shared<SpriteComponent>(*_entity);
+		_entity->add<Position>(Vector2f{300, 300}).add<Player>();
+
+		auto c = std::make_unique<SpriteComponent>(*_entity);
 		c->setSprite(context().systemRef<AssetCache>().sprite("head"));
-		_entity->add(std::make_shared<Position>(*_entity));
-		_entity->get<Position>()->set({300, 300});
-		_entity->add(c);
-		context().systemRef<Render>().add(c);
-		auto p = std::make_shared<Player>(*_entity);
-		_entity->add(p);
+		_entity->add(std::move(c));
 	};
 
   private:

@@ -25,7 +25,7 @@ class Entity final {
 	Context& context() { return _context; }
 
 	template<class C>
-	auto& add(std::shared_ptr<C> component) {
+	auto& add(std::unique_ptr<C>&& component) {
 		_components.emplace(TypeId<C>(), std::move(component));
 
 		return *this;
@@ -33,7 +33,7 @@ class Entity final {
 
 	template<class C, class... Args>
 	auto& add(Args&&... args) {
-		auto c = std::make_shared<C>(*this, std::forward<Args>(args)...);
+		auto c = std::make_unique<C>(*this, std::forward<Args>(args)...);
 		_components.emplace(TypeId<C>(), std::move(c));
 
 		return *this;
@@ -66,17 +66,8 @@ class Entity final {
 		IF_PROD_BUILD(return *get<C>(););
 	}
 
-	template<class C>
-	std::shared_ptr<C> getShared() {
-		if (auto found = _components.find(TypeId<C>()); found != _components.end()) {
-			return std::static_pointer_cast<C>(found->second);
-		}
-
-		return nullptr;
-	}
-
   private:
 	Context& _context;
 
-	std::unordered_map<type_id_t, std::shared_ptr<Component>> _components;
+	std::unordered_map<type_id_t, std::unique_ptr<Component>> _components;
 };

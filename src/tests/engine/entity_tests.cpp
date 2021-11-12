@@ -19,16 +19,13 @@ TEST_CASE("General", "[Entity]") {
 	Context context;
 	Entity entity(context);
 
-	auto c2 = std::make_shared<ComponentNum<2>>(entity, 17);
+	auto c2 = std::make_unique<ComponentNum<2>>(entity, 17);
 
-	entity.add<ComponentNum<1>>(13).add(c2);
+	entity.add<ComponentNum<1>>(13).add(std::move(c2));
 
 	SECTION("Check component") {
 		REQUIRE(entity.get<ComponentNum<1>>());
 		REQUIRE(entity.get<ComponentNum<2>>());
-
-		REQUIRE(entity.getShared<ComponentNum<1>>());
-		REQUIRE(entity.getShared<ComponentNum<2>>());
 
 		REQUIRE(entity.get<ComponentNum<1>>()->val == 13);
 		REQUIRE(entity.get<ComponentNum<2>>()->val == 17);
@@ -37,9 +34,6 @@ TEST_CASE("General", "[Entity]") {
 	SECTION("Check component val") {
 		REQUIRE(entity.get<ComponentNum<1>>()->val == 13);
 		REQUIRE(entity.get<ComponentNum<2>>()->val == 17);
-
-		REQUIRE(entity.getShared<ComponentNum<1>>()->val == 13);
-		REQUIRE(entity.getShared<ComponentNum<2>>()->val == 17);
 
 		REQUIRE(entity.ref<ComponentNum<1>>().val == 13);
 		REQUIRE(entity.ref<ComponentNum<2>>().val == 17);
