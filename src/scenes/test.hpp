@@ -1,6 +1,5 @@
 #pragma once
 
-#include "SFML/Window/Keyboard.hpp"
 #include "common/vector2.hpp"
 #include "engine/events.hpp"
 
@@ -14,6 +13,7 @@
 #include <systems/render/render.hpp>
 #include <systems/render/sprite_component.hpp>
 #include <systems/scenes/scene.hpp>
+#include <systems/window/inputs.hpp>
 #include <systems/window/window.hpp>
 #include <world.hpp>
 //
@@ -37,23 +37,23 @@ class TestScene: public Scene {
 		_camera->add<Camera>().add<ReceiverComponent>().add<Position>();
 		_camera->ref<Camera>().size((Vector2f)context().systemRef<Window>().window().getSize());
 		_camera->ref<ReceiverComponent>().subscribe<EngineOnFrameStart>([this](const EngineOnFrameStart& event) {
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) {
+			if (Keyboard::isKeyPressed(Keyboard::Q)) {
 				_camera->ref<Camera>().zoom(1.1);
 			}
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::E)) {
+			if (Keyboard::isKeyPressed(Keyboard::E)) {
 				_camera->ref<Camera>().zoom(0.9);
 			}
 			auto& pos = _camera->ref<Position>();
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+			if (Keyboard::isKeyPressed(Keyboard::A)) {
 				pos.set({pos.get().x - 2, pos.get().y});
 			}
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+			if (Keyboard::isKeyPressed(Keyboard::D)) {
 				pos.set({pos.get().x + 2, pos.get().y});
 			}
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
+			if (Keyboard::isKeyPressed(Keyboard::W)) {
 				pos.set({pos.get().x, pos.get().y - 2});
 			}
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+			if (Keyboard::isKeyPressed(Keyboard::S)) {
 				pos.set({pos.get().x, pos.get().y + 2});
 			}
 		});

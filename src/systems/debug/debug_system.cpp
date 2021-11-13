@@ -1,12 +1,11 @@
-#include "SFML/Window/Event.hpp"
-#include "SFML/Window/Keyboard.hpp"
 #include "debug_system.hpp"
-#include "systems/window/events.hpp"
 
 #include <engine/context.hpp>
 #include <engine/events.hpp>
 #include <systems/assets/asset_cache.hpp>
 #include <systems/logging/logger.hpp>
+#include <systems/window/events.hpp>
+#include <systems/window/inputs.hpp>
 #include <systems/window/window.hpp>
 //
 #include <imgui.h>
@@ -19,7 +18,7 @@ DebugSystem::DebugSystem(Context& context): Receiver(context.systemRef<Broker>()
 	_text.setScale(0.5, 0.5);
 
 	subscribe<WindowEvent>([this](const WindowEvent& e) {
-		if (e.event.type == sf::Event::KeyPressed && e.event.key.code == sf::Keyboard::F12) {
+		if (e.event.type == sf::Event::KeyPressed && e.event.key.code == Keyboard::F12) {
 			_isLogShown = !_isLogShown;
 		}
 	});

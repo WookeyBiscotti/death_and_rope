@@ -6,6 +6,7 @@
 #include <systems/assets/asset_cache.hpp>
 #include <systems/render/render.hpp>
 #include <systems/scenes/scene_system.hpp>
+#include <systems/window/inputs.hpp>
 #include <tile_utils.hpp>
 //
 #include <SFML/Graphics.hpp>
@@ -109,19 +110,19 @@ void WorldEditor::onFrame() {
 		}
 	}
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+	if (Keyboard::isKeyPressed(Keyboard::A)) {
 		_view.move(-10, 0);
 	}
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+	if (Keyboard::isKeyPressed(Keyboard::D)) {
 		_view.move(10, 0);
 	}
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+	if (Keyboard::isKeyPressed(Keyboard::S)) {
 		_view.move(0, 10);
 	}
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
+	if (Keyboard::isKeyPressed(Keyboard::W)) {
 		_view.move(0, -10);
 	}
 

@@ -11,7 +11,7 @@ class Context;
 
 class DebugSystem: private Receiver {
   public:
-	DebugSystem(Context& context);
+	explicit DebugSystem(Context& context);
 
   private:
 	Context& _context;
