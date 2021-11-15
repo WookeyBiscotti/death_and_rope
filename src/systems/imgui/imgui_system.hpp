@@ -8,11 +8,14 @@ class Context;
 
 class ImGuiSystem: public Receiver {
   public:
-	ImGuiSystem(Context& context);
+	explicit ImGuiSystem(Context& context);
 
 	void update();
 
 	void render();
+
+	bool wantCaptureKeyboard() const;
+	bool wantCaptureMouse() const;
 
   private:
 	Context& _context;

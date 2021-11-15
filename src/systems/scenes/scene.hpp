@@ -1,16 +1,21 @@
 #pragma once
 
+#include "systems/broker/broker.hpp"
+
+#include <engine/context.hpp>
+#include <systems/broker/receiver.hpp>
+
 class Context;
 
 namespace sf {
 struct Event;
 }
 
-class Scene {
+class Scene: public Receiver {
   public:
 	virtual ~Scene() = default;
 
-	explicit Scene(Context& context): _context(context) {}
+	explicit Scene(Context& context): Receiver(context.systemRef<Broker>()), _context(context) {}
 
 	virtual void onFrame(){};
 	virtual void onEvent(const sf::Event& e){};

@@ -3,12 +3,13 @@
 #include "drawable.hpp"
 
 #include <common/vector2.hpp>
-#include <memory>
 #include <systems/assets/sprite.hpp>
+//
+#include <memory>
 
 class SpriteComponent: public Drawable {
   public:
-	SpriteComponent(Entity& entity): Drawable(entity) {}
+	explicit SpriteComponent(Entity& entity): Drawable(entity) {}
 
 	void setSprite(const std::shared_ptr<Sprite>& sprite);
 

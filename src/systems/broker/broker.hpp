@@ -49,6 +49,17 @@ class Broker {
 			}
 		});
 	}
+	void unsubscribe(Receiver* receiver, type_id_t typeId) {
+		ifExist(_eventsFn, typeId, [this, receiver](auto&& c) { //
+			c.erase(receiver);
+		});
+		ifExist(_receiversFns, receiver, [this, typeId, receiver](auto&& c) { //
+			c.erase(typeId);
+			if (c.empty()) {
+				_receiversFns.erase(receiver);
+			}
+		});
+	}
 
 	template<class Event>
 	void send(Sender* sender, const Event& event) {
@@ -67,19 +78,6 @@ class Broker {
 		ifExist(_eventsFn, typeId, [sender, data](auto&& c) { //
 			for (const auto& r : c) {
 				r.second.fn(sender, data);
-			}
-		});
-	}
-
-  private:
-	void unsubscribe(Receiver* receiver, type_id_t typeId) {
-		ifExist(_eventsFn, typeId, [this, receiver](auto&& c) { //
-			c.erase(receiver);
-		});
-		ifExist(_receiversFns, receiver, [this, typeId, receiver](auto&& c) { //
-			c.erase(typeId);
-			if (c.empty()) {
-				_receiversFns.erase(receiver);
 			}
 		});
 	}

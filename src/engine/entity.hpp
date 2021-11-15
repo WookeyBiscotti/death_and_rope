@@ -55,15 +55,15 @@ class Entity final {
 
 	template<class C>
 	C& ref() {
-		IF_NOT_PROD_BUILD(     //
-		    auto c = get<C>(); //
-		    if (!c) {
-			    LERR("No such component {}", typeid(C).name());
-			    assert(false);
-		    } //
+		IF_NOT_PROD_BUILD(                                      //
+		    auto c = get<C>();                                  //
+		    if (!c) {                                           //
+			    LERR("No such component {}", typeid(C).name()); //
+			    assert(false);                                  //
+		    }                                                   //
 		    return *c;);
 
-		IF_PROD_BUILD(return *get<C>(););
+		return *static_cast<C*>(_components.find(TypeId<C>())->second.get());
 	}
 
   private:

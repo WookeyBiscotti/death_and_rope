@@ -23,10 +23,15 @@ class Receiver {
 		subscribe(
 		    TypeId<Event>(), [fn = std::move(fn)](const void* data) { fn(*reinterpret_cast<const Event*>(data)); });
 	}
-
-  private:
 	void subscribe(type_id_t typeId, std::function<void(Sender* sender, const void* data)> fn);
 	void subscribe(type_id_t typeId, std::function<void(const void* data)> fn);
+
+	template<class Event>
+	void unsubscribe(Receiver* receiver) {
+		unsubscribe(this, TypeId<Event>());
+	}
+	void unsubscribeAll();
+	void unsubscribe(type_id_t typeId);
 
   private:
 	Broker& _broker;

@@ -24,15 +24,21 @@ class Context {
 	template<class S>
 	S* system() {
 		if (const auto found = _systems.find(TypeId<S>()); found != _systems.end()) {
-			return static_cast<S*>(found.second);
+			return static_cast<S*>(found->second);
 		}
 		return nullptr;
 	}
 
 	template<class S>
 	S& systemRef() {
-		NONPROD_ASSERT(_systems.contains(TypeId<S>()));
-		return *static_cast<S*>(_systems[TypeId<S>()]);
+		IF_NOT_PROD_BUILD(                              //
+		    auto s = system<S>();                       //
+		    if (!s) {                                   //
+			    LERR("No such system {}", TypeId<S>()); //
+			    assert(false);                          //
+		    }                                           //
+		    return *s;);
+		return *static_cast<S*>(_systems.find(TypeId<S>())->second);
 	}
 
   private:

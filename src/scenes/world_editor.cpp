@@ -1,9 +1,12 @@
+#include "systems/imgui/imgui_system.hpp"
+#include "systems/window/events.hpp"
 #include "world_editor.hpp"
 
 #include <common/imgui_utils.hpp>
 #include <config.hpp>
 #include <engine/context.hpp>
 #include <systems/assets/asset_cache.hpp>
+#include <systems/imgui/imgui_system.hpp>
 #include <systems/render/render.hpp>
 #include <systems/scenes/scene_system.hpp>
 #include <systems/window/inputs.hpp>
@@ -18,10 +21,18 @@ WorldEditor::WorldEditor(Context& context): Scene(context) {
 	_view = context.systemRef<Render>().target().getView();
 }
 
-void WorldEditor::onEvent(const sf::Event& e) {
-	if (e.type == sf::Event::MouseButtonPressed) {
-		const auto p = context().systemRef<Render>().target().mapPixelToCoords({e.mouseButton.x, e.mouseButton.y});
-		paintPoint(p);
+void WorldEditor::active(bool active) {
+	if (active) {
+		subscribe<WindowEvent>([this](const WindowEvent& e) {
+			if (e.event.type == sf::Event::MouseButtonPressed &&
+			    !context().systemRef<ImGuiSystem>().wantCaptureMouse()) {
+				const auto p = context().systemRef<Render>().target().mapPixelToCoords(
+				    {e.event.mouseButton.x, e.event.mouseButton.y});
+				paintPoint(p);
+			}
+		});
+	} else {
+		unsubscribeAll();
 	}
 }
 

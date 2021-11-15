@@ -6,7 +6,7 @@
 
 class Texture: public Asset {
   public:
-	Texture(std::string name): Asset(std::move(name)){};
+	explicit Texture(std::string name): Asset(std::move(name)){};
 
 	bool loadFromFile(const std::string& path);
 

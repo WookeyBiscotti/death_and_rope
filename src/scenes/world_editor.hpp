@@ -6,13 +6,11 @@
 
 class WorldEditor: public Scene {
   public:
-	WorldEditor(Context& context);
+	explicit WorldEditor(Context& context);
 
 	void onFrame() override;
-	void onEvent(const sf::Event& e) override;
 
-	bool active() const override { return true; }
-	void active(bool active) override {}
+	void active(bool active) override;
 
   private:
 	void paintPoint(const Vector2f& p);

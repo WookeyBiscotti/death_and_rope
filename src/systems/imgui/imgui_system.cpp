@@ -21,3 +21,11 @@ void ImGuiSystem::update() {
 void ImGuiSystem::render() {
 	ImGui::SFML::Render(_context.systemRef<Window>().window());
 }
+
+bool ImGuiSystem::wantCaptureKeyboard() const {
+	return ImGui::GetIO().WantCaptureKeyboard;
+}
+
+bool ImGuiSystem::wantCaptureMouse() const {
+	return ImGui::GetIO().WantCaptureMouse;
+}
