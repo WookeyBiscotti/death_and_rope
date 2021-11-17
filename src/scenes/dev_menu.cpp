@@ -21,6 +21,9 @@ void DevMenu::onFrame() {
 	if (ImGui::Button("Test scene")) {
 		context().systemRef<SceneSystem>().next(context().systemRef<AssetCache>().scene("test_scene"));
 	}
+	if (ImGui::Button("Test physics scene")) {
+		context().systemRef<SceneSystem>().next(context().systemRef<AssetCache>().scene("test_physics_scene"));
+	}
 	if (ImGui::Button("Back")) {
 		context().systemRef<SceneSystem>().next(context().systemRef<AssetCache>().scene("main_menu"));
 	}

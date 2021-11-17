@@ -2,11 +2,11 @@
 
 #include "component.hpp"
 
-#include <cassert>
 #include <common/prod_build_utils.hpp>
 #include <common/type_id.hpp>
 #include <systems/logging/logger.hpp>
 //
+#include <cassert>
 #include <memory>
 #include <unordered_map>
 #include <utility>

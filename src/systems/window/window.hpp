@@ -12,9 +12,9 @@ class RenderWindow;
 
 using RenderWindow = sf::RenderWindow;
 
-class Window: public Sender {
+class Window: private Sender {
   public:
-	Window(Context& context);
+	explicit Window(Context& context);
 	~Window();
 
 	RenderWindow& window();

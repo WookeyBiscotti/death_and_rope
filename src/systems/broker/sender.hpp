@@ -6,8 +6,8 @@ class Broker;
 
 class Sender {
   public:
-	Sender(Broker& broker): _broker(broker) {}
-	virtual ~Sender() = default;
+	explicit Sender(Broker& broker): _broker(broker) {}
+	virtual ~Sender();
 
 	template<class Event>
 	void send(const Event& event) {

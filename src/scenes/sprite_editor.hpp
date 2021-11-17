@@ -9,7 +9,7 @@
 
 class SpriteEditor: public Scene {
   public:
-	SpriteEditor(Context& context): Scene(context) {
+	explicit SpriteEditor(Context& context): Scene(context) {
 		_fileDialog.SetTitle("Select texture");
 		_fileDialog.SetTypeFilters({".png"});
 	}

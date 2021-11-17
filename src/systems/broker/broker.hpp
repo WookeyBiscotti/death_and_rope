@@ -48,6 +48,12 @@ class Broker {
 				unsubscribe(receiver, *c.begin());
 			}
 		});
+
+		ifExist(_personalReceiversFns, receiver, [this, receiver](auto&& c) { //
+			while (!c.empty()) {
+				unsubscribe(receiver, c.begin()->first);
+			}
+		});
 	}
 	void unsubscribe(Receiver* receiver, type_id_t typeId) {
 		ifExist(_eventsFn, typeId, [this, receiver](auto&& c) { //
@@ -63,11 +69,7 @@ class Broker {
 
 	template<class Event>
 	void send(Sender* sender, const Event& event) {
-		ifExist(_eventsFn, TypeId<Event>(), [sender, &event](auto&& c) { //
-			for (const auto& r : c) {
-				r.second.fn(sender, &event);
-			}
-		});
+		send(sender, TypeId<Event>(), &event);
 	}
 	template<class Event>
 	void send(const Event& event) {
@@ -80,6 +82,51 @@ class Broker {
 				r.second.fn(sender, data);
 			}
 		});
+
+		if (sender) {
+			ifExist(_personalEventsFn, sender, [sender, data, typeId](auto&& c) { //
+				ifExist(c, typeId, [sender, data](auto&& c) {                     //
+					for (const auto& r : c) {
+						r.second.fn(sender, data);
+					}
+				});
+			});
+		}
+	}
+
+	void subscribe(Receiver* receiver, Sender* sender, type_id_t typeId,
+	    std::function<void(Sender* sender, const void* event)> fn) {
+		_personalEventsFn[sender][typeId].emplace(receiver, EventFromAllListner{typeId, std::move(fn)});
+		_personalReceiversFns[receiver][sender].insert(typeId);
+	}
+
+	void subscribe(Receiver* receiver, Sender* sender, type_id_t typeId, std::function<void(const void* event)> fn) {
+		_personalEventsFn[sender][typeId].emplace(
+		    receiver, EventFromAllListner{typeId, [fn = std::move(fn)](Sender*, const void* data) { fn(data); }});
+		_personalReceiversFns[receiver][sender].insert(typeId);
+	}
+
+	void unsubscribe(Receiver* receiver, Sender* sender, type_id_t typeId) {
+		_personalEventsFn[sender][typeId].erase(receiver);
+		_personalReceiversFns[receiver][sender].erase(typeId);
+	}
+	void unsubscribe(Receiver* receiver, Sender* sender) {
+		_personalEventsFn[sender].erase(receiver);
+		if (auto found = _personalReceiversFns.find(receiver); found != _personalReceiversFns.end()) {
+			found->second.erase(sender);
+		}
+	}
+
+	void unsubscribeAll(Sender* sender) {
+		ifExist(_personalEventsFn, sender, [this, sender](auto&& c) { //
+			while (!c.empty()) {
+				while (!c.begin()->second.empty()) {
+					unsubscribe(c.begin()->second.begin()->first, sender);
+				}
+				c.erase(c.begin());
+			}
+		});
+		_personalEventsFn.erase(sender);
 	}
 
   private:
@@ -88,13 +135,10 @@ class Broker {
 		std::function<void(Sender* sender, const void* data)> fn;
 	};
 
-	// struct EventListner {
-	// 	Receiver* receiver;
-	// 	Sender* sender;
-	// 	type_id_t typeId;
-	// 	std::function<void(Sender* sender, void* data)> fn;
-	// };
-
 	std::unordered_map<type_id_t, std::unordered_map<Receiver*, EventFromAllListner>> _eventsFn;
 	std::unordered_map<Receiver*, std::unordered_set<type_id_t>> _receiversFns;
+
+	std::unordered_map<Sender*, std::unordered_map<type_id_t, std::unordered_map<Receiver*, EventFromAllListner>>>
+	    _personalEventsFn;
+	std::unordered_map<Receiver*, std::unordered_map<Sender*, std::unordered_set<type_id_t>>> _personalReceiversFns;
 };

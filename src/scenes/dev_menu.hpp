@@ -3,7 +3,7 @@
 
 class DevMenu: public Scene {
   public:
-	DevMenu(Context& context): Scene(context) {}
+	explicit DevMenu(Context& context): Scene(context) {}
 
 	void onFrame() override;
 

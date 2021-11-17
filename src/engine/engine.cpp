@@ -8,6 +8,7 @@
 #include <systems/debug/debug_system.hpp>
 #include <systems/imgui/imgui_system.hpp>
 #include <systems/logging/logger.hpp>
+#include <systems/physics/physics.hpp>
 #include <systems/render/render.hpp>
 #include <systems/scenes/scene_system.hpp>
 #include <systems/window/window.hpp>
@@ -34,8 +35,8 @@ void Engine::run(const char** argv, int argc) {
 	Window window(context);
 	context.addSystem(&window);
 
-	ImGuiSystem imgui(context);
-	context.addSystem(&imgui);
+	IF_NOT_PROD_BUILD(ImGuiSystem imgui(context));
+	IF_NOT_PROD_BUILD(context.addSystem(&imgui));
 
 	Render render(context);
 	context.addSystem(&render);
@@ -46,8 +47,11 @@ void Engine::run(const char** argv, int argc) {
 	SceneSystem scenes;
 	context.addSystem(&scenes);
 
-	DebugSystem debug(context);
-	context.addSystem(&debug);
+	Physics physics(context);
+	context.addSystem(&physics);
+
+	IF_NOT_PROD_BUILD(DebugSystem debug(context));
+	IF_NOT_PROD_BUILD(context.addSystem(&debug));
 
 	auto currentScene = cache.scene("main_menu");
 	scenes.next(std::move(currentScene));
@@ -56,36 +60,20 @@ void Engine::run(const char** argv, int argc) {
 	float lastFps = 60;
 	while (scenes.current()) {
 		const auto t1 = std::chrono::steady_clock::now();
+		window.pullEvents();
 
 		broker.send(EngineOnFrameStart{.lastFps = lastFps});
-
-		window.pullEvents();
-		imgui.update();
-
-		// 	if (event.type == sf::Event::Closed) {
-		// 		context.isRuning = false;
-		// 	}
-		// 	if (event.type == sf::Event::KeyPressed) {
-		// 		// LINFO("Key pressed: {}", event.key.code);
-		// 	}
-
-		// 	if (currentScene && !ImGui::GetIO().WantCaptureMouse && !ImGui::GetIO().WantCaptureKeyboard) {
-		// 		currentScene->onEvent(event);
-		// 	}
-		// }
-
-		window.window().clear();
 
 		scenes.current()->onFrame();
 
 		broker.send(EngineOnFramePreRender{});
 
 		render.render();
-		imgui.render();
 
 		broker.send(EngineOnFramePostRender{});
 
 		window.window().display();
+		window.window().clear();
 
 		if (scenes.next()) {
 			scenes.applyNext();

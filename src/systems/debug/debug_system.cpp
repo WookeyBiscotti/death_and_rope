@@ -1,5 +1,7 @@
 #include "debug_system.hpp"
 
+#if !defined(PROD_BUILD)
+
 #include <engine/context.hpp>
 #include <engine/events.hpp>
 #include <systems/assets/asset_cache.hpp>
@@ -55,3 +57,5 @@ DebugSystem::DebugSystem(Context& context): Receiver(context.systemRef<Broker>()
 		window.setView(save);
 	});
 }
+
+#endif

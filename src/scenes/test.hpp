@@ -1,8 +1,5 @@
 #pragma once
 
-#include "common/vector2.hpp"
-#include "engine/events.hpp"
-
 #include <engine/context.hpp>
 #include <engine/entity.hpp>
 #include <engine/events.hpp>

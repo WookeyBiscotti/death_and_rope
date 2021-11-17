@@ -3,6 +3,7 @@
 #include <scenes/sprite_editor.hpp>
 #include <scenes/sprites_view.hpp>
 #include <scenes/test.hpp>
+#include <scenes/test_physics.hpp>
 #include <scenes/world_editor.hpp>
 #include <systems/assets/asset_cache.hpp>
 #include <systems/config/config.hpp>
@@ -133,6 +134,7 @@ std::shared_ptr<Scene> AssetCache::scene(const std::string& name) {
 	CHECK(WorldEditor, "world_editor");
 	CHECK(DevMenu, "dev_menu");
 	CHECK(TestScene, "test_scene");
+	CHECK(TestPhysicsScene, "test_physics_scene");
 #undef CHECK
 
 	LERR("Scene not found: {}", name);

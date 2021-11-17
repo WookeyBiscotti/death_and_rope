@@ -18,7 +18,7 @@ class Context;
 
 class AssetCache {
   public:
-	AssetCache(Context& context);
+	explicit AssetCache(Context& context);
 
 	Path spritesPath() const;
 	Path texturesPath() const;

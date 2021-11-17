@@ -2,18 +2,16 @@
 #include "sprite.hpp"
 
 #include <common/archive.hpp>
-#include <common/types.hpp>
-//
 #include <common/rect.hpp>
-#include <exception>
+#include <common/types.hpp>
 #include <systems/assets/asset_cache.hpp>
 #include <systems/logging/logger.hpp>
 //
+#include <exception>
 #include <fstream>
 
 bool Sprite::loadFromFile(const std::string& path, AssetCache& cache) {
 	try {
-
 		std::ifstream stream(path, std::ios::binary);
 		IArchive archive(stream);
 

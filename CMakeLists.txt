@@ -11,6 +11,7 @@ add_subdirectory(3rdparty/json)
 add_subdirectory(3rdparty/cereal)
 add_subdirectory(3rdparty/spdlog)
 add_subdirectory(3rdparty/Catch2)
+add_subdirectory(3rdparty/AABBTree)
 
 target_link_libraries(death_and_rope_exp PUBLIC sfml-graphics sfml-audio)
 
@@ -36,7 +37,12 @@ set(MAIN_SOURCES
     src/systems/broker/receiver.cpp
     src/systems/broker/sender.cpp
     src/systems/debug/debug_system.cpp
-    src/systems/config/config.cpp)
+    src/systems/config/config.cpp
+    src/systems/position/position.cpp
+    src/systems/group/group.cpp
+    src/systems/physics/physics.cpp
+    src/systems/physics/body.cpp
+    src/systems/physics/collider.cpp)
 
 set(TESTS_SOURCES src/tests/engine/entity_tests.cpp)
 
@@ -55,7 +61,8 @@ set(DEPS_LIBS
     sfml-audio
     nlohmann_json
     cereal::cereal
-    spdlog::spdlog)
+    spdlog::spdlog
+    aabb_tree)
 
 add_executable(death_and_rope_exe src/main.cpp ${MAIN_SOURCES} ${DEPS_SOURCES})
 target_include_directories(death_and_rope_exe PUBLIC ${INCLUDES_DEPS_DIRS})
@@ -69,7 +76,7 @@ target_link_libraries(death_and_rope_tests PUBLIC Catch2::Catch2WithMain
 
 set(PROD_BUILD
     OFF
-    CACHE BOOL "make prod build withput loging for perfotmance")
+    CACHE BOOL "make prod build without logging/debug/imgui for performance")
 
 if(${PROD_BUILD})
   target_compile_definitions(death_and_rope_exe PUBLIC PROD_BUILD)

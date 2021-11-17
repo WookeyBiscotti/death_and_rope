@@ -8,9 +8,6 @@
 #include <memory>
 #include <unordered_map>
 
-class Scene;
-class Render;
-class AssetCache;
 namespace sf {
 class RenderTarget;
 }

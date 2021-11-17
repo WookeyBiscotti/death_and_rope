@@ -10,10 +10,6 @@ class ImGuiSystem: public Receiver {
   public:
 	explicit ImGuiSystem(Context& context);
 
-	void update();
-
-	void render();
-
 	bool wantCaptureKeyboard() const;
 	bool wantCaptureMouse() const;
 

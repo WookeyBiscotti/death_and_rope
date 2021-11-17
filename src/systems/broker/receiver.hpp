@@ -14,15 +14,28 @@ class Receiver {
 
 	template<class Event>
 	void subscribe(std::function<void(Sender* sender, const Event& event)> fn) {
-		subscribe(typeId<Event>(), [fn = std::move(fn)](Sender* sender, const void* data) {
+		subscribe(TypeId<Event>(), [fn = std::move(fn)](Sender* sender, const void* data) {
 			fn(sender, *reinterpret_cast<const Event*>(data));
 		});
+	}
+	template<class Event>
+	void subscribe(Sender* sender, std::function<void(Sender* sender, const Event& event)> fn) {
+		subscribe(sender, TypeId<Event>(), [fn = std::move(fn)](Sender* sender, const void* data) {
+			fn(sender, *reinterpret_cast<const Event*>(data));
+		});
+	}
+	template<class Event>
+	void subscribe(Sender* sender, std::function<void(const Event& event)> fn) {
+		subscribe(sender, TypeId<Event>(),
+		    [fn = std::move(fn)](Sender*, const void* data) { fn(*reinterpret_cast<const Event*>(data)); });
 	}
 	template<class Event>
 	void subscribe(std::function<void(const Event& event)> fn) {
 		subscribe(
 		    TypeId<Event>(), [fn = std::move(fn)](const void* data) { fn(*reinterpret_cast<const Event*>(data)); });
 	}
+	void subscribe(Sender* sender, type_id_t typeId, std::function<void(Sender* sender, const void* data)> fn);
+	void subscribe(Sender* sender, type_id_t typeId, std::function<void(const void* data)> fn);
 	void subscribe(type_id_t typeId, std::function<void(Sender* sender, const void* data)> fn);
 	void subscribe(type_id_t typeId, std::function<void(const void* data)> fn);
 
