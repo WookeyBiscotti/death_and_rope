@@ -61,6 +61,9 @@ std::string StaticConfig::toString() const {
 	JSON_WRITE(js, window.borderless);
 	JSON_WRITE(js, window.size.x);
 	JSON_WRITE(js, window.size.y);
+	JSON_WRITE(js, window.verticalSync);
+	JSON_WRITE(js, window.position.x);
+	JSON_WRITE(js, window.position.y);
 
 	return js.dump(1);
 }
@@ -73,11 +76,16 @@ bool StaticConfig::fromString(const std::string& str) {
 		return {};
 	}();
 
-	return JSON_READ(js, root) &&              //
-	       JSON_READ(js, window.fullscreen) && //
-	       JSON_READ(js, window.borderless) && //
-	       JSON_READ(js, window.size.x) &&     //
-	       JSON_READ(js, window.size.y);
+	bool ok = JSON_READ(js, root);
+	ok = JSON_READ(js, window.fullscreen) && ok;
+	ok = JSON_READ(js, window.borderless) && ok;
+	ok = JSON_READ(js, window.size.x) && ok;
+	ok = JSON_READ(js, window.size.y) && ok;
+	ok = JSON_READ(js, window.verticalSync) && ok;
+	ok = JSON_READ(js, window.position.x) && ok;
+	ok = JSON_READ(js, window.position.y) && ok;
+
+	return ok;
 }
 
 Config::Config(Context& context, const char** argv, int argc): Sender(context.systemRef<Broker>()) {
@@ -131,7 +139,7 @@ void Config::asyncSave() {
 		if (!writeToFile(staticConfig.toString(), _configPath)) {
 			LERR("Cant save config: {}", _configPath.string());
 		} else {
-			LERR("Save config: {}", _configPath.string());
+			LINFO("Save config: {}", _configPath.string());
 		}
 	}));
 }

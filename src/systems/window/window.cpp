@@ -20,8 +20,8 @@ Window::Window(Context& context): Sender(context.systemRef<Broker>()), _context(
 	}
 	_window = std::make_shared<RenderWindow>(
 	    sf::VideoMode(config.window.size.x, config.window.size.y), "Death and rope", flags);
-	_window->setVerticalSyncEnabled(true);
-	_window->setPosition({});
+	_window->setVerticalSyncEnabled(config.window.verticalSync);
+	_window->setPosition(Vector2i{config.window.position});
 }
 
 Window::~Window(){};

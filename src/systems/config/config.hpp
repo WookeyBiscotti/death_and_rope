@@ -14,9 +14,10 @@ struct StaticConfig {
 
 	struct Window {
 		Vector2u size{800, 600};
+		Vector2u position{0, 0};
 		bool fullscreen{};
 		bool borderless{};
-
+		bool verticalSync{};
 		bool operator==(const Window& other) const = default;
 	} window;
 
