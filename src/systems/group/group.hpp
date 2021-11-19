@@ -8,7 +8,11 @@
 
 class Group: public Component {
   public:
-	explicit Group(Entity& entity, bool moveChilds = false);
+	struct SyncMove {};
+	inline static const SyncMove SYNC_MOVE;
+
+	explicit Group(Entity& entity): Component(entity) {}
+	Group(Entity& entity, SyncMove);
 
 	Entity& create() {
 		auto e = std::make_unique<Entity>(entity().context());

@@ -4,7 +4,6 @@
 #include <engine/entity.hpp>
 #include <engine/events.hpp>
 #include <systems/assets/asset_cache.hpp>
-#include <systems/broker/receiver_component.hpp>
 #include <systems/position/position.hpp>
 #include <systems/render/camera.hpp>
 #include <systems/render/render.hpp>
@@ -31,9 +30,9 @@ class TestScene: public Scene {
 		_head->add(std::move(c));
 
 		_camera = std::make_unique<Entity>(context());
-		_camera->add<Camera>().add<ReceiverComponent>().add<Position>();
+		_camera->add<Camera>().add<Position>();
 		_camera->ref<Camera>().size((Vector2f)context().systemRef<Window>().window().getSize());
-		_camera->ref<ReceiverComponent>().subscribe<EngineOnFrameStart>([this](const EngineOnFrameStart& event) {
+		_camera->subscribe<EngineOnFrameStart>([this](const EngineOnFrameStart& event) {
 			if (Keyboard::isKeyPressed(Keyboard::Q)) {
 				_camera->ref<Camera>().zoom(1.1);
 			}

@@ -1,9 +1,12 @@
 #pragma once
 
 #include "component.hpp"
+#include "context.hpp"
 
 #include <common/prod_build_utils.hpp>
 #include <common/type_id.hpp>
+#include <systems/broker/receiver.hpp>
+#include <systems/broker/sender.hpp>
 #include <systems/logging/logger.hpp>
 //
 #include <cassert>
@@ -13,9 +16,10 @@
 
 class Context;
 
-class Entity final {
+class Entity final: public Sender, public Receiver {
   public:
-	explicit Entity(Context& context): _context(context) {}
+	explicit Entity(Context& context):
+	    Sender(context.systemRef<Broker>()), Receiver(context.systemRef<Broker>()), _context(context) {}
 
 	Entity(Entity&&) = delete;
 	Entity(const Entity&) = delete;

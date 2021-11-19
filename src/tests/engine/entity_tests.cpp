@@ -1,8 +1,9 @@
-#include "engine/component.hpp"
 
 #include <catch2/catch_test_macros.hpp>
+#include <engine/component.hpp>
 #include <engine/context.hpp>
 #include <engine/entity.hpp>
+//
 #include <memory>
 
 template<size_t N>

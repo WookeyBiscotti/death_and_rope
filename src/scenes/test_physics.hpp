@@ -4,8 +4,6 @@
 #include <engine/entity.hpp>
 #include <engine/events.hpp>
 #include <systems/assets/asset_cache.hpp>
-#include <systems/broker/receiver_component.hpp>
-#include <systems/broker/sender_component.hpp>
 #include <systems/group/group.hpp>
 #include <systems/physics/body.hpp>
 #include <systems/physics/collider.hpp>
@@ -25,7 +23,7 @@ class TestPhysicsScene: public Scene {
   public:
 	explicit TestPhysicsScene(Context& context): Scene(context) {
 		_root = std::make_unique<Entity>(context);
-		_root->add<ReceiverComponent>().add<SenderComponent>().add<Group>(true).add<Position>();
+		_root->add<Group>(Group::SYNC_MOVE).add<Position>();
 	};
 
 	void active(bool active) override {
@@ -37,71 +35,34 @@ class TestPhysicsScene: public Scene {
 			head.add<Position>(Vector2f(rand() % 500, rand() % 500))
 			    .add(std::move(c))
 			    .add<Collider>(Vector2f(30, 30))
-			    .add<Body>()
-			    .add<ReceiverComponent>()
-			    .add<SenderComponent>();
-
+			    .add<Body>();
 			head.ref<Body>().velocity(Vector2f((100 - rand() % 200) / 100.f, (100 - rand() % 200) / 100.f));
 		}
-		{
-			_root->ref<Group>()
-			    .create()
-			    .add<Position>(0, 0)
-			    .add<Collider>(Vector2f(10, 500))
-			    .add<Body>(Body::STATIC)
-			    .add<ReceiverComponent>()
-			    .add<SenderComponent>();
-		}
-		{
-			_root->ref<Group>()
-			    .create()
-			    .add<Position>(0, 0)
-			    .add<Collider>(Vector2f(500, 10))
-			    .add<Body>(Body::STATIC)
-			    .add<ReceiverComponent>()
-			    .add<SenderComponent>();
-		}
-		{
-			_root->ref<Group>()
-			    .create()
-			    .add<Position>(500, 0)
-			    .add<Collider>(Vector2f(10, 500))
-			    .add<Body>(Body::STATIC)
-			    .add<ReceiverComponent>()
-			    .add<SenderComponent>();
-		}
-		{
-			_root->ref<Group>()
-			    .create()
-			    .add<Position>(0, 500)
-			    .add<Collider>(Vector2f(500, 10))
-			    .add<Body>(Body::STATIC)
-			    .add<ReceiverComponent>()
-			    .add<SenderComponent>();
-		}
+		_root->ref<Group>().create().add<Position>(0, 0).add<Collider>(Vector2f(10, 500)).add<Body>(Body::STATIC);
+		_root->ref<Group>().create().add<Position>(0, 0).add<Collider>(Vector2f(500, 10)).add<Body>(Body::STATIC);
+		_root->ref<Group>().create().add<Position>(500, 0).add<Collider>(Vector2f(10, 500)).add<Body>(Body::STATIC);
+		_root->ref<Group>().create().add<Position>(0, 500).add<Collider>(Vector2f(500, 10)).add<Body>(Body::STATIC);
 
-		{
-			_root->ref<ReceiverComponent>().subscribe<EngineOnFrameStart>([this](const EngineOnFrameStart& event) {
-				auto& pos = _root->ref<Position>();
-				if (Keyboard::isKeyPressed(Keyboard::Left)) {
-					pos.set({pos.get().x - 2, pos.get().y});
-				}
-				if (Keyboard::isKeyPressed(Keyboard::Right)) {
-					pos.set({pos.get().x + 2, pos.get().y});
-				}
-				if (Keyboard::isKeyPressed(Keyboard::Up)) {
-					pos.set({pos.get().x, pos.get().y - 2});
-				}
-				if (Keyboard::isKeyPressed(Keyboard::Down)) {
-					pos.set({pos.get().x, pos.get().y + 2});
-				}
-			});
-		}
+		_root->subscribe<EngineOnFrameStart>([this](const EngineOnFrameStart& event) {
+			auto& pos = _root->ref<Position>();
+			if (Keyboard::isKeyPressed(Keyboard::Left)) {
+				pos.set({pos.get().x - 2, pos.get().y});
+			}
+			if (Keyboard::isKeyPressed(Keyboard::Right)) {
+				pos.set({pos.get().x + 2, pos.get().y});
+			}
+			if (Keyboard::isKeyPressed(Keyboard::Up)) {
+				pos.set({pos.get().x, pos.get().y - 2});
+			}
+			if (Keyboard::isKeyPressed(Keyboard::Down)) {
+				pos.set({pos.get().x, pos.get().y + 2});
+			}
+		});
 
 		_camera = std::make_unique<Entity>(context());
-		_camera->add<Camera>().add<ReceiverComponent>().add<Position>();
+		_camera->add<Camera>().add<Position>();
 		_camera->ref<Camera>().size((Vector2f)context().systemRef<Window>().window().getSize());
-		_camera->ref<ReceiverComponent>().subscribe<EngineOnFrameStart>([this](const EngineOnFrameStart& event) {
+		_camera->subscribe<EngineOnFrameStart>([this](const EngineOnFrameStart& event) {
 			if (Keyboard::isKeyPressed(Keyboard::Q)) {
 				_camera->ref<Camera>().zoom(1.1);
 			}
