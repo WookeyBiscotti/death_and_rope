@@ -36,7 +36,7 @@ class TestPhysicsScene: public Scene {
 			    .add(std::move(c))
 			    .add<Collider>(Vector2f(30, 30))
 			    .add<Body>();
-			head.ref<Body>().velocity(Vector2f((100 - rand() % 200) / 100.f, (100 - rand() % 200) / 100.f));
+			head.ref<Body>().velocity(10.0f * Vector2f((100 - rand() % 200) / 100.f, (100 - rand() % 200) / 100.f));
 		}
 		_root->ref<Group>().create().add<Position>(0, 0).add<Collider>(Vector2f(10, 500)).add<Body>(Body::STATIC);
 		_root->ref<Group>().create().add<Position>(0, 0).add<Collider>(Vector2f(500, 10)).add<Body>(Body::STATIC);

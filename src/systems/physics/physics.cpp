@@ -6,6 +6,7 @@
 #include <engine/entity.hpp>
 #include <engine/events.hpp>
 #include <systems/broker/broker.hpp>
+#include <systems/position/events.hpp>
 #include <systems/position/position.hpp>
 
 Physics::Physics(Context& context): Receiver(context.systemRef<Broker>()), _contex(context) {
@@ -30,6 +31,15 @@ void Physics::remove(Collider* collider) {
 void Physics::add(Body* body) {
 	if (body->type() == Body::STATIC) {
 		_static.insert(body);
+		body->entity().subscribe<PositionUpdate>(&body->entity(), [this, body](const PositionUpdate& p) {
+			auto collider = body->entity().get<Collider>();
+			if (!collider) {
+				return;
+			}
+			const auto& lower = p.neW + collider->origin();
+			const auto& upper = lower + collider->size();
+			_colliders.update(collider->_colliderIdx, AABBTree::AABB_t({lower.x, lower.y}, {upper.x, upper.y}));
+		});
 	} else {
 		_dynamic.insert(body);
 	}
@@ -37,6 +47,7 @@ void Physics::add(Body* body) {
 
 void Physics::remove(Body* body) {
 	if (body->type() == Body::STATIC) {
+		body->entity().unsubscribe<PositionUpdate>(&body->entity());
 		_static.erase(body);
 	} else {
 		_dynamic.erase(body);

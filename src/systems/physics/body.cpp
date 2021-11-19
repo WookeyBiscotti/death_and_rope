@@ -17,7 +17,5 @@ void Body::type(Type type) {
 		entity().context().systemRef<Physics>().remove(this);
 		_type = type;
 		entity().context().systemRef<Physics>().add(this);
-	} else {
-		_type = type;
 	}
 }

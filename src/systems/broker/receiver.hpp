@@ -40,11 +40,16 @@ class Receiver {
 	void subscribe(type_id_t typeId, std::function<void(const void* data)> fn);
 
 	template<class Event>
-	void unsubscribe(Receiver* receiver) {
-		unsubscribe(this, TypeId<Event>());
+	void unsubscribe() {
+		unsubscribe(TypeId<Event>());
+	}
+	template<class Event>
+	void unsubscribe(Sender* sender) {
+		unsubscribe(sender, TypeId<Event>());
 	}
 	void unsubscribeAll();
 	void unsubscribe(type_id_t typeId);
+	void unsubscribe(Sender* sender, type_id_t typeId);
 
   private:
 	Broker& _broker;

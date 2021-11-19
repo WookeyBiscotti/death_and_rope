@@ -25,6 +25,10 @@ void Receiver::unsubscribe(type_id_t typeId) {
 	_broker.unsubscribe(this, typeId);
 }
 
+void Receiver::unsubscribe(Sender* sender, type_id_t typeId) {
+	_broker.unsubscribe(this, sender, typeId);
+}
+
 void Receiver::unsubscribeAll() {
 	_broker.unsubscribeAll(this);
 }
