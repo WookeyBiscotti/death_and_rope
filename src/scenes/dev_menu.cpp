@@ -10,22 +10,22 @@ void DevMenu::onFrame() {
 	ImGui::Begin("Dev menu", nullptr, MENU_FLAGS);
 	ImGui::Text("Dev menu");
 	if (ImGui::Button("Sprite editor")) {
-		context().systemRef<SceneSystem>().next(context().systemRef<AssetCache>().scene("sprite_editor"));
+		context().systemRef<SceneSystem>().findNext("sprite_editor");
 	}
 	if (ImGui::Button("Sprite view")) {
-		context().systemRef<SceneSystem>().next(context().systemRef<AssetCache>().scene("sprites_view"));
+		context().systemRef<SceneSystem>().findNext("sprites_view");
 	}
 	if (ImGui::Button("World editor")) {
-		context().systemRef<SceneSystem>().next(context().systemRef<AssetCache>().scene("world_editor"));
+		context().systemRef<SceneSystem>().findNext("world_editor");
 	}
 	if (ImGui::Button("Test scene")) {
-		context().systemRef<SceneSystem>().next(context().systemRef<AssetCache>().scene("test_scene"));
+		context().systemRef<SceneSystem>().findNext("test_scene");
 	}
 	if (ImGui::Button("Test physics scene")) {
-		context().systemRef<SceneSystem>().next(context().systemRef<AssetCache>().scene("test_physics_scene"));
+		context().systemRef<SceneSystem>().findNext("test_physics_scene");
 	}
 	if (ImGui::Button("Back")) {
-		context().systemRef<SceneSystem>().next(context().systemRef<AssetCache>().scene("main_menu"));
+		context().systemRef<SceneSystem>().findNext("main_menu");
 	}
 	ImGui::End();
 }

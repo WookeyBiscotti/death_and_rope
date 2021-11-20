@@ -12,7 +12,7 @@ void MainMenu::onFrame() {
 	ImGui::Begin("Main menu", nullptr, MENU_FLAGS);
 	ImGui::Text("Main menu");
 	if (ImGui::Button("Dev")) {
-		context().systemRef<SceneSystem>().next(context().systemRef<AssetCache>().scene("dev_menu"));
+		context().systemRef<SceneSystem>().findNext("dev_menu");
 	}
 	if (ImGui::Button("Exit")) {
 		context().systemRef<SceneSystem>().next(nullptr);

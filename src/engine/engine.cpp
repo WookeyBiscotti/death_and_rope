@@ -13,12 +13,31 @@
 #include <systems/scenes/scene_system.hpp>
 #include <systems/window/window.hpp>
 //
+#include <scenes/dev_menu.hpp>
+#include <scenes/main_menu.hpp>
+#include <scenes/sprite_editor.hpp>
+#include <scenes/sprites_view.hpp>
+#include <scenes/test.hpp>
+#include <scenes/test_physics.hpp>
+#include <scenes/world_editor.hpp>
+//
 #include <SFML/Graphics.hpp>
 #include <imgui-SFML.h>
 #include <imgui.h>
 //
 #include <memory>
 #include <thread>
+
+static void addStandardScenes(Context& context) {
+	auto& scenes = context.systemRef<SceneSystem>();
+	scenes.registerScene("main_menu", [&context] { return std::make_shared<MainMenu>(context); });
+	scenes.registerScene("dev_menu", [&context] { return std::make_shared<DevMenu>(context); });
+	scenes.registerScene("sprite_editor", [&context] { return std::make_shared<SpriteEditor>(context); });
+	scenes.registerScene("sprites_view", [&context] { return std::make_shared<SpritesView>(context); });
+	scenes.registerScene("world_editor", [&context] { return std::make_shared<WorldEditor>(context); });
+	scenes.registerScene("test_scene", [&context] { return std::make_shared<TestScene>(context); });
+	scenes.registerScene("test_physics_scene", [&context] { return std::make_shared<TestPhysicsScene>(context); });
+}
 
 void Engine::run(const char** argv, int argc) {
 	Context context;
@@ -46,6 +65,7 @@ void Engine::run(const char** argv, int argc) {
 
 	SceneSystem scenes;
 	context.addSystem(&scenes);
+	addStandardScenes(context);
 
 	Physics physics(context);
 	context.addSystem(&physics);
@@ -53,8 +73,7 @@ void Engine::run(const char** argv, int argc) {
 	IF_NOT_PROD_BUILD(DebugSystem debug(context));
 	IF_NOT_PROD_BUILD(context.addSystem(&debug));
 
-	auto currentScene = cache.scene("main_menu");
-	scenes.next(std::move(currentScene));
+	scenes.findNext("main_menu");
 	scenes.applyNext();
 
 	float lastFps = 60;

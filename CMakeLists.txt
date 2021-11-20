@@ -42,7 +42,9 @@ set(MAIN_SOURCES
     src/systems/group/group.cpp
     src/systems/physics/physics.cpp
     src/systems/physics/body.cpp
-    src/systems/physics/collider.cpp)
+    src/systems/physics/collider.cpp
+    src/systems/scenes/scene_system.cpp
+    src/systems/namer/name.cpp)
 
 set(TESTS_SOURCES src/tests/engine/entity_tests.cpp)
 

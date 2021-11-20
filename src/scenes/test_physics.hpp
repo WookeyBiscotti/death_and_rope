@@ -27,19 +27,19 @@ class TestPhysicsScene: public Scene {
 	};
 
 	void active(bool active) override {
-		for (int i = 0; i != 10; ++i) {
+		for (int i = 0; i != 100; ++i) {
 			auto& head = _root->ref<Group>().create();
 			auto c = std::make_unique<SpriteComponent>(head);
 			c->setSprite(context().systemRef<AssetCache>().sprite("head"));
 
-			head.add<Position>(Vector2f(rand() % 500, rand() % 500))
+			head.add<Position>(Vector2f(rand() % 450, rand() % 450))
 			    .add(std::move(c))
 			    .add<Collider>(Vector2f(30, 30))
 			    .add<Body>();
 			head.ref<Body>().velocity(10.0f * Vector2f((100 - rand() % 200) / 100.f, (100 - rand() % 200) / 100.f));
 		}
-		_root->ref<Group>().create().add<Position>(0, 0).add<Collider>(Vector2f(10, 500)).add<Body>(Body::STATIC);
-		_root->ref<Group>().create().add<Position>(0, 0).add<Collider>(Vector2f(500, 10)).add<Body>(Body::STATIC);
+		_root->ref<Group>().create().add<Position>(-10, 0).add<Collider>(Vector2f(10, 500)).add<Body>(Body::STATIC);
+		_root->ref<Group>().create().add<Position>(0, -10).add<Collider>(Vector2f(500, 10)).add<Body>(Body::STATIC);
 		_root->ref<Group>().create().add<Position>(500, 0).add<Collider>(Vector2f(10, 500)).add<Body>(Body::STATIC);
 		_root->ref<Group>().create().add<Position>(0, 500).add<Collider>(Vector2f(500, 10)).add<Body>(Body::STATIC);
 

@@ -33,7 +33,7 @@ void SpriteEditor::onFrame() {
 		_saveName.clear();
 	}
 	if (ImGui::Button("Back")) {
-		context().systemRef<SceneSystem>().next(context().systemRef<AssetCache>().scene("dev_menu"));
+		context().systemRef<SceneSystem>().findNext("dev_menu");
 	}
 
 	if (_fileDialog.HasSelected()) {

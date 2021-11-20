@@ -85,7 +85,7 @@ void WorldEditor::onFrame() {
 		_showLoadDialog = true;
 	}
 	if (ImGui::Button("Back")) {
-		context().systemRef<SceneSystem>().next(context().systemRef<AssetCache>().scene("dev_menu"));
+		context().systemRef<SceneSystem>().findNext("dev_menu");
 	}
 	ImGui::End();
 

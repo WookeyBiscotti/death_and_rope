@@ -39,7 +39,7 @@ void SpritesView::onFrame() {
 		refresh();
 	}
 	if (ImGui::Button("Back")) {
-		context().systemRef<SceneSystem>().next(context().systemRef<AssetCache>().scene("dev_menu"));
+		context().systemRef<SceneSystem>().findNext("dev_menu");
 	}
 	for (const auto& s : _sprites) {
 		ImGui::TextUnformatted(s->name().c_str());

@@ -1,11 +1,5 @@
-#include <scenes/dev_menu.hpp>
-#include <scenes/main_menu.hpp>
-#include <scenes/sprite_editor.hpp>
-#include <scenes/sprites_view.hpp>
-#include <scenes/test.hpp>
-#include <scenes/test_physics.hpp>
-#include <scenes/world_editor.hpp>
-#include <systems/assets/asset_cache.hpp>
+#include "asset_cache.hpp"
+
 #include <systems/config/config.hpp>
 #include <systems/logging/logger.hpp>
 //
@@ -109,37 +103,6 @@ std::vector<uint8_t> AssetCache::readBinaryFile(const std::string& filePath) {
 	t.read(reinterpret_cast<char*>(data.data()), data.size());
 
 	return data;
-}
-
-std::shared_ptr<Scene> AssetCache::scene(const std::string& name) {
-	std::shared_ptr<Scene> scene;
-
-#define CHECK(T, NAME)                                \
-	if (name == NAME) {                               \
-		if (_scenes.contains(name)) {                 \
-			LINFO("Load scene from cache: {}", name); \
-			scene = _scenes[name];                    \
-		} else {                                      \
-			scene = std::make_shared<T>(_context);    \
-			_scenes.emplace(name, scene);             \
-			LINFO("Create scene: {}", name);          \
-		}                                             \
-		return scene;                                 \
-	}
-
-	CHECK(MainMenu, "main_menu");
-	CHECK(DevMenu, "dev_menu");
-	CHECK(SpriteEditor, "sprite_editor");
-	CHECK(SpritesView, "sprites_view");
-	CHECK(WorldEditor, "world_editor");
-	CHECK(DevMenu, "dev_menu");
-	CHECK(TestScene, "test_scene");
-	CHECK(TestPhysicsScene, "test_physics_scene");
-#undef CHECK
-
-	LERR("Scene not found: {}", name);
-
-	return scene;
 }
 
 std::vector<std::string> AssetCache::sprites() const {
