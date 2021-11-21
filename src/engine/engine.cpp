@@ -9,6 +9,7 @@
 #include <systems/group/group_system.hpp>
 #include <systems/imgui/imgui_system.hpp>
 #include <systems/logging/logger.hpp>
+#include <systems/names/name_system.hpp>
 #include <systems/physics/physics.hpp>
 #include <systems/render/render.hpp>
 #include <systems/scenes/scene_system.hpp>
@@ -70,6 +71,9 @@ void Engine::run(const char** argv, int argc) {
 
 	Physics physics(context);
 	context.addSystem(&physics);
+
+	NameSystem names;
+	context.addSystem(&names);
 
 	IF_NOT_PROD_BUILD(DebugSystem debug(context));
 	IF_NOT_PROD_BUILD(context.addSystem(&debug));

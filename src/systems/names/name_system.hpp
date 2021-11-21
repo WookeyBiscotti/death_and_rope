@@ -1,6 +1,7 @@
 #pragma once
 
 #include <deque>
+#include <string>
 #include <unordered_map>
 
 class Entity;
