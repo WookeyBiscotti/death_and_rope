@@ -44,7 +44,7 @@ set(MAIN_SOURCES
     src/systems/physics/body.cpp
     src/systems/physics/collider.cpp
     src/systems/scenes/scene_system.cpp
-    src/systems/namer/name.cpp)
+    src/systems/names/name.cpp)
 
 set(TESTS_SOURCES src/tests/engine/entity_tests.cpp)
 

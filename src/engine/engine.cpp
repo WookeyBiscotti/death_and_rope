@@ -6,6 +6,7 @@
 #include <systems/broker/broker.hpp>
 #include <systems/config/config.hpp>
 #include <systems/debug/debug_system.hpp>
+#include <systems/group/group_system.hpp>
 #include <systems/imgui/imgui_system.hpp>
 #include <systems/logging/logger.hpp>
 #include <systems/physics/physics.hpp>

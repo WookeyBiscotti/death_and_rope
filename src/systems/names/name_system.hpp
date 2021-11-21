@@ -5,7 +5,7 @@
 
 class Entity;
 
-class Namer {
+class NameSystem {
   public:
 	size_t add(const std::string& name, Entity* obj) {
 		auto& objs = _names[name];
