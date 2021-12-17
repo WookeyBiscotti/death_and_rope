@@ -12,6 +12,7 @@ add_subdirectory(3rdparty/cereal)
 add_subdirectory(3rdparty/spdlog)
 add_subdirectory(3rdparty/Catch2)
 add_subdirectory(3rdparty/AABBTree)
+add_subdirectory(3rdparty/box2d)
 
 target_link_libraries(death_and_rope_exp PUBLIC sfml-graphics sfml-audio)
 
@@ -53,8 +54,9 @@ set(DEPS_SOURCES
     3rdparty/imgui/imgui_draw.cpp 3rdparty/imgui/imgui.cpp
     3rdparty/imgui-sfml/imgui-SFML.cpp 3rdparty/imgui/misc/cpp/imgui_stdlib.cpp)
 
-set(INCLUDES_DEPS_DIRS src 3rdparty/imgui 3rdparty/imgui-sfml
-                       3rdparty/imgui-filebrowser 3rdparty/imgui/misc/cpp)
+set(INCLUDES_DEPS_DIRS
+    src 3rdparty/imgui 3rdparty/imgui-sfml 3rdparty/imgui-filebrowser
+    3rdparty/imgui/misc/cpp 3rdparty/box2d/include)
 
 set(DEPS_LIBS
     GL
@@ -64,9 +66,11 @@ set(DEPS_LIBS
     nlohmann_json
     cereal::cereal
     spdlog::spdlog
-    aabb_tree)
+    aabb_tree
+    box2d)
 
-add_executable(death_and_rope_exe src/main.cpp ${MAIN_SOURCES} ${DEPS_SOURCES})
+add_executable(death_and_rope_exe src/game/main.cpp ${MAIN_SOURCES}
+                                  ${DEPS_SOURCES})
 target_include_directories(death_and_rope_exe PUBLIC ${INCLUDES_DEPS_DIRS})
 target_link_libraries(death_and_rope_exe PUBLIC ${DEPS_LIBS})
 

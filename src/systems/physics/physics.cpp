@@ -2,6 +2,8 @@
 #include "collider.hpp"
 #include "physics.hpp"
 
+#include <common/rect.hpp>
+#include <common/vector2.hpp>
 #include <engine/context.hpp>
 #include <engine/entity.hpp>
 #include <engine/events.hpp>
@@ -54,6 +56,10 @@ void Physics::remove(Body* body) {
 	}
 }
 
+template<class T>
+void intersectingVector(const Rectf& aa, const Rectf& bb, Vector2f& ab) {
+}
+
 void Physics::update(float dt) {
 	for (auto& b : _dynamic) {
 		auto& pos = b->entity().ref<Position>();
@@ -65,7 +71,6 @@ void Physics::update(float dt) {
 		if (auto c = b->entity().get<Collider>(); c) {
 			const auto& lower = c->entity().ref<Position>().get() + c->origin();
 			const auto& upper = lower + c->size();
-
 			AABBTree::AABB_t newAABB({lower.x, lower.y}, {upper.x, upper.y});
 
 			_colliders.query(newAABB, [this, &b, c](const AABBTree::Iterator& it) {
@@ -77,6 +82,7 @@ void Physics::update(float dt) {
 				if (auto ob = other->entity().get<Body>(); ob) {
 					if (ob->type() == Body::STATIC) {
 						b->velocity(-b->velocity());
+					} else {
 					}
 				}
 

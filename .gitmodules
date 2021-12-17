@@ -25,3 +25,6 @@
 [submodule "3rdparty/AABBTree"]
 	path = 3rdparty/AABBTree
 	url = https://github.com/WookeyBiscotti/AABBTree.git
+[submodule "3rdparty/box2d"]
+	path = 3rdparty/box2d
+	url = https://github.com/erincatto/box2d.git

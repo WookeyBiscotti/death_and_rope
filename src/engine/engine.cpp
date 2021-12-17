@@ -32,7 +32,7 @@
 
 static void addStandardScenes(Context& context) {
 	auto& scenes = context.systemRef<SceneSystem>();
-	scenes.registerScene("main_menu", [&context] { return std::make_shared<MainMenu>(context); });
+	// scenes.registerScene("main_menu", [&context] { return std::make_shared<MainMenu>(context); });
 	scenes.registerScene("dev_menu", [&context] { return std::make_shared<DevMenu>(context); });
 	scenes.registerScene("sprite_editor", [&context] { return std::make_shared<SpriteEditor>(context); });
 	scenes.registerScene("sprites_view", [&context] { return std::make_shared<SpritesView>(context); });
@@ -41,8 +41,12 @@ static void addStandardScenes(Context& context) {
 	scenes.registerScene("test_physics_scene", [&context] { return std::make_shared<TestPhysicsScene>(context); });
 }
 
-void Engine::run(const char** argv, int argc) {
+void Engine::run(const char** argv, int argc, const EngineConfig& engineConfig) {
+	_config = engineConfig;
+
 	Context context;
+
+	context.addSystem(this);
 
 	IF_NOT_PROD_BUILD(Logger logger);
 	IF_NOT_PROD_BUILD(context.addSystem(&logger));
@@ -78,7 +82,11 @@ void Engine::run(const char** argv, int argc) {
 	IF_NOT_PROD_BUILD(DebugSystem debug(context));
 	IF_NOT_PROD_BUILD(context.addSystem(&debug));
 
-	scenes.findNext("main_menu");
+	if (_config.preBegin) {
+		_config.preBegin(context);
+	}
+
+	scenes.findNext(_config.startScene);
 	scenes.applyNext();
 
 	float lastFps = 60;
@@ -113,5 +121,9 @@ void Engine::run(const char** argv, int argc) {
 			const auto delay = (T - dt);
 			std::this_thread::sleep_for(delay);
 		}
+	}
+
+	if (_config.preBegin) {
+		_config.preEnd(context);
 	}
 }
