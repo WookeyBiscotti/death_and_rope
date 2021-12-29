@@ -1,12 +1,24 @@
 #pragma once
 
 #include <SFML/System/Vector2.hpp>
+#include <box2d/b2_math.h>
+//
 #include <cmath>
 #include <functional>
 
+template<class T>
+using Vector2 = sf::Vector2<T>;
 using Vector2f = sf::Vector2f;
 using Vector2u = sf::Vector2u;
 using Vector2i = sf::Vector2i;
+
+inline Vector2f from(const b2Vec2& vec) {
+	return {vec.x, vec.y};
+}
+
+inline b2Vec2 to(const Vector2f& vec) {
+	return {vec.x, vec.y};
+}
 
 inline float vec(const sf::Vector2f& a, const sf::Vector2f& b) {
 	return a.x * b.y - a.y * b.x;

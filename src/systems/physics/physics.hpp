@@ -4,7 +4,9 @@
 
 #include <systems/broker/receiver.hpp>
 //
+
 #include <aabb_tree/aabb_tree.hpp>
+#include <box2d/box2d.h>
 //
 #include <unordered_set>
 
@@ -13,23 +15,16 @@ class Entity;
 class Body;
 
 class Physics: public Receiver {
+	friend class Body;
+	friend class Collider;
+
   public:
 	explicit Physics(Context& context);
-
-	void add(Collider* collider);
-	void remove(Collider* collider);
-
-	void add(Body* body);
-	void remove(Body* body);
 
 	void update(float dt);
 
   private:
 	Context& _contex;
 
-	using AABBTree = biss::AABBTree<Collider*, 2, float>;
-	AABBTree _colliders;
-
-	std::unordered_set<Body*> _dynamic;
-	std::unordered_set<Body*> _static;
+	b2World _world;
 };

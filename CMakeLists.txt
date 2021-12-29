@@ -14,6 +14,8 @@ add_subdirectory(3rdparty/Catch2)
 add_subdirectory(3rdparty/AABBTree)
 add_subdirectory(3rdparty/box2d)
 
+add_compile_definitions(B2_USER_SETTINGS)
+
 target_link_libraries(death_and_rope_exp PUBLIC sfml-graphics sfml-audio)
 
 set(MAIN_SOURCES
@@ -87,3 +89,7 @@ set(PROD_BUILD
 if(${PROD_BUILD})
   target_compile_definitions(death_and_rope_exe PUBLIC PROD_BUILD)
 endif()
+
+file(
+  COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/systems/physics/box2d_settings/b2_user_settings.h
+  DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/box2d/include/box2d)

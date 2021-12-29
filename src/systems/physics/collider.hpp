@@ -1,29 +1,29 @@
 #pragma once
 
+#include "body.hpp"
+
 #include <common/vector2.hpp>
 #include <engine/component.hpp>
 //
-#include <aabb_tree/typedefs.hpp>
 
 class Entity;
-
+class b2Fixture;
 class Collider: public Component {
 	friend class Physics;
 
   public:
-	explicit Collider(Entity& entity, const Vector2f& size, const Vector2f& origin = {});
+	struct Box_t {};
+	constexpr static auto Box = Box_t{};
 
 	~Collider();
 
-	const Vector2f& size() const { return _size; }
-	void size(const Vector2f& size) { _size = size; }
+	Collider(Collider&& other): Component(other.entity()) {
+		_fixture = other._fixture;
+		other._fixture = nullptr;
+	}
 
-	const Vector2f& origin() const { return _origin; }
-	void origin(const Vector2f& origin) { _origin = origin; }
+	Collider(Entity& entity, Box_t, const Vector2f& size, float density = 1, const Vector2f& origin = {});
 
   private:
-	biss::index_t _colliderIdx = biss::nullindex;
-
-	Vector2f _size;
-	Vector2f _origin;
+	b2Fixture* _fixture{};
 };

@@ -41,14 +41,30 @@ class TestPhysicsScene: public Scene {
 
 			head.add<Position>(Vector2f(rand() % 450, rand() % 450))
 			    .add(std::move(c))
-			    .add<Collider>(Vector2f(30, 30))
-			    .add<Body>();
-			head.ref<Body>().velocity(10.0f * Vector2f((100 - rand() % 200) / 100.f, (100 - rand() % 200) / 100.f));
+			    .add<Body>(Body::DYNAMIC)
+			    .add<Collider>(Collider::Box, Vector2f(30, 30));
+			// head.ref<Body>().velocity(10.0f * Vector2f((100 - rand() % 200) / 100.f, (100 - rand() % 200) / 100.f));
 		}
-		objs.ref<Group>().create().add<Position>(-10, 0).add<Collider>(Vector2f(10, 500)).add<Body>(Body::STATIC);
-		objs.ref<Group>().create().add<Position>(0, -10).add<Collider>(Vector2f(500, 10)).add<Body>(Body::STATIC);
-		objs.ref<Group>().create().add<Position>(500, 0).add<Collider>(Vector2f(10, 500)).add<Body>(Body::STATIC);
-		objs.ref<Group>().create().add<Position>(0, 500).add<Collider>(Vector2f(500, 10)).add<Body>(Body::STATIC);
+		objs.ref<Group>()
+		    .create()
+		    .add<Position>(-10, 0)
+		    .add<Body>(Body::STATIC)
+		    .add<Collider>(Collider::Box, Vector2f(10, 500));
+		objs.ref<Group>()
+		    .create()
+		    .add<Position>(0, -10)
+		    .add<Body>(Body::STATIC)
+		    .add<Collider>(Collider::Box, Vector2f(500, 10));
+		objs.ref<Group>()
+		    .create()
+		    .add<Position>(500, 0)
+		    .add<Body>(Body::STATIC)
+		    .add<Collider>(Collider::Box, Vector2f(10, 500));
+		objs.ref<Group>()
+		    .create()
+		    .add<Position>(0, 500)
+		    .add<Body>(Body::STATIC)
+		    .add<Collider>(Collider::Box, Vector2f(500, 10));
 
 		objs.subscribe<EngineOnFrameStart>([this, &objs](const EngineOnFrameStart& event) {
 			auto& pos = objs.ref<Position>();
