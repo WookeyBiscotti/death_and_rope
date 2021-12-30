@@ -6,14 +6,14 @@
 //
 #include <engine/component.hpp>
 #include <engine/entity.hpp>
-#include <systems/position/position.hpp>
+#include <systems/transform/transform.hpp>
 
 class Camera: public Component {
   public:
 	explicit Camera(Entity& entity): Component(entity) {}
 	~Camera();
 
-	void update() { _view.setCenter(entity().ref<Position>().get()); }
+	void update() { _view.setCenter(entity().ref<Transform>().p()); }
 
 	void zoom(float factor) { _view.zoom(factor); }
 

@@ -9,8 +9,8 @@
 #include <engine/entity.hpp>
 #include <engine/events.hpp>
 #include <systems/broker/broker.hpp>
-#include <systems/position/events.hpp>
-#include <systems/position/position.hpp>
+#include <systems/transform/events.hpp>
+#include <systems/transform/transform.hpp>
 
 Physics::Physics(Context& context): Receiver(context.systemRef<Broker>()), _contex(context), _world({0, 100}) {
 	subscribe<EngineOnFrameStart>([this](const EngineOnFrameStart&) {
@@ -27,7 +27,9 @@ void Physics::update(float dt) {
 
 	while (body) {
 		if (body->GetType() != b2_staticBody && body->IsAwake()) {
-			body->GetUserData().entity->ref<Position>().set(from(body->GetPosition()));
+			auto& tr = body->GetUserData().entity->ref<Transform>();
+			tr.p(from(body->GetPosition()));
+			tr.r(body->GetAngle());
 		}
 		body = body->GetNext();
 	}

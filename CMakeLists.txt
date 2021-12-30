@@ -41,7 +41,7 @@ set(MAIN_SOURCES
     src/systems/broker/sender.cpp
     src/systems/debug/debug_system.cpp
     src/systems/config/config.cpp
-    src/systems/position/position.cpp
+    src/systems/transform/transform.cpp
     src/systems/group/group.cpp
     src/systems/physics/physics.cpp
     src/systems/physics/body.cpp

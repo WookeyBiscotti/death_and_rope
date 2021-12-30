@@ -4,11 +4,11 @@
 #include <engine/entity.hpp>
 #include <engine/events.hpp>
 #include <systems/assets/asset_cache.hpp>
-#include <systems/position/position.hpp>
 #include <systems/render/camera.hpp>
 #include <systems/render/render.hpp>
 #include <systems/render/sprite_component.hpp>
 #include <systems/scenes/scene.hpp>
+#include <systems/transform/transform.hpp>
 #include <systems/window/inputs.hpp>
 #include <systems/window/window.hpp>
 #include <world.hpp>
@@ -23,14 +23,14 @@ class TestScene: public Scene {
 
 	void active(bool active) override {
 		_head = std::make_unique<Entity>(context());
-		_head->add<Position>(Vector2f{300, 300});
+		_head->add<Transform>(Vector2f{300, 300});
 
 		auto c = std::make_unique<SpriteComponent>(*_head);
 		c->setSprite(context().systemRef<AssetCache>().sprite("head"));
 		_head->add(std::move(c));
 
 		_camera = std::make_unique<Entity>(context());
-		_camera->add<Camera>().add<Position>();
+		_camera->add<Camera>().add<Transform>();
 		_camera->ref<Camera>().size((Vector2f)context().systemRef<Window>().window().getSize());
 		_camera->subscribe<EngineOnFrameStart>([this](const EngineOnFrameStart& event) {
 			if (Keyboard::isKeyPressed(Keyboard::Q)) {
@@ -39,18 +39,18 @@ class TestScene: public Scene {
 			if (Keyboard::isKeyPressed(Keyboard::E)) {
 				_camera->ref<Camera>().zoom(0.9);
 			}
-			auto& pos = _camera->ref<Position>();
+			auto& pos = _camera->ref<Transform>();
 			if (Keyboard::isKeyPressed(Keyboard::A)) {
-				pos.set({pos.get().x - 2, pos.get().y});
+				pos.p({pos.p().x - 2, pos.p().y});
 			}
 			if (Keyboard::isKeyPressed(Keyboard::D)) {
-				pos.set({pos.get().x + 2, pos.get().y});
+				pos.p({pos.p().x + 2, pos.p().y});
 			}
 			if (Keyboard::isKeyPressed(Keyboard::W)) {
-				pos.set({pos.get().x, pos.get().y - 2});
+				pos.p({pos.p().x, pos.p().y - 2});
 			}
 			if (Keyboard::isKeyPressed(Keyboard::S)) {
-				pos.set({pos.get().x, pos.get().y + 2});
+				pos.p({pos.p().x, pos.p().y + 2});
 			}
 		});
 		context().systemRef<Render>().camera(&_camera->ref<Camera>());

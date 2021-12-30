@@ -1,12 +1,12 @@
 #include "group.hpp"
 
-#include <systems/position/events.hpp>
-#include <systems/position/position.hpp>
+#include <systems/transform/events.hpp>
+#include <systems/transform/transform.hpp>
 
 Group::Group(Entity& entity, SyncMove): Component(entity), _moveChilds(true) {
 	entity.subscribe<PositionUpdate>(&entity, [this](const PositionUpdate& p) {
 		for (auto& it : _childs) {
-			it->ref<Position>()(it->ref<Position>()() + (p.neW - p.old));
+			it->ref<Transform>().p(it->ref<Transform>().p() + (p.neW - p.old));
 		}
 	});
 }

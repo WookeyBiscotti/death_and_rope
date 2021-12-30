@@ -4,7 +4,7 @@
 
 #include <engine/context.hpp>
 #include <engine/entity.hpp>
-#include <systems/position/position.hpp>
+#include <systems/transform/transform.hpp>
 //
 #include <box2d/box2d.h>
 
@@ -20,7 +20,7 @@ Body::Body(Entity& entity, Type type): Component(entity) {
 			return b2_kinematicBody;
 		}
 	}();
-	bd.position = to(entity.get<Position>()->get());
+	bd.position = to(entity.ref<Transform>().p());
 
 	bd.userData.entity = &entity;
 

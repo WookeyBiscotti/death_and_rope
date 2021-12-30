@@ -1,13 +1,17 @@
 #include "sprite_component.hpp"
 
-#include <SFML/Graphics.hpp>
+#include <common/consts.hpp>
 #include <engine/entity.hpp>
-#include <systems/position/position.hpp>
+#include <systems/transform/transform.hpp>
+//
+#include <SFML/Graphics.hpp>
+//
 
 void SpriteComponent::draw(RenderTarget& target, const RenderStates& states) {
-	auto position = entity().get<Position>();
-	if (_sprite && position) {
-		_sprite->sf().setPosition(position->get());
+	auto tr = entity().get<Transform>();
+	if (_sprite && tr) {
+		_sprite->sf().setPosition(tr->p());
+		_sprite->sf().setRotation(180 * tr->r() / kPIf);
 		target.draw(_sprite->sf(), states);
 	}
 }
