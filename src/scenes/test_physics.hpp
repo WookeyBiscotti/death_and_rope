@@ -33,36 +33,41 @@ class TestPhysicsScene: public Scene {
 		_root = std::make_unique<Entity>(context());
 		_root->add<Group>().add<Name>("root");
 
-		auto& objs = _root->ref<Group>().create().add<Group>(Group::SYNC_MOVE).add<Transform>();
+		auto& objs = _root->ref<Group>().create().add<Group>(Group::SYNC_MOVE);
 		for (int i = 0; i != 100; ++i) {
 			auto& head = objs.ref<Group>().create();
 
-			head.add<Transform>(Vector2f(rand() % 450, rand() % 450))
-			    .add<SpriteComponent>(context().systemRef<AssetCache>().texture("head.png"))
+			head.add<SpriteComponent>(context().systemRef<AssetCache>().texture("head.png"))
 			    .add<Body>(Body::DYNAMIC)
-			    .add<Collider>(Collider::Box, Vector2f(30, 30));
+			    .add<Collider>(Collider::Box, Vector2f(30, 30))
+			    .ref<Transform>()
+			    .p(Vector2f(rand() % 450, rand() % 450));
 			// head.ref<Body>().velocity(10.0f * Vector2f((100 - rand() % 200) / 100.f, (100 - rand() % 200) / 100.f));
 		}
 		objs.ref<Group>()
 		    .create()
-		    .add<Transform>(-10, 0)
 		    .add<Body>(Body::STATIC)
-		    .add<Collider>(Collider::Box, Vector2f(10, 500));
+		    .add<Collider>(Collider::Box, Vector2f(10, 500))
+		    .ref<Transform>()
+		    .p(Vector2f{-10, 0});
 		objs.ref<Group>()
 		    .create()
-		    .add<Transform>(0, -10)
 		    .add<Body>(Body::STATIC)
-		    .add<Collider>(Collider::Box, Vector2f(500, 10));
+		    .add<Collider>(Collider::Box, Vector2f(500, 10))
+		    .ref<Transform>()
+		    .p(Vector2f{0, -10});
 		objs.ref<Group>()
 		    .create()
-		    .add<Transform>(500, 0)
 		    .add<Body>(Body::STATIC)
-		    .add<Collider>(Collider::Box, Vector2f(10, 500));
+		    .add<Collider>(Collider::Box, Vector2f(10, 500))
+		    .ref<Transform>()
+		    .p(Vector2f{500, 0});
 		objs.ref<Group>()
 		    .create()
-		    .add<Transform>(0, 500)
 		    .add<Body>(Body::STATIC)
-		    .add<Collider>(Collider::Box, Vector2f(500, 10));
+		    .add<Collider>(Collider::Box, Vector2f(500, 10))
+		    .ref<Transform>()
+		    .p(Vector2f{0, 500});
 
 		objs.subscribe<EngineOnFrameStart>([this, &objs](const EngineOnFrameStart& event) {
 			auto& pos = objs.ref<Transform>();
@@ -82,7 +87,7 @@ class TestPhysicsScene: public Scene {
 
 		auto& camera = _root->ref<Group>().create().add<Name>("camera");
 
-		camera.add<Camera>().add<Transform>();
+		camera.add<Camera>();
 		camera.ref<Camera>().size((Vector2f)context().systemRef<Window>().window().getSize());
 		camera.subscribe<EngineOnFrameStart>([&camera, this](const EngineOnFrameStart& event) {
 			if (Keyboard::isKeyPressed(Keyboard::Q)) {

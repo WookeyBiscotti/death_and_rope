@@ -23,11 +23,11 @@ class TestScene: public Scene {
 
 	void active(bool active) override {
 		_head = std::make_unique<Entity>(context());
-		_head->add<Transform>(Vector2f{300, 300})
-		    .add<SpriteComponent>(context().systemRef<AssetCache>().texture("head.png"));
+		_head->add<SpriteComponent>(context().systemRef<AssetCache>().texture("head.png"))
+		    .ref<Transform>()
+		    .p(Vector2f{300, 300});
 
 		_camera = std::make_unique<Entity>(context());
-		_camera->add<Camera>().add<Transform>();
 		_camera->ref<Camera>().size((Vector2f)context().systemRef<Window>().window().getSize());
 		_camera->subscribe<EngineOnFrameStart>([this](const EngineOnFrameStart& event) {
 			if (Keyboard::isKeyPressed(Keyboard::Q)) {

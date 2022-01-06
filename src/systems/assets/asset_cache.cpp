@@ -13,7 +13,6 @@
 namespace fs = std::filesystem;
 
 static const Path TEXTURES_PATH = "assets/textures/";
-static const Path SPRITES_PATH = "assets/sprites/";
 static const Path FONTS_PATH = "assets/fonts/";
 static const Path WORLDS_PATH = "assets/worlds/";
 
@@ -22,10 +21,6 @@ static const std::string DEFAULT_FONT = "UbuntuMono-Bold.ttf";
 static const std::unordered_map<std::string, std::string> FONT_DEFAULTS_MAP = {
     {"default", DEFAULT_FONT},
 };
-
-Path AssetCache::spritesPath() const {
-	return fs::path(_root) / SPRITES_PATH;
-}
 
 Path AssetCache::worldsPath() const {
 	return fs::path(_root) / WORLDS_PATH;
@@ -62,24 +57,6 @@ std::shared_ptr<Texture> AssetCache::texture(const std::string& name) {
 	return nullptr;
 }
 
-std::shared_ptr<Sprite> AssetCache::sprite(const std::string& name) {
-	LINFO("Try to load: {} sprite", name);
-	if (auto found = _sprites.find(name); found != _sprites.end()) {
-		LINFO("Sprite {} found in cache", name);
-		return found->second;
-	}
-
-	auto sprite = std::make_shared<Sprite>(name);
-	if (sprite->loadFromFile(spritesPath() / name, *this)) {
-		_sprites.emplace(name, sprite);
-		LINFO("Sprite {} loaded", name);
-		return sprite;
-	}
-
-	LINFO("Sprite {} not found in cache", name);
-	return nullptr;
-}
-
 std::string AssetCache::readFile(const std::string& filePath) {
 	std::ifstream t(filePath);
 	std::string str;
@@ -104,17 +81,6 @@ std::vector<uint8_t> AssetCache::readBinaryFile(const std::string& filePath) {
 	t.read(reinterpret_cast<char*>(data.data()), data.size());
 
 	return data;
-}
-
-std::vector<std::string> AssetCache::sprites() const {
-	std::vector<std::string> result;
-	for (const auto& entry : std::filesystem::directory_iterator(spritesPath())) {
-		if (entry.is_regular_file()) {
-			result.push_back(entry.path().filename().string());
-		}
-	}
-
-	return result;
 }
 
 std::vector<std::string> AssetCache::worlds() const {

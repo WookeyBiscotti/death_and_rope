@@ -17,8 +17,6 @@
 //
 #include <scenes/dev_menu.hpp>
 #include <scenes/main_menu.hpp>
-#include <scenes/sprite_editor.hpp>
-#include <scenes/sprites_view.hpp>
 #include <scenes/test.hpp>
 #include <scenes/test_physics.hpp>
 #include <scenes/world_editor.hpp>
@@ -34,8 +32,6 @@ static void addStandardScenes(Context& context) {
 	auto& scenes = context.systemRef<SceneSystem>();
 	// scenes.registerScene("main_menu", [&context] { return std::make_shared<MainMenu>(context); });
 	scenes.registerScene("dev_menu", [&context] { return std::make_shared<DevMenu>(context); });
-	scenes.registerScene("sprite_editor", [&context] { return std::make_shared<SpriteEditor>(context); });
-	scenes.registerScene("sprites_view", [&context] { return std::make_shared<SpritesView>(context); });
 	scenes.registerScene("world_editor", [&context] { return std::make_shared<WorldEditor>(context); });
 	scenes.registerScene("test_scene", [&context] { return std::make_shared<TestScene>(context); });
 	scenes.registerScene("test_physics_scene", [&context] { return std::make_shared<TestPhysicsScene>(context); });

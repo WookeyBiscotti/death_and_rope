@@ -24,8 +24,6 @@ set(MAIN_SOURCES
     src/world.cpp
     src/scenes/main_menu.cpp
     src/scenes/dev_menu.cpp
-    src/scenes/sprite_editor.cpp
-    src/scenes/sprites_view.cpp
     src/scenes/world_editor.cpp
     src/systems/render/render.cpp
     src/systems/render/sprite_component.cpp
@@ -34,7 +32,6 @@ set(MAIN_SOURCES
     src/systems/logging/logger.cpp
     src/systems/assets/asset_cache.cpp
     src/systems/assets/texture.cpp
-    src/systems/assets/sprite.cpp
     src/systems/window/window.cpp
     src/systems/imgui/imgui_system.cpp
     src/systems/broker/receiver.cpp

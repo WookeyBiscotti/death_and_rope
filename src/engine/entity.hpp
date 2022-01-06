@@ -8,6 +8,7 @@
 #include <systems/broker/receiver.hpp>
 #include <systems/broker/sender.hpp>
 #include <systems/logging/logger.hpp>
+#include <systems/transform/transform.hpp>
 //
 #include <cassert>
 #include <memory>
@@ -19,7 +20,8 @@ class Context;
 class Entity final: public Sender, public Receiver {
   public:
 	explicit Entity(Context& context):
-	    Sender(context.systemRef<Broker>()), Receiver(context.systemRef<Broker>()), _context(context) {}
+	    Sender(context.systemRef<Broker>()), Receiver(context.systemRef<Broker>()), _context(context),
+	    _transform(*this) {}
 
 	Entity(Entity&&) = delete;
 	Entity(const Entity&) = delete;
@@ -30,6 +32,8 @@ class Entity final: public Sender, public Receiver {
 
 	template<class C>
 	auto& add(std::unique_ptr<C>&& component) {
+		static_assert(TypeId<C>() != TypeId<Transform>());
+
 		_components.emplace(TypeId<C>(), std::move(component));
 
 		return *this;
@@ -37,6 +41,8 @@ class Entity final: public Sender, public Receiver {
 
 	template<class C, class... Args>
 	auto& add(Args&&... args) {
+		static_assert(TypeId<C>() != TypeId<Transform>());
+
 		auto c = std::make_unique<C>(*this, std::forward<Args>(args)...);
 		_components.emplace(TypeId<C>(), std::move(c));
 
@@ -70,8 +76,14 @@ class Entity final: public Sender, public Receiver {
 		return *static_cast<C*>(_components.find(TypeId<C>())->second.get());
 	}
 
+	template<>
+	Transform& ref<Transform>() {
+		return _transform;
+	}
+
   private:
 	Context& _context;
+	Transform _transform;
 
 	std::unordered_map<type_id_t, std::unique_ptr<Component>> _components;
 };

@@ -3,8 +3,11 @@
 #include "drawable.hpp"
 
 #include <common/macros.hpp>
+#include <common/rect.hpp>
 #include <common/vector2.hpp>
-#include <systems/assets/sprite.hpp>
+#include <systems/assets/texture.hpp>
+//
+#include <SFML/Graphics/Sprite.hpp>
 //
 #include <memory>
 
