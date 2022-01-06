@@ -44,19 +44,20 @@ AssetCache::AssetCache(Context& context): _context(context), _root(context.syste
 };
 
 std::shared_ptr<Texture> AssetCache::texture(const std::string& name) {
-	LINFO("Try to load: {} texture", name);
+	LDEBUG("Try to load: {} texture", name);
 	if (auto found = _textures.find(name); found != _textures.end()) {
-		LINFO("Texture {} found in  cache", name);
+		LDEBUG("Texture {} found in  cache", name);
 		return found->second;
 	}
 
 	auto texture = std::make_shared<Texture>(name);
 	if (texture->loadFromFile(texturesPath() / name)) {
+		LDEBUG("Texture {} loaded from disc", name);
 		_textures.emplace(name, texture);
 		return texture;
 	}
 
-	LINFO("Texture {} not found", name);
+	LERR("Texture {} not found", name);
 
 	return nullptr;
 }

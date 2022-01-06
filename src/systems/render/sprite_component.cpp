@@ -9,24 +9,23 @@
 //
 
 SpriteComponent::SpriteComponent(Entity& entity): Drawable(entity) {
-	// entity.
+	entity.subscribe<PositionUpdate>(&entity, this, [this](const PositionUpdate& p) { _sprite.setPosition(p.neW); });
+	entity.subscribe<RotationUpdate>(&entity, this,
+	    [this](const RotationUpdate& r) { _sprite.setRotation(180 * r.neW / kPIf); });
 }
-// explicit SpriteComponent(Entity& entity, const std::shared_ptr<Texture>& tex):
-//     SpriteComponent(entity), _texture(tex), _sprite(tex->sf()) {
-// }
-// explicit SpriteComponent(Entity& entity, const std::shared_ptr<Texture>& tex, const Recti& rect):
-//     SpriteComponent(entity), _texture(tex), _sprite(tex->sf(), rect) {
-// }
+
+SpriteComponent::SpriteComponent(Entity& entity, const std::shared_ptr<Texture>& tex): SpriteComponent(entity) {
+	_texture = tex;
+	_sprite.setTexture(tex->sf());
+}
+
+SpriteComponent::SpriteComponent(Entity& entity, const std::shared_ptr<Texture>& tex, const Recti& rect):
+    SpriteComponent(entity) {
+	_texture = tex;
+	_sprite.setTexture(tex->sf());
+	_sprite.setTextureRect(rect);
+}
 
 void SpriteComponent::draw(RenderTarget& target, const RenderStates& states) {
-	auto tr = entity().get<Transform>();
-	if (tr) {
-		_sprite.setPosition(tr->p());
-		_sprite.setRotation(180 * tr->r() / kPIf);
-		target.draw(_sprite, states);
-	}
+	target.draw(_sprite, states);
 }
-
-// void SpriteComponent::setSprite(const std::shared_ptr<Sprite>& sprite) {
-// 	_sprite = sprite;
-// }

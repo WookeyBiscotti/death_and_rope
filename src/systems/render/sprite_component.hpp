@@ -2,6 +2,7 @@
 
 #include "drawable.hpp"
 
+#include <common/macros.hpp>
 #include <common/vector2.hpp>
 #include <systems/assets/sprite.hpp>
 //
@@ -10,14 +11,17 @@
 class SpriteComponent: public Drawable {
   public:
 	explicit SpriteComponent(Entity& entity);
-	// SpriteComponent(Entity& entity, const std::shared_ptr<Texture>& tex);
-	// SpriteComponent(Entity& entity, const std::shared_ptr<Texture>& tex, const Recti& rect);
+	SpriteComponent(Entity& entity, const std::shared_ptr<Texture>& tex);
+	SpriteComponent(Entity& entity, const std::shared_ptr<Texture>& tex, const Recti& rect);
 
-	void setSprite(const std::shared_ptr<Texture>& texture) {
+	void texture(const std::shared_ptr<Texture>& texture) {
 		_texture = texture;
 		_sprite.setTexture(texture->sf());
 	}
-	void setRect(const Recti& rect) { _sprite.setTextureRect(rect); }
+	const std::shared_ptr<Texture>& texture() const { return _texture; }
+
+	void rect(const Recti& rect) { _sprite.setTextureRect(rect); }
+	Recti rect() { return _sprite.getTextureRect(); }
 
 	void draw(RenderTarget& target, const RenderStates& state) override;
 

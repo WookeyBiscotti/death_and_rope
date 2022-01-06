@@ -46,10 +46,12 @@ TEST_CASE("General", "[Broker]") {
 	}
 	SECTION("Multi suscription") {
 		int i = 0;
-		r.subscribe<Event1>(&s, (void*)1, [&i](const Event1&) { i = 17; });
-		r.subscribe<Event1>(&s, (void*)2, [&i](const Event1&) { i = 13; });
+		r.subscribe<Event1>(&s, (void*)1, [&i](const Event1&) { i += 17; });
+		r.subscribe<Event1>(&s, (void*)2, [&i](const Event1&) { i += 13; });
+		s.send(Event1{});
+		REQUIRE(i == 30);
 		r.unsubscribe<Event1>(&s, (void*)1);
 		s.send(Event1{});
-		REQUIRE(i == 13);
+		REQUIRE(i == 43);
 	}
 }

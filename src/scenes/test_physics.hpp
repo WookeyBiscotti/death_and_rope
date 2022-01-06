@@ -36,11 +36,9 @@ class TestPhysicsScene: public Scene {
 		auto& objs = _root->ref<Group>().create().add<Group>(Group::SYNC_MOVE).add<Transform>();
 		for (int i = 0; i != 100; ++i) {
 			auto& head = objs.ref<Group>().create();
-			auto c = std::make_unique<SpriteComponent>(head);
-			// c->setSprite(context().systemRef<AssetCache>().sprite("head"));
 
 			head.add<Transform>(Vector2f(rand() % 450, rand() % 450))
-			    .add(std::move(c))
+			    .add<SpriteComponent>(context().systemRef<AssetCache>().texture("head.png"))
 			    .add<Body>(Body::DYNAMIC)
 			    .add<Collider>(Collider::Box, Vector2f(30, 30));
 			// head.ref<Body>().velocity(10.0f * Vector2f((100 - rand() % 200) / 100.f, (100 - rand() % 200) / 100.f));

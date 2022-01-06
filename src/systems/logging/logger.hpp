@@ -27,8 +27,9 @@ class Logger {
 
 #include <spdlog/spdlog.h>
 
-#define LINFO(...) spdlog::info(__VA_ARGS__)
-#define LERR(...)  spdlog::error(__VA_ARGS__)
+#define LINFO(...)  spdlog::info(__VA_ARGS__)
+#define LERR(...)   spdlog::error(__VA_ARGS__)
+#define LDEBUG(...) spdlog::debug(__VA_ARGS__)
 
 #define LERR_IF(COND, ...)          \
 	if (COND) {                     \
@@ -39,6 +40,7 @@ class Logger {
 
 #define LINFO(...)
 #define LERR(...)
+#define LDEBUG(...)
 
 // condition must executed
 #define LERR_IF(COND, ...) \
