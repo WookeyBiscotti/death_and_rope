@@ -3,6 +3,7 @@
 #include <engine/component.hpp>
 #include <engine/context.hpp>
 #include <engine/entity.hpp>
+#include <systems/broker/broker.hpp>
 //
 #include <memory>
 
@@ -17,7 +18,9 @@ class ComponentNum: public Component {
 };
 
 TEST_CASE("General", "[Entity]") {
+	Broker broker;
 	Context context;
+	context.addSystem(&broker);
 	Entity entity(context);
 
 	auto c2 = std::make_unique<ComponentNum<2>>(entity, 17);

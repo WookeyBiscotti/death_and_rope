@@ -14,6 +14,8 @@ class Group: public Component {
 	explicit Group(Entity& entity): Component(entity) {}
 	Group(Entity& entity, SyncMove);
 
+	~Group();
+
 	Entity& create() {
 		auto e = std::make_unique<Entity>(entity().context());
 		auto& ret = *e;

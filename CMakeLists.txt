@@ -49,7 +49,8 @@ set(MAIN_SOURCES
     src/systems/scenes/scene_system.cpp
     src/systems/names/name.cpp)
 
-set(TESTS_SOURCES src/tests/engine/entity_tests.cpp)
+set(TESTS_SOURCES src/tests/engine/entity_tests.cpp
+                  src/tests/engine/broker_tests.cpp)
 
 set(DEPS_SOURCES
     3rdparty/imgui/imgui_tables.cpp 3rdparty/imgui/imgui_widgets.cpp

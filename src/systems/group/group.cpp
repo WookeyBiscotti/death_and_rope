@@ -4,11 +4,15 @@
 #include <systems/transform/transform.hpp>
 
 Group::Group(Entity& entity, SyncMove): Component(entity), _moveChilds(true) {
-	entity.subscribe<PositionUpdate>(&entity, [this](const PositionUpdate& p) {
+	entity.subscribe<PositionUpdate>(&entity, this, [this](const PositionUpdate& p) {
 		for (auto& it : _childs) {
 			it->ref<Transform>().p(it->ref<Transform>().p() + (p.neW - p.old));
 		}
 	});
+}
+
+Group::~Group() {
+	entity().unsubscribe<PositionUpdate>(&entity(), this);
 }
 
 void Group::add(std::unique_ptr<Entity> entity) {

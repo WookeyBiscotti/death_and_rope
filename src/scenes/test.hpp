@@ -26,7 +26,7 @@ class TestScene: public Scene {
 		_head->add<Transform>(Vector2f{300, 300});
 
 		auto c = std::make_unique<SpriteComponent>(*_head);
-		c->setSprite(context().systemRef<AssetCache>().sprite("head"));
+		// c->setSprite(context().systemRef<AssetCache>().sprite("head"));
 		_head->add(std::move(c));
 
 		_camera = std::make_unique<Entity>(context());

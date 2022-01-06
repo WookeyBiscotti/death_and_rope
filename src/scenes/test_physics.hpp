@@ -37,7 +37,7 @@ class TestPhysicsScene: public Scene {
 		for (int i = 0; i != 100; ++i) {
 			auto& head = objs.ref<Group>().create();
 			auto c = std::make_unique<SpriteComponent>(head);
-			c->setSprite(context().systemRef<AssetCache>().sprite("head"));
+			// c->setSprite(context().systemRef<AssetCache>().sprite("head"));
 
 			head.add<Transform>(Vector2f(rand() % 450, rand() % 450))
 			    .add(std::move(c))
