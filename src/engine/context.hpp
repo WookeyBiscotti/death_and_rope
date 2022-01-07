@@ -39,6 +39,14 @@ class Context {
 		return *static_cast<S*>(_systems.find(TypeId<S>())->second);
 	}
 
+	auto systems() const {
+		std::vector<System*> systems;
+		for (auto s : _systems) {
+			systems.push_back(s.second);
+		}
+		return systems;
+	}
+
   private:
 	std::unordered_map<type_id_t, System*> _systems;
 };

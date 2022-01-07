@@ -86,6 +86,10 @@ void Engine::run(const char** argv, int argc, const EngineConfig& engineConfig) 
 		_config.preBegin(context);
 	}
 
+	for (auto s : context.systems()) {
+		s->exportScriptFunctions();
+	}
+
 	scenes.findNext(_config.startScene);
 	scenes.applyNext();
 
