@@ -33,3 +33,9 @@ Body::~Body() {
 		w.DestroyBody(_body);
 	}
 }
+
+void Body::position(Vector2f position) {
+	if (_body) {
+		_body->SetTransform(to(position), _body->GetAngle());
+	}
+}

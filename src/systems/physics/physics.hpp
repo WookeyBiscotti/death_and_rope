@@ -23,6 +23,8 @@ class Physics: public Receiver {
 
 	void update(float dt);
 
+	b2World& internalWorld() { return _world; }
+
   private:
 	Context& _contex;
 

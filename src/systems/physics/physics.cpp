@@ -21,7 +21,7 @@ Physics::Physics(Context& context): Receiver(context.systemRef<Broker>()), _cont
 
 void Physics::update(float dt) {
 	// TODO: get from config
-	_world.Step(dt, 4, 4);
+	_world.Step(dt, 2, 2);
 
 	auto body = _world.GetBodyList();
 

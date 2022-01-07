@@ -8,6 +8,7 @@
 #include <memory>
 
 class Context;
+class Box2dDebugDraw;
 
 class DebugSystem: private Receiver {
   public:
@@ -23,4 +24,6 @@ class DebugSystem: private Receiver {
 	float _lastFps{};
 
 	bool _isLogShown{};
+
+	std::shared_ptr<Box2dDebugDraw> _debugBox2dDraw;
 };

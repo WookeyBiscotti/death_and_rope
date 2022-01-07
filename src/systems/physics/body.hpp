@@ -17,6 +17,8 @@ class Body: public Component {
 
 	explicit Body(Entity& entity, Type type);
 
+	void position(Vector2f position);
+
 	~Body();
 
   private:

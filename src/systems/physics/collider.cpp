@@ -17,6 +17,6 @@ Collider::~Collider() {
 Collider::Collider(Entity& entity, Box_t, const Vector2f& size, float density, const Vector2f& origin):
     Component(entity) {
 	b2PolygonShape s;
-	s.SetAsBox(size.x * 0.5f, size.y * 0.5f);
+	s.SetAsBox(size.x * 0.5f, size.y * 0.5f, {size.x * 0.5f, size.y * 0.5f}, {});
 	entity.ref<Body>()._body->CreateFixture(&s, density);
 }
