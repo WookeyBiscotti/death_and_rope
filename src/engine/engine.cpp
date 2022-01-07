@@ -13,6 +13,7 @@
 #include <systems/physics/physics.hpp>
 #include <systems/render/render.hpp>
 #include <systems/scenes/scene_system.hpp>
+#include <systems/scripts/scripts.hpp>
 #include <systems/window/window.hpp>
 //
 #include <scenes/dev_menu.hpp>
@@ -52,6 +53,9 @@ void Engine::run(const char** argv, int argc, const EngineConfig& engineConfig) 
 
 	Config config(context, argv, argc);
 	context.addSystem(&config);
+
+	Scripts scripts;
+	context.addSystem(&scripts);
 
 	Window window(context);
 	context.addSystem(&window);

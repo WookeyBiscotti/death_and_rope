@@ -9,6 +9,7 @@
 #include <systems/physics/physics.hpp>
 #include <systems/render/drawable.hpp>
 #include <systems/render/render.hpp>
+#include <systems/scripts/scripts.hpp>
 #include <systems/window/events.hpp>
 #include <systems/window/inputs.hpp>
 #include <systems/window/window.hpp>
@@ -101,6 +102,19 @@ DebugSystem::DebugSystem(Context& context): Receiver(context.systemRef<Broker>()
 			ImGui::Begin("Logs(F12 to open/close)", nullptr,
 			    ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse |
 			        ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBringToFrontOnFocus);
+			static char buff[1024];
+			if (ImGui::InputText("", buff, sizeof(buff), ImGuiInputTextFlags_EnterReturnsTrue)) {
+				LINFO(buff);
+				auto& scripts = _context.systemRef<Scripts>();
+				scripts.eval(buff);
+				buff[0] = 0;
+				ImGui::SetKeyboardFocusHere(-1);
+			}
+			if (ImGui::IsItemHovered() || (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) &&
+			                                  !ImGui::IsAnyItemActive() && !ImGui::IsMouseClicked(0))) {
+				ImGui::SetKeyboardFocusHere(-1); // Auto focus previous widget
+			}
+
 			for (const auto& l : _context.systemRef<Logger>().logs()) {
 				ImGui::TextUnformatted(l.c_str());
 			}

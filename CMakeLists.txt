@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0.0)
+cmake_minimum_required(VERSION 3.18.0)
 
 project(death_and_rope VERSION 0.1.0)
 
@@ -13,6 +13,7 @@ add_subdirectory(3rdparty/spdlog)
 add_subdirectory(3rdparty/Catch2)
 add_subdirectory(3rdparty/AABBTree)
 add_subdirectory(3rdparty/box2d)
+add_subdirectory(3rdparty/sol2)
 
 add_compile_definitions(B2_USER_SETTINGS)
 
@@ -44,7 +45,9 @@ set(MAIN_SOURCES
     src/systems/physics/body.cpp
     src/systems/physics/collider.cpp
     src/systems/scenes/scene_system.cpp
-    src/systems/names/name.cpp)
+    src/systems/names/name.cpp
+    src/systems/scripts/scripts.cpp
+    )
 
 set(TESTS_SOURCES src/tests/engine/entity_tests.cpp
                   src/tests/engine/broker_tests.cpp)
@@ -56,7 +59,9 @@ set(DEPS_SOURCES
 
 set(INCLUDES_DEPS_DIRS
     src 3rdparty/imgui 3rdparty/imgui-sfml 3rdparty/imgui-filebrowser
-    3rdparty/imgui/misc/cpp 3rdparty/box2d/include)
+    3rdparty/imgui/misc/cpp 3rdparty/box2d/include 3rdparty/lua)
+
+set(RAW_LIBS_PATH 3rdparty/lua)
 
 set(DEPS_LIBS
     GL
@@ -66,13 +71,19 @@ set(DEPS_LIBS
     nlohmann_json
     cereal::cereal
     spdlog::spdlog
+    sol2::sol2
     aabb_tree
-    box2d)
+    box2d 
+    lua
+    ${CMAKE_DL_LIBS}
+    )
 
 add_executable(death_and_rope_exe src/game/main.cpp ${MAIN_SOURCES}
-                                  ${DEPS_SOURCES})
+    ${DEPS_SOURCES})
+target_link_directories(death_and_rope_exe PUBLIC ${RAW_LIBS_PATH})
 target_include_directories(death_and_rope_exe PUBLIC ${INCLUDES_DEPS_DIRS})
 target_link_libraries(death_and_rope_exe PUBLIC ${DEPS_LIBS})
+
 
 add_executable(death_and_rope_tests ${TESTS_SOURCES} ${MAIN_SOURCES}
                                     ${DEPS_SOURCES})

@@ -28,3 +28,9 @@
 [submodule "3rdparty/box2d"]
 	path = 3rdparty/box2d
 	url = https://github.com/erincatto/box2d.git
+[submodule "3rdparty/sol2"]
+	path = 3rdparty/sol2
+	url = https://github.com/ThePhD/sol2.git
+[submodule "3rdparty/lua"]
+	path = 3rdparty/lua
+	url = https://github.com/lua/lua.git
