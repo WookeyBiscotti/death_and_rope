@@ -2,13 +2,17 @@
 
 #if !defined(PROD_BUILD)
 
-#include <deque>
-#include <mutex>
+#include <engine/context.hpp>
+#include <systems/scripts/scripts.hpp>
 //
+#include <sol/state.hpp>
 #include <spdlog/details/null_mutex.h>
 #include <spdlog/pattern_formatter.h>
 #include <spdlog/sinks/base_sink.h>
 #include <spdlog/spdlog.h>
+//
+#include <deque>
+#include <mutex>
 
 template<typename Mutex, size_t N = 1024>
 class Sink: public spdlog::sinks::base_sink<Mutex> {
@@ -41,6 +45,11 @@ Logger::Logger() {
 }
 
 Logger::~Logger() {
+}
+
+void Logger::exportScriptFunctions(Context& context) {
+	auto& s = context.systemRef<Scripts>();
+	s.internal().set_function("log", [](sol::string_view s) { LINFO(s); });
 }
 
 const std::deque<std::string>& Logger::logs() const {

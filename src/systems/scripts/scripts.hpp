@@ -15,6 +15,8 @@ class Scripts: public System {
 	~Scripts();
 	void eval(const std::string& command);
 
+	sol::state& internal() { return *_state; }
+
   private:
 	std::unique_ptr<sol::state> _state;
 };

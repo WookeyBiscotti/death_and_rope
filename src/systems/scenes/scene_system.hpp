@@ -35,6 +35,8 @@ class SceneSystem: public System {
 	void removeSceneCache(const std::string& name);
 	std::shared_ptr<Scene> find(const std::string& name);
 
+	void exportScriptFunctions(Context& context) override;
+
   private:
 	std::shared_ptr<Scene> _current;
 	std::shared_ptr<Scene> _next;

@@ -17,7 +17,6 @@ Scripts::Scripts() {
 	_state = std::make_unique<sol::state>();
 	_state->open_libraries(sol::lib::base);
 	_state->set_exception_handler(&errorHandler);
-	_state->set_function("log", [](sol::string_view s) { LINFO(s); });
 }
 
 Scripts::~Scripts() {

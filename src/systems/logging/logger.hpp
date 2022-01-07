@@ -10,6 +10,8 @@ namespace spdlog::sinks {
 class sink;
 }
 
+class Context;
+
 namespace {
 using SinkImp = spdlog::sinks::sink;
 }
@@ -20,6 +22,8 @@ class Logger: public System {
 	~Logger();
 
 	const std::deque<std::string>& logs() const;
+
+	void exportScriptFunctions(Context& context) override;
 
   private:
 	std::shared_ptr<SinkImp> _sink;
