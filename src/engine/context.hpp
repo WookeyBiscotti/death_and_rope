@@ -2,6 +2,7 @@
 
 #include <common/prod_build_utils.hpp>
 #include <common/type_id.hpp>
+#include <engine/system.hpp>
 #include <systems/logging/logger.hpp>
 //
 #include <functional>
@@ -39,5 +40,5 @@ class Context {
 	}
 
   private:
-	std::unordered_map<type_id_t, void*> _systems;
+	std::unordered_map<type_id_t, System*> _systems;
 };

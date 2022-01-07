@@ -1,6 +1,7 @@
 #pragma once
 
 #include <common/types.hpp>
+#include <engine/system.hpp>
 //
 #include <functional>
 #include <string>
@@ -13,7 +14,7 @@ struct EngineConfig {
 	std::function<void(Context& context)> preEnd;
 };
 
-class Engine {
+class Engine: public System {
   public:
 	void run(const char** argv, int argc, const EngineConfig& config);
 

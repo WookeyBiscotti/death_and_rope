@@ -5,8 +5,7 @@
 
 #include <common/prod_build_utils.hpp>
 #include <common/type_id.hpp>
-#include <systems/broker/receiver.hpp>
-#include <systems/broker/sender.hpp>
+#include <systems/broker/broker.hpp>
 #include <systems/logging/logger.hpp>
 #include <systems/transform/transform.hpp>
 //

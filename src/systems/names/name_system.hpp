@@ -1,12 +1,14 @@
 #pragma once
 
+#include <engine/system.hpp>
+//
 #include <deque>
 #include <string>
 #include <unordered_map>
 
 class Entity;
 
-class NameSystem {
+class NameSystem: public System {
   public:
 	size_t add(const std::string& name, Entity* obj) {
 		auto& objs = _names[name];

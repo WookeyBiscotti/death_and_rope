@@ -5,11 +5,12 @@
 //
 #include <common/map_utils.hpp>
 #include <common/type_id.hpp>
+#include <engine/system.hpp>
 //
 #include <unordered_map>
 #include <unordered_set>
 
-class Broker {
+class Broker: public System {
   public:
 	template<class Event>
 	void subscribe(Receiver* receiver, std::function<void(Sender* sender, const Event& event)> fn) {

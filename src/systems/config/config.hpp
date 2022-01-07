@@ -2,6 +2,7 @@
 
 #include <common/types.hpp>
 #include <common/vector2.hpp>
+#include <engine/system.hpp>
 #include <systems/broker/sender.hpp>
 //
 #include <future>
@@ -28,7 +29,7 @@ struct StaticConfig {
 };
 
 class Context;
-class Config: public Sender {
+class Config: public Sender, public System {
   public:
 	Config(Context& context, const char** argv, int argc);
 

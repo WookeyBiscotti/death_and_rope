@@ -5,6 +5,7 @@
 #include "world.hpp"
 
 #include <common/types.hpp>
+#include <engine/system.hpp>
 #include <systems/scenes/scene.hpp>
 //
 #include <SFML/Graphics/Font.hpp>
@@ -15,7 +16,7 @@
 
 class Context;
 
-class AssetCache {
+class AssetCache: public System {
   public:
 	explicit AssetCache(Context& context);
 

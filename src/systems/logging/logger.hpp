@@ -1,5 +1,7 @@
 #pragma once
 
+#include <engine/system.hpp>
+//
 #include <deque>
 #include <memory>
 #include <string>
@@ -12,7 +14,7 @@ namespace {
 using SinkImp = spdlog::sinks::sink;
 }
 
-class Logger {
+class Logger: public System {
   public:
 	Logger();
 	~Logger();

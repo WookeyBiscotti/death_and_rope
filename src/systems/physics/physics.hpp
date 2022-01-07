@@ -2,6 +2,7 @@
 
 #include "collider.hpp"
 
+#include <engine/system.hpp>
 #include <systems/broker/receiver.hpp>
 //
 
@@ -14,7 +15,7 @@ class Context;
 class Entity;
 class Body;
 
-class Physics: public Receiver {
+class Physics: public Receiver, public System {
 	friend class Body;
 	friend class Collider;
 

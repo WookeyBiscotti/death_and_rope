@@ -1,7 +1,8 @@
 #pragma once
 
 #include <engine/context.hpp>
-#include <systems/broker/receiver.hpp>
+#include <engine/system.hpp>
+#include <systems/broker/broker.hpp>
 
 class Context;
 
@@ -9,7 +10,7 @@ namespace sf {
 struct Event;
 }
 
-class Scene: public Receiver {
+class Scene: public Receiver, public System {
   public:
 	virtual ~Scene() = default;
 

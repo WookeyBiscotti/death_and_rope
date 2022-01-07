@@ -1,5 +1,6 @@
 #pragma once
 
+#include <engine/system.hpp>
 #include <systems/assets/font.hpp>
 #include <systems/broker/receiver.hpp>
 //
@@ -10,7 +11,7 @@
 class Context;
 class Box2dDebugDraw;
 
-class DebugSystem: private Receiver {
+class DebugSystem: private Receiver, public System {
   public:
 	explicit DebugSystem(Context& context);
 

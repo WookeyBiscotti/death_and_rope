@@ -1,11 +1,12 @@
 #pragma once
 
+#include <engine/system.hpp>
 #include <systems/scenes/scene.hpp>
 //
 #include <functional>
 #include <memory>
 
-class SceneSystem {
+class SceneSystem: public System {
   public:
 	const std::shared_ptr<Scene>& current() { return _current; }
 

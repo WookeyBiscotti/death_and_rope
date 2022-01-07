@@ -2,12 +2,14 @@
 
 #include "drawable.hpp"
 
+#include <engine/system.hpp>
+//
 #include <memory>
 #include <unordered_set>
 
 class Context;
 class Camera;
-class Render {
+class Render: public System {
   public:
 	explicit Render(Context& context);
 

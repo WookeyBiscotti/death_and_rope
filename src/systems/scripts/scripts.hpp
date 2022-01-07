@@ -1,5 +1,7 @@
 #pragma once
 
+#include <engine/system.hpp>
+//
 #include <memory>
 #include <string>
 
@@ -7,7 +9,7 @@ namespace sol {
 class state;
 }
 
-class Scripts {
+class Scripts: public System {
   public:
 	Scripts();
 	~Scripts();

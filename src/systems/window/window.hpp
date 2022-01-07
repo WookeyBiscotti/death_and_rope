@@ -1,5 +1,6 @@
 #pragma once
 
+#include <engine/system.hpp>
 #include <systems/broker/sender.hpp>
 //
 #include <memory>
@@ -12,7 +13,7 @@ class RenderWindow;
 
 using RenderWindow = sf::RenderWindow;
 
-class Window: private Sender {
+class Window: private Sender, public System {
   public:
 	explicit Window(Context& context);
 	~Window();
