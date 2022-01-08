@@ -5,7 +5,7 @@
 #include <engine/context.hpp>
 #include <systems/scripts/scripts.hpp>
 //
-#include <sol/state.hpp>
+#include <chaiscript/chaiscript.hpp>
 #include <spdlog/details/null_mutex.h>
 #include <spdlog/pattern_formatter.h>
 #include <spdlog/sinks/base_sink.h>
@@ -49,7 +49,7 @@ Logger::~Logger() {
 
 void Logger::exportScriptFunctions(Context& context) {
 	auto& s = context.systemRef<Scripts>();
-	s.internal().set_function("log", [](sol::string_view s) { LINFO(s); });
+	s.internal().add(chaiscript::fun([](const std::string& s) { LINFO(s); }), "log");
 }
 
 const std::deque<std::string>& Logger::logs() const {

@@ -23,6 +23,7 @@
 #include <scenes/world_editor.hpp>
 //
 #include <SFML/Graphics.hpp>
+#include <chaiscript/chaiscript.hpp>
 #include <imgui-SFML.h>
 #include <imgui.h>
 //
@@ -94,13 +95,17 @@ void Engine::run(const char** argv, int argc, const EngineConfig& engineConfig) 
 	scenes.applyNext();
 
 	float lastFps = 60;
-	while (scenes.current()) {
+	while (true) {
 		const auto t1 = std::chrono::steady_clock::now();
 		window.pullEvents();
 
 		broker.send(EngineOnFrameStart{.lastFps = lastFps});
 
-		scenes.current()->onFrame();
+		if (scenes.current()) {
+			scenes.current()->onFrame();
+		} else {
+			break;
+		}
 
 		broker.send(EngineOnFramePreRender{});
 
@@ -127,7 +132,18 @@ void Engine::run(const char** argv, int argc, const EngineConfig& engineConfig) 
 		}
 	}
 
-	if (_config.preBegin) {
+	if (_config.preEnd) {
 		_config.preEnd(context);
 	}
+}
+
+void Engine::exportScriptFunctions(Context& context) {
+	using namespace chaiscript;
+	auto& chai = context.systemRef<Scripts>().internal();
+	chai.add(fun([&context] {
+		auto& scene = context.systemRef<SceneSystem>();
+		scene.next({});
+		scene.applyNext();
+	}),
+	    "exit");
 }

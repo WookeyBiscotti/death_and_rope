@@ -13,7 +13,7 @@ add_subdirectory(3rdparty/spdlog)
 add_subdirectory(3rdparty/Catch2)
 add_subdirectory(3rdparty/AABBTree)
 add_subdirectory(3rdparty/box2d)
-add_subdirectory(3rdparty/sol2)
+add_subdirectory(3rdparty/ChaiScript)
 
 add_compile_definitions(B2_USER_SETTINGS)
 
@@ -61,8 +61,6 @@ set(INCLUDES_DEPS_DIRS
     src 3rdparty/imgui 3rdparty/imgui-sfml 3rdparty/imgui-filebrowser
     3rdparty/imgui/misc/cpp 3rdparty/box2d/include 3rdparty/lua)
 
-set(RAW_LIBS_PATH 3rdparty/lua)
-
 set(DEPS_LIBS
     GL
     GLU
@@ -71,16 +69,14 @@ set(DEPS_LIBS
     nlohmann_json
     cereal::cereal
     spdlog::spdlog
-    sol2::sol2
     aabb_tree
-    box2d 
-    lua
+    box2d
+    chaiscript
     ${CMAKE_DL_LIBS}
     )
 
 add_executable(death_and_rope_exe src/game/main.cpp ${MAIN_SOURCES}
     ${DEPS_SOURCES})
-target_link_directories(death_and_rope_exe PUBLIC ${RAW_LIBS_PATH})
 target_include_directories(death_and_rope_exe PUBLIC ${INCLUDES_DEPS_DIRS})
 target_link_libraries(death_and_rope_exe PUBLIC ${DEPS_LIBS})
 

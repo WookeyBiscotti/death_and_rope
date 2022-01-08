@@ -31,6 +31,8 @@ class SceneSystem: public System {
 		_current = std::move(_next);
 	}
 
+	std::vector<std::string> list() const;
+
 	void registerScene(const std::string& name, std::function<std::shared_ptr<Scene>()> creator);
 	void removeSceneCache(const std::string& name);
 	std::shared_ptr<Scene> find(const std::string& name);

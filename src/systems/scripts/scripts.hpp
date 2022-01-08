@@ -5,8 +5,8 @@
 #include <memory>
 #include <string>
 
-namespace sol {
-class state;
+namespace chaiscript {
+class ChaiScript;
 }
 
 class Scripts: public System {
@@ -15,8 +15,8 @@ class Scripts: public System {
 	~Scripts();
 	void eval(const std::string& command);
 
-	sol::state& internal() { return *_state; }
+	chaiscript::ChaiScript& internal() { return *_state; }
 
   private:
-	std::unique_ptr<sol::state> _state;
+	std::unique_ptr<chaiscript::ChaiScript> _state;
 };

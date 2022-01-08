@@ -2,26 +2,37 @@
 
 #include <systems/logging/logger.hpp>
 //
-#include <sol/sol.hpp>
+#include <chaiscript/chaiscript.hpp>
 //
 
-int errorHandler(lua_State* L, sol::optional<const std::exception&> e, std::string_view s) {
-	LERR_IF(e.has_value(), "Exception: {}", e->what());
-	LERR("Error: {}", s);
-
-	lua_pushlstring(L, s.data(), s.size());
-	return 1;
-}
-
 Scripts::Scripts() {
-	_state = std::make_unique<sol::state>();
-	_state->open_libraries(sol::lib::base);
-	_state->set_exception_handler(&errorHandler);
+	using namespace chaiscript;
+
+	_state = std::make_unique<chaiscript::ChaiScript>();
+
+	auto lib = std::make_shared<Module>();
+	bootstrap::standard_library::vector_type<std::vector<std::string>>("StringVector", *lib);
+	_state->add(lib);
+	_state->add(fun([](const std::vector<std::string>& v) {
+		std::string str;
+		for (const auto& s : v) {
+			str += s;
+			if (&s != &v.back()) {
+				str += ", ";
+			}
+		}
+		return str;
+	}),
+	    "to_string");
 }
 
 Scripts::~Scripts() {
 }
 
 void Scripts::eval(const std::string& command) {
-	_state->do_string(command);
+	// TODO: Do smth here
+	try {
+		auto res = _state->eval(command);
+		// LERR("Executing error: {}", res);
+	} catch (const std::exception& e) { LERR("Executing error: {}", e.what()); }
 }

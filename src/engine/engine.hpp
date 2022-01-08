@@ -20,6 +20,8 @@ class Engine: public System {
 
 	const EngineConfig& config() const { return _config; }
 
+	void exportScriptFunctions(Context& context) override;
+
   private:
 	EngineConfig _config;
 };

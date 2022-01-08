@@ -2,6 +2,8 @@
 
 #include <common/vector2.hpp>
 #include <engine/component.hpp>
+//
+#include <cereal/cereal.hpp>
 
 class Transform: public Component {
   public:
