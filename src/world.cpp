@@ -1,5 +1,6 @@
-#include "tile_utils.hpp"
 #include "world.hpp"
+
+#include "tile_utils.hpp"
 
 #include <SFML/Graphics.hpp>
 #include <common/archive.hpp>
@@ -66,29 +67,29 @@ void World::draw(sf::RenderTarget& window, const sf::View& camera) {
 void World::saveToDir(const std::string& path) const {
 	LINFO("Saving world to: {}", path);
 
-	std::filesystem::create_directory(path);
-	for (const auto& [idx, cell] : _loadedCells) {
-		const auto name = std::to_string(idx.x) + "_" + std::to_string(idx.y);
-		std::ofstream stream(path + "/" + name);
-		OArchive archive(stream);
+	// std::filesystem::create_directory(path);
+	// for (const auto& [idx, cell] : _loadedCells) {
+	// 	const auto name = std::to_string(idx.x) + "_" + std::to_string(idx.y);
+	// 	std::ofstream stream(path + "/" + name);
+	// 	OArchive archive(stream);
 
-		archive << *cell;
-	}
+	// 	archive << *cell;
+	// }
 }
 
 void World::loadFromDir(const std::string& path) {
 	LINFO("Loading world from: {}", path);
-	for (const auto& entry : std::filesystem::directory_iterator(path)) {
-		if (entry.is_regular_file()) {
-			const auto name = entry.path().filename().string();
-			// Vector2i idx;
-			// idx.x = std::stoi(name.substr(0, name.find('_')));
-			// idx.y = std::stoi(name.substr(name.find('_') + 1));
-			std::ifstream stream(path + "/" + name);
-			IArchive archive(stream);
-			auto cell = std::make_shared<WorldCell>();
-			archive >> *cell;
-			_loadedCells[cell->cellPosition] = std::move(cell);
-		}
-	}
+	// for (const auto& entry : std::filesystem::directory_iterator(path)) {
+	// 	if (entry.is_regular_file()) {
+	// 		const auto name = entry.path().filename().string();
+	// 		// Vector2i idx;
+	// 		// idx.x = std::stoi(name.substr(0, name.find('_')));
+	// 		// idx.y = std::stoi(name.substr(name.find('_') + 1));
+	// 		std::ifstream stream(path + "/" + name);
+	// 		IArchive archive(stream);
+	// 		auto cell = std::make_shared<WorldCell>();
+	// 		archive >> *cell;
+	// 		_loadedCells[cell->cellPosition] = std::move(cell);
+	// 	}
+	// }
 }

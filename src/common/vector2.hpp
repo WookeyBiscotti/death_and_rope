@@ -1,5 +1,7 @@
 #pragma once
 
+#include <common/archive.hpp>
+//
 #include <SFML/System/Vector2.hpp>
 #include <box2d/b2_math.h>
 //
@@ -20,34 +22,43 @@ inline b2Vec2 to(const Vector2f& vec) {
 	return {vec.x, vec.y};
 }
 
-inline float vec(const sf::Vector2f& a, const sf::Vector2f& b) {
+inline float vec(const Vector2f& a, const sf::Vector2f& b) {
 	return a.x * b.y - a.y * b.x;
 }
 
-inline float cross(const sf::Vector2f& a, const sf::Vector2f& b) {
+inline float cross(const Vector2f& a, const sf::Vector2f& b) {
 	return a.x * b.x + a.y * b.y;
 }
 
-inline sf::Vector2f mod(const sf::Vector2f& p) {
+inline Vector2f mod(const Vector2f& p) {
 	return p / std::sqrt(p.x * p.x + p.y * p.y);
 }
 
-inline sf::Vector2f athwart(const sf::Vector2f& p) {
+inline Vector2f athwart(const Vector2f& p) {
 	return {-p.y, p.x};
 }
 
-inline float length(const sf::Vector2f& p) {
+inline float length(const Vector2f& p) {
 	return std::sqrt(p.x * p.x + p.y * p.y);
 }
 
-inline float sin(const sf::Vector2f& a1, const sf::Vector2f& a2, const sf::Vector2f& b1, const sf::Vector2f& b2) {
+inline float sin(const Vector2f& a1, const Vector2f& a2, const Vector2f& b1, const Vector2f& b2) {
 	auto a = a2 - a1;
 	auto b = b2 - b1;
 	return vec(a, b) / (cross(a, a) * cross(b, b));
 }
 
 template<class Archive, class T>
-void serialize(Archive& archive, sf::Vector2<T>& m) {
+inline void serialize(Archive& archive, Vector2<T>& m) {
+	archive(m.x, m.y);
+}
+
+template<class Archive>
+inline void serialize(Archive& archive, b2Vec2& m) {
+	archive(m.x, m.y);
+}
+template<class Archive>
+inline void serialize(Archive& archive, const b2Vec2& m) {
 	archive(m.x, m.y);
 }
 

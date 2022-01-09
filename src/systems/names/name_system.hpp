@@ -11,10 +11,14 @@ class Entity;
 class NameSystem: public System {
   public:
 	size_t add(const std::string& name, Entity* obj) {
-		auto& objs = _names[name];
-		objs.push_back(obj);
+		if (!name.empty()) {
+			auto& objs = _names[name];
+			objs.push_back(obj);
 
-		return objs.size();
+			return objs.size();
+		}
+
+		return 0;
 	}
 
 	size_t remove(const std::string& name) {

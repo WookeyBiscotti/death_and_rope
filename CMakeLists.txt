@@ -47,6 +47,7 @@ set(MAIN_SOURCES
     src/systems/scenes/scene_system.cpp
     src/systems/names/name.cpp
     src/systems/scripts/scripts.cpp
+    src/engine/entity.cpp
     )
 
 set(TESTS_SOURCES src/tests/engine/entity_tests.cpp

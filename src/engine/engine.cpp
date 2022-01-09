@@ -94,6 +94,13 @@ void Engine::run(const char** argv, int argc, const EngineConfig& engineConfig) 
 	scenes.findNext(_config.startScene);
 	scenes.applyNext();
 
+	Entity e(context);
+	std::ofstream os("test");
+	OArchive ar(os);
+
+	e.serialize(ar);
+	ar << e;
+
 	float lastFps = 60;
 	while (true) {
 		const auto t1 = std::chrono::steady_clock::now();

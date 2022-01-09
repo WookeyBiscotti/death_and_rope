@@ -1,9 +1,9 @@
 #pragma once
 
+#include <common/archive.hpp>
 #include <common/vector2.hpp>
 #include <engine/component.hpp>
 //
-#include <cereal/cereal.hpp>
 
 class Transform: public Component {
   public:
@@ -27,6 +27,13 @@ class Transform: public Component {
 
 	void rotation(float rotation);
 	void r(float rotation) { this->rotation(rotation); }
+
+	template<class Archive>
+	void serialize(Archive& ar) {
+		::serialize(ar, _position);
+		::serialize(ar, _size);
+		ar(_rotation);
+	}
 
   private:
 	Vector2f _position{};
