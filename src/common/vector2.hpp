@@ -10,6 +10,7 @@
 
 template<class T>
 using Vector2 = sf::Vector2<T>;
+
 using Vector2f = sf::Vector2f;
 using Vector2u = sf::Vector2u;
 using Vector2i = sf::Vector2i;
@@ -50,6 +51,11 @@ inline float sin(const Vector2f& a1, const Vector2f& a2, const Vector2f& b1, con
 
 template<class Archive, class T>
 inline void serialize(Archive& archive, Vector2<T>& m) {
+	archive(m.x, m.y);
+}
+
+template<class Archive, class T>
+inline void serialize(Archive& archive, const Vector2<T>& m) {
 	archive(m.x, m.y);
 }
 

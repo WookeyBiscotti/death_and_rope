@@ -1,8 +1,11 @@
 #include "entity.hpp"
 
+#include <systems/group/group.hpp>
 #include <systems/names/name.hpp>
 #include <systems/physics/body.hpp>
 #include <systems/physics/collider.hpp>
+#include <systems/render/camera.hpp>
+#include <systems/render/sprite_component.hpp>
 #include <systems/transform/transform.hpp>
 //
 #include <cereal/cereal.hpp>
@@ -83,4 +86,7 @@ void Entity::initSerialization() {
 	ADD_COMPONENT(Name);
 	ADD_COMPONENT(Body);
 	ADD_COMPONENT(Collider);
+	ADD_COMPONENT(Camera);
+	ADD_COMPONENT(SpriteComponent);
+	ADD_COMPONENT(Group);
 }

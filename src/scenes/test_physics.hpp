@@ -33,7 +33,7 @@ class TestPhysicsScene: public Scene {
 		_root = std::make_unique<Entity>(context());
 		_root->add<Group>().add<Name>("root");
 
-		auto& objs = _root->ref<Group>().create().add<Group>(Group::SYNC_MOVE);
+		auto& objs = _root->ref<Group>().create().add<Group>(Group::SyncMove);
 		auto tex = context().systemRef<AssetCache>().texture("head.png");
 		for (int i = 0; i != 100; ++i) {
 			auto& head = objs.ref<Group>().create();

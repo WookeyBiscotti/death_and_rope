@@ -11,7 +11,12 @@ using Recti = sf::IntRect;
 using Rectf = sf::FloatRect;
 
 template<class Archive, class T>
-void serialize(Archive& archive, sf::Rect<T>& m) {
+void serialize(Archive& archive, Rect<T>& m) {
+	archive(m.left, m.top, m.width, m.height);
+}
+
+template<class Archive, class T>
+void serialize(Archive& archive, const Rect<T>& m) {
 	archive(m.left, m.top, m.width, m.height);
 }
 

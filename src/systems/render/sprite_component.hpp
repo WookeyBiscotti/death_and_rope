@@ -28,6 +28,9 @@ class SpriteComponent: public Drawable {
 
 	void draw(RenderTarget& target, const RenderStates& state) override;
 
+	template<class Archive>
+	void serialize(Archive& ar);
+
   private:
 	std::shared_ptr<Texture> _texture;
 	sf::Sprite _sprite;
