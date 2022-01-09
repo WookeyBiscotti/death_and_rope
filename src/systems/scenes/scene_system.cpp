@@ -1,6 +1,7 @@
 #include "scene_system.hpp"
 
 #include <engine/context.hpp>
+#include <engine/entity.hpp>
 #include <systems/scripts/scripts.hpp>
 //
 #include <chaiscript/chaiscript.hpp>
@@ -42,13 +43,17 @@ std::vector<std::string> SceneSystem::list() const {
 void SceneSystem::exportScriptFunctions(Context& context) {
 	using namespace chaiscript;
 	auto& chai = context.systemRef<Scripts>().internal();
-	chai.add(var(*this), "scene");
+	chai.add(var(this), "scene");
 	chai.add(user_type<SceneSystem>(), "SceneSystem");
 	chai.add(fun(&SceneSystem::findNext), "findNext");
 	chai.add(fun(&SceneSystem::applyNext), "applyNext");
 	chai.add(fun(&SceneSystem::list), "list");
 	chai.add(fun(&SceneSystem::find), "find");
 	chai.add(fun<void (SceneSystem::*)(std::shared_ptr<Scene>)>(&SceneSystem::next), "next");
-	// chai.add_global_const(const_var((Scene*)0), "nullScene");
 	chai.add_global_const(const_var(std::shared_ptr<Scene>{}), "nullScene");
+
+	chai.add(fun(&Scene::root), "root");
+	chai.add(user_type<Scene>(), "Scene");
+
+	chai.add(fun(&SceneSystem::current), "current");
 }

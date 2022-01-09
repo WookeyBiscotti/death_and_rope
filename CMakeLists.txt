@@ -46,6 +46,7 @@ set(MAIN_SOURCES
     src/systems/physics/collider.cpp
     src/systems/scenes/scene_system.cpp
     src/systems/names/name.cpp
+    src/systems/names/name_system.cpp
     src/systems/scripts/scripts.cpp
     src/engine/entity.cpp
     )

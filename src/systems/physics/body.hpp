@@ -16,6 +16,8 @@ class Body: public Component {
 		KINETIC,
 	};
 
+	explicit Body(Entity& entity);
+
 	explicit Body(Entity& entity, Type type);
 
 	void position(Vector2f position);

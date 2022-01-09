@@ -96,7 +96,7 @@ void Collider::serialize(IArchive& ar) {
 			ar(count);
 			std::array<b2Vec2, b2_maxPolygonVertices> verts;
 			for (int i = 0; i != count; ++i) {
-				ar(verts[0]);
+				ar(verts[i]);
 			}
 			b2PolygonShape s;
 			s.Set(verts.data(), count);

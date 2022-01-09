@@ -4,6 +4,7 @@
 #include <systems/broker/broker.hpp>
 
 class Context;
+class Entity;
 
 namespace sf {
 struct Event;
@@ -22,6 +23,8 @@ class Scene: public Receiver {
 
 	virtual bool active() const { return true; };
 	virtual void active(bool active){};
+
+	virtual Entity* root() { return nullptr; }
 
   private:
 	Context& _context;

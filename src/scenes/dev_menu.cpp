@@ -19,10 +19,10 @@ void DevMenu::onFrame() {
 		context().systemRef<SceneSystem>().findNext("world_editor");
 	}
 	if (ImGui::Button("Test scene")) {
-		context().systemRef<SceneSystem>().findNext("test_scene");
+		context().systemRef<SceneSystem>().findNext("test");
 	}
 	if (ImGui::Button("Test physics scene")) {
-		context().systemRef<SceneSystem>().findNext("test_physics_scene");
+		context().systemRef<SceneSystem>().findNext("test_physics");
 	}
 	if (ImGui::Button("Back")) {
 		context().systemRef<SceneSystem>().findNext("main_menu");

@@ -35,17 +35,18 @@ void Group::remove(const std::unique_ptr<Entity>& entity) {
 template<>
 void Group::serialize(IArchive& ar) {
 	ar(_moveChilds);
-	ar(static_cast<int>(_childs.size()));
-	for (auto& c : _childs) {
-		c->serialize(ar);
+	int count;
+	ar(count);
+	while (count-- != 0) {
+		create().serialize(ar);
 	}
 }
 
 template<>
 void Group::serialize(OArchive& ar) {
 	ar(_moveChilds);
-	int count;
-	while (count-- != 0) {
-		create().serialize(ar);
+	ar(static_cast<int>(_childs.size()));
+	for (auto& c : _childs) {
+		c->serialize(ar);
 	}
 }

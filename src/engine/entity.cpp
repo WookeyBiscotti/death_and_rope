@@ -22,6 +22,9 @@ void Entity::serialize(IArchive& ar) {
 	if (!_components.empty()) {
 		_components.clear();
 	}
+
+	deserializeFns[idToName[TypeId<Transform>()]](ar, *this);
+
 	int count;
 	ar >> count;
 	while (count-- != 0) {
@@ -33,6 +36,8 @@ void Entity::serialize(IArchive& ar) {
 
 template<>
 void Entity::serialize(OArchive& ar) {
+	serializeFns[idToName[TypeId<Transform>()]](ar, *this);
+
 	ar << static_cast<int>(_components.size());
 	// Body must be created before colider
 	if (auto body = get<Body>()) {
@@ -64,11 +69,11 @@ inline void TransformDeserialize(IArchive& ia, Entity& e) {
 #define ADD_COMPONENT(NAME)                                     \
 	idToName.emplace(TypeId<NAME>(), #NAME);                    \
 	serializeFns.emplace(#NAME, [](OArchive& oa, Entity& e) {   \
-		auto& c = e.ref<Name>();                                \
+		auto& c = e.ref<NAME>();                                \
 		c.serialize(oa);                                        \
 	});                                                         \
 	deserializeFns.emplace(#NAME, [](IArchive& ia, Entity& e) { \
-		auto& c = e.add<Name>();                                \
+		auto& c = e.add<NAME>().ref<NAME>();                    \
 		c.serialize(ia);                                        \
 	});
 

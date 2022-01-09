@@ -101,13 +101,39 @@ DebugSystem::DebugSystem(Context& context): Receiver(context.systemRef<Broker>()
 			ImGui::SetNextWindowBgAlpha(0.5f);
 			ImGui::Begin("Logs(F12 to open/close)", nullptr,
 			    ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse |
-			        ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBringToFrontOnFocus);
-			static char buff[1024];
-			if (ImGui::InputText("", buff, sizeof(buff), ImGuiInputTextFlags_EnterReturnsTrue)) {
-				LINFO(buff);
+			        ImGuiWindowFlags_NoTitleBar);
+			auto callback = [](ImGuiInputTextCallbackData* data) -> int {
+				auto& self = *static_cast<DebugSystem*>(data->UserData);
+				if (data->EventFlag | ImGuiInputTextFlags_CallbackHistory) {
+					if (data->EventKey == ImGuiKey_DownArrow) {
+						if (self._commandsHistoryPos == -1 || self._commandsHistoryPos == 0) {
+							self._commandsHistoryPos = -1;
+							data->DeleteChars(0, data->BufTextLen);
+							return 0;
+						} else {
+							self._commandsHistoryPos--;
+						}
+					} else if (data->EventKey == ImGuiKey_UpArrow) {
+						if (self._commandsHistoryPos + 1 != self._commandsHistory.size()) {
+							self._commandsHistoryPos++;
+						} else {
+							return 0;
+						}
+					}
+					data->DeleteChars(0, data->BufTextLen);
+					data->InsertChars(0, self._commandsHistory[self._commandsHistoryPos].c_str());
+				}
+
+				return 0;
+			};
+
+			if (ImGui::InputText("", _buffer.data(), _buffer.size(),
+			        ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_CallbackHistory, callback, this)) {
+				LINFO(_buffer.data());
 				auto& scripts = _context.systemRef<Scripts>();
-				scripts.eval(buff);
-				buff[0] = 0;
+				_commandsHistory.push_front(_buffer.data());
+				scripts.eval(_buffer.data());
+				_buffer[0] = 0;
 				ImGui::SetKeyboardFocusHere(-1);
 			}
 			if (ImGui::IsItemHovered() || (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) &&

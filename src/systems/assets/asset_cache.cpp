@@ -15,6 +15,7 @@ namespace fs = std::filesystem;
 static const Path TEXTURES_PATH = "assets/textures/";
 static const Path FONTS_PATH = "assets/fonts/";
 static const Path WORLDS_PATH = "assets/worlds/";
+static const Path ENTITY_PATH = "assets/entity/";
 
 static const std::string DEFAULT_FONT = "UbuntuMono-Bold.ttf";
 
@@ -24,6 +25,9 @@ static const std::unordered_map<std::string, std::string> FONT_DEFAULTS_MAP = {
 
 Path AssetCache::worldsPath() const {
 	return fs::path(_root) / WORLDS_PATH;
+}
+Path AssetCache::entityPath() const {
+	return fs::path(_root) / ENTITY_PATH;
 }
 
 Path AssetCache::fontsPath() const {

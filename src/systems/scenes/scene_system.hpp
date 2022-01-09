@@ -8,6 +8,9 @@
 
 class SceneSystem: public System {
   public:
+	SceneSystem() = default;
+	SceneSystem(const SceneSystem&) = delete;
+
 	const std::shared_ptr<Scene>& current() { return _current; }
 
 	void next(std::shared_ptr<Scene> scene) { _next = std::move(scene); }

@@ -6,6 +6,8 @@
 //
 #include <SFML/Graphics/Text.hpp>
 //
+#include <array>
+#include <deque>
 #include <memory>
 
 class Context;
@@ -27,4 +29,7 @@ class DebugSystem: private Receiver, public System {
 	bool _isLogShown{};
 
 	std::shared_ptr<Box2dDebugDraw> _debugBox2dDraw;
+	std::deque<std::string> _commandsHistory;
+	int _commandsHistoryPos = -1;
+	std::array<char, 2048> _buffer;
 };

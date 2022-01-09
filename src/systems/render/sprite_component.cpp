@@ -37,6 +37,7 @@ void SpriteComponent::serialize(OArchive& ar) {
 	if (_texture) {
 		ar(_texture->name());
 	}
+	::serialize(ar, _sprite.getTextureRect());
 	::serialize(ar, _sprite.getPosition());
 	ar(_sprite.getRotation());
 }
@@ -49,7 +50,12 @@ void SpriteComponent::serialize(IArchive& ar) {
 		std::string path;
 		ar(path);
 		_texture = entity().context().systemRef<AssetCache>().texture(path);
+		_sprite.setTexture(_texture->sf());
 	}
+
+	std::decay_t<decltype(_sprite.getTextureRect())> rect;
+	::serialize(ar, rect);
+	_sprite.setTextureRect(rect);
 
 	std::decay_t<decltype(_sprite.getPosition())> position;
 	::serialize(ar, position);

@@ -8,6 +8,9 @@
 //
 #include <box2d/box2d.h>
 
+Body::Body(Entity& entity): Component(entity) {
+}
+
 Body::Body(Entity& entity, Type type): Component(entity) {
 	auto& w = entity.context().systemRef<Physics>().internalWorld();
 	b2BodyDef bd;

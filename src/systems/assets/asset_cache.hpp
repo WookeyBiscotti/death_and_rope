@@ -23,6 +23,7 @@ class AssetCache: public System {
 	Path texturesPath() const;
 	Path fontsPath() const;
 	Path worldsPath() const;
+	Path entityPath() const;
 
 	std::shared_ptr<Texture> texture(const std::string& name);
 	std::shared_ptr<Font> font(const std::string& name);

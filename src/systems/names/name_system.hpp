@@ -9,7 +9,20 @@
 class Entity;
 
 class NameSystem: public System {
+	friend class Name;
+
   public:
+	Entity* find(const std::string& name) {
+		if (auto found = _names.find(name); found != _names.end()) {
+			return found->second.back();
+		}
+
+		return nullptr;
+	}
+
+	void exportScriptFunctions(Context& context) override;
+
+  private:
 	size_t add(const std::string& name, Entity* obj) {
 		if (!name.empty()) {
 			auto& objs = _names[name];
@@ -33,14 +46,6 @@ class NameSystem: public System {
 		}
 
 		return {};
-	}
-
-	Entity* find(const std::string& name) {
-		if (auto found = _names.find(name); found != _names.end()) {
-			return found->second.back();
-		}
-
-		return nullptr;
 	}
 
   private:

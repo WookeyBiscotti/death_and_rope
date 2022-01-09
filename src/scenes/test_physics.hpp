@@ -91,6 +91,8 @@ class TestPhysicsScene: public Scene {
 		context().systemRef<Render>().camera(&camera.ref<Camera>());
 	};
 
+	Entity* root() override { return _root.get(); }
+
   private:
 	std::unique_ptr<Entity> _root;
 };
