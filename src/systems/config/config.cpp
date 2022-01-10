@@ -1,4 +1,5 @@
 #include "config.hpp"
+
 #include "events.hpp"
 #include "systems/broker/broker.hpp"
 
@@ -27,7 +28,7 @@ std::string getHomeDir() {
 	return homedir;
 }
 #else
-// define for her platforms
+// define for other platforms
 static_assert();
 #endif
 using namespace std::literals::string_literals;

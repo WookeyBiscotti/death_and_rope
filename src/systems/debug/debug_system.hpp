@@ -18,6 +18,10 @@ class DebugSystem: private Receiver, public System {
 	explicit DebugSystem(Context& context);
 
   private:
+	void dumpHistoryToFilesystem();
+	void loadHistoryFromFilesystem();
+
+  private:
 	Context& _context;
 
 	std::shared_ptr<Font> _font;

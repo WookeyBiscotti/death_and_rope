@@ -6,6 +6,7 @@
 #include <systems/broker/broker.hpp>
 #include <systems/config/config.hpp>
 #include <systems/debug/debug_system.hpp>
+#include <systems/filesystem/filesystem.hpp>
 #include <systems/group/group_system.hpp>
 #include <systems/imgui/imgui_system.hpp>
 #include <systems/logging/logger.hpp>
@@ -54,6 +55,9 @@ void Engine::run(const char** argv, int argc, const EngineConfig& engineConfig) 
 
 	Config config(context, argv, argc);
 	context.addSystem(&config);
+
+	FileSystem filesystem(context);
+	context.addSystem(&filesystem);
 
 	Scripts scripts;
 	context.addSystem(&scripts);

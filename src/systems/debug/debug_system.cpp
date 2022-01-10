@@ -2,9 +2,11 @@
 
 #if !defined(PROD_BUILD)
 
+#include <common/json.hpp>
 #include <engine/context.hpp>
 #include <engine/events.hpp>
 #include <systems/assets/asset_cache.hpp>
+#include <systems/filesystem/filesystem.hpp>
 #include <systems/logging/logger.hpp>
 #include <systems/physics/physics.hpp>
 #include <systems/render/drawable.hpp>
@@ -17,6 +19,8 @@
 #include <SFML/Graphics.hpp>
 #include <box2d/b2_draw.h>
 #include <imgui.h>
+
+constexpr auto HISTORY_PATH = ".commands_history";
 
 class Box2dDebugDraw: public b2Draw {
   public:
@@ -76,7 +80,21 @@ class Box2dDebugDraw: public b2Draw {
 	RenderTarget& _target;
 };
 
+void DebugSystem::dumpHistoryToFilesystem() {
+	Json js(_commandsHistory);
+	_context.systemRef<FileSystem>().save(HISTORY_PATH, js.dump(1));
+}
+
+void DebugSystem::loadHistoryFromFilesystem() {
+	try {
+		auto js = Json::parse(_context.systemRef<FileSystem>().load(HISTORY_PATH));
+		_commandsHistory = js.get<decltype(_commandsHistory)>();
+	} catch (...) {}
+}
+
 DebugSystem::DebugSystem(Context& context): Receiver(context.systemRef<Broker>()), _context(context) {
+	loadHistoryFromFilesystem();
+
 	_font = context.systemRef<AssetCache>().font("default");
 
 	_text.setFont(_font->sf());
@@ -132,6 +150,7 @@ DebugSystem::DebugSystem(Context& context): Receiver(context.systemRef<Broker>()
 				LINFO(_buffer.data());
 				auto& scripts = _context.systemRef<Scripts>();
 				_commandsHistory.push_front(_buffer.data());
+				dumpHistoryToFilesystem();
 				scripts.eval(_buffer.data());
 				_buffer[0] = 0;
 				ImGui::SetKeyboardFocusHere(-1);

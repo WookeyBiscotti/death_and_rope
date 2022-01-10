@@ -18,7 +18,7 @@ bool jsonRead(const Json& js, const char* name, T& val) {
 	return false;
 }
 template<>
-bool jsonRead<Vector2u>(const Json& js, const char* name, Vector2u& val) {
+inline bool jsonRead<Vector2u>(const Json& js, const char* name, Vector2u& val) {
 	try {
 		val.x = js.at(name).at("x");
 		val.y = js.at(name).at("y");
@@ -27,7 +27,7 @@ bool jsonRead<Vector2u>(const Json& js, const char* name, Vector2u& val) {
 	return false;
 }
 template<>
-bool jsonRead<Path>(const Json& js, const char* name, Path& val) {
+inline bool jsonRead<Path>(const Json& js, const char* name, Path& val) {
 	std::string pathStr;
 	if (jsonRead(js, name, pathStr)) {
 		val = pathStr;
@@ -42,11 +42,11 @@ void jsonWrite(Json& js, const char* name, const T& val) {
 	js[name] = val;
 }
 template<>
-void jsonWrite<Path>(Json& js, const char* name, const Path& val) {
+inline void jsonWrite<Path>(Json& js, const char* name, const Path& val) {
 	js[name] = val.string();
 }
 template<>
-void jsonWrite<Vector2u>(Json& js, const char* name, const Vector2u& val) {
+inline void jsonWrite<Vector2u>(Json& js, const char* name, const Vector2u& val) {
 	js[name]["x"] = val.x;
 	js[name]["y"] = val.y;
 }
