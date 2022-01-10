@@ -14,7 +14,6 @@ namespace fs = std::filesystem;
 
 static const Path TEXTURES_PATH = "assets/textures/";
 static const Path FONTS_PATH = "assets/fonts/";
-static const Path WORLDS_PATH = "assets/worlds/";
 static const Path ENTITY_PATH = "assets/entity/";
 
 static const std::string DEFAULT_FONT = "UbuntuMono-Bold.ttf";
@@ -23,9 +22,6 @@ static const std::unordered_map<std::string, std::string> FONT_DEFAULTS_MAP = {
     {"default", DEFAULT_FONT},
 };
 
-Path AssetCache::worldsPath() const {
-	return fs::path(_root) / WORLDS_PATH;
-}
 Path AssetCache::entityPath() const {
 	return fs::path(_root) / ENTITY_PATH;
 }
@@ -87,17 +83,6 @@ std::vector<uint8_t> AssetCache::readBinaryFile(const std::string& filePath) {
 	return data;
 }
 
-std::vector<std::string> AssetCache::worlds() const {
-	std::vector<std::string> result;
-	for (const auto& entry : std::filesystem::directory_iterator(worldsPath())) {
-		if (entry.is_directory()) {
-			result.push_back(entry.path().filename().string());
-		}
-	}
-
-	return result;
-}
-
 std::shared_ptr<Font> AssetCache::font(const std::string& name) {
 	if (auto found = _fonts.find(name); found != _fonts.end()) {
 		LINFO("Load font from cache: {}", name);
@@ -130,19 +115,4 @@ std::shared_ptr<Font> AssetCache::font(const std::string& name) {
 
 		return AssetCache::font(DEFAULT_FONT);
 	}
-}
-
-World AssetCache::world(const std::string& name) {
-	// std::ifstream f(WORLD_PATH + name);
-	// IArchive ar(f);
-	World w;
-	// ar >> w;
-
-	return w;
-}
-
-void AssetCache::world(const World& world, const std::string& name) {
-	// std::ofstream f(WORLD_PATH + name);
-	// OArchive ar(f);
-	// ar << world;
 }

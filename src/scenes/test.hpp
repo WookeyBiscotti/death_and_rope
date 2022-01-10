@@ -5,14 +5,15 @@
 #include <engine/events.hpp>
 #include <systems/assets/asset_cache.hpp>
 #include <systems/render/camera.hpp>
-#include <systems/render/render.hpp>
+#include <systems/render/drawable.hpp>
 #include <systems/render/sprite_component.hpp>
 #include <systems/scenes/scene.hpp>
 #include <systems/transform/transform.hpp>
 #include <systems/window/inputs.hpp>
 #include <systems/window/window.hpp>
-#include <world.hpp>
 //
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/View.hpp>
 //
 #include <memory>

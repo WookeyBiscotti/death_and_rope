@@ -4,8 +4,6 @@ project(death_and_rope VERSION 0.1.0)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(death_and_rope_exp main.cpp world_cell.cpp)
-
 add_subdirectory(3rdparty/SFML)
 add_subdirectory(3rdparty/json)
 add_subdirectory(3rdparty/cereal)
@@ -17,42 +15,8 @@ add_subdirectory(3rdparty/ChaiScript)
 
 add_compile_definitions(B2_USER_SETTINGS)
 
-target_link_libraries(death_and_rope_exp PUBLIC sfml-graphics sfml-audio)
-
-set(MAIN_SOURCES
-    src/rope.cpp
-    src/engine/engine.cpp
-    src/world.cpp
-    src/scenes/main_menu.cpp
-    src/scenes/dev_menu.cpp
-    src/scenes/world_editor.cpp
-    src/systems/render/render.cpp
-    src/systems/render/sprite_component.cpp
-    src/systems/render/drawable.cpp
-    src/systems/render/camera.cpp
-    src/systems/logging/logger.cpp
-    src/systems/assets/asset_cache.cpp
-    src/systems/assets/texture.cpp
-    src/systems/window/window.cpp
-    src/systems/imgui/imgui_system.cpp
-    src/systems/broker/receiver.cpp
-    src/systems/broker/sender.cpp
-    src/systems/debug/debug_system.cpp
-    src/systems/config/config.cpp
-    src/systems/transform/transform.cpp
-    src/systems/group/group.cpp
-    src/systems/physics/physics.cpp
-    src/systems/physics/body.cpp
-    src/systems/physics/collider.cpp
-    src/systems/scenes/scene_system.cpp
-    src/systems/names/name.cpp
-    src/systems/names/name_system.cpp
-    src/systems/scripts/scripts.cpp
-    src/engine/entity.cpp
-    )
-
-set(TESTS_SOURCES src/tests/engine/entity_tests.cpp
-                  src/tests/engine/broker_tests.cpp)
+file(GLOB_RECURSE MAIN_SOURCES RELATIVE "${CMAKE_SOURCE_DIR}" CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/src/*.cpp")
+file(GLOB_RECURSE TESTS_SOURCES RELATIVE "${CMAKE_SOURCE_DIR}" CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/tests/*.cpp")
 
 set(DEPS_SOURCES
     3rdparty/imgui/imgui_tables.cpp 3rdparty/imgui/imgui_widgets.cpp
@@ -77,7 +41,7 @@ set(DEPS_LIBS
     ${CMAKE_DL_LIBS}
     )
 
-add_executable(death_and_rope_exe src/game/main.cpp ${MAIN_SOURCES}
+add_executable(death_and_rope_exe game/main.cpp ${MAIN_SOURCES}
     ${DEPS_SOURCES})
 target_include_directories(death_and_rope_exe PUBLIC ${INCLUDES_DEPS_DIRS})
 target_link_libraries(death_and_rope_exe PUBLIC ${DEPS_LIBS})

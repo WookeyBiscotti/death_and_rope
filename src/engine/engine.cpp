@@ -22,7 +22,6 @@
 #include <scenes/main_menu.hpp>
 #include <scenes/test.hpp>
 #include <scenes/test_physics.hpp>
-#include <scenes/world_editor.hpp>
 //
 #include <SFML/Graphics.hpp>
 #include <chaiscript/chaiscript.hpp>
@@ -36,7 +35,6 @@ static void addStandardScenes(Context& context) {
 	auto& scenes = context.systemRef<SceneSystem>();
 	scenes.registerScene("default", [&context] { return std::make_shared<DefaultScene>(context); });
 	scenes.registerScene("dev_menu", [&context] { return std::make_shared<DevMenu>(context); });
-	scenes.registerScene("world_editor", [&context] { return std::make_shared<WorldEditor>(context); });
 	scenes.registerScene("test", [&context] { return std::make_shared<TestScene>(context); });
 	scenes.registerScene("test_physics", [&context] { return std::make_shared<TestPhysicsScene>(context); });
 }

@@ -2,7 +2,6 @@
 
 #include "font.hpp"
 #include "texture.hpp"
-#include "world.hpp"
 
 #include <common/types.hpp>
 #include <engine/system.hpp>
@@ -22,14 +21,10 @@ class AssetCache: public System {
 
 	Path texturesPath() const;
 	Path fontsPath() const;
-	Path worldsPath() const;
 	Path entityPath() const;
 
 	std::shared_ptr<Texture> texture(const std::string& name);
 	std::shared_ptr<Font> font(const std::string& name);
-
-	World world(const std::string& name);
-	void world(const World& world, const std::string& name);
 
 	std::string readFile(const std::string& filePath);
 	std::vector<uint8_t> readBinaryFile(const std::string& filePath);
