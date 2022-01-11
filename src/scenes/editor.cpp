@@ -43,6 +43,14 @@ bool EditorScene::drawNode(Entity& entity, Entity*& selected) {
 
 		return true;
 	}
+	if (g) {
+		ImGui::SameLine();
+		bool move = g->moveChilds();
+		if (ImGui::Checkbox("Move childs", &move)) {
+			g->moveChilds(move);
+		}
+	}
+
 	ImGui::PopID();
 
 	if (g && openned) {

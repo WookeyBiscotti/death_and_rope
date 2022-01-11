@@ -6,6 +6,10 @@
 
 Group::Group(Entity& entity, SyncMove_t): Component(entity), _moveChilds(true) {
 	entity.subscribe<PositionUpdate>(&entity, this, [this](const PositionUpdate& p) {
+		// TODO: use subscription
+		if (!_moveChilds) {
+			return;
+		}
 		for (auto& it : _childs) {
 			it->ref<Transform>().p(it->ref<Transform>().p() + (p.neW - p.old));
 		}
