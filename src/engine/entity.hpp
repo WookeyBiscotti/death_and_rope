@@ -31,8 +31,6 @@ class Entity final: public Sender, public Receiver {
 
 	Context& context() { return _context; }
 
-	static void initSerialization();
-
 	template<class C>
 	auto& add(std::unique_ptr<C>&& component) {
 		static_assert(TypeId<C>() != TypeId<Transform>());
@@ -90,11 +88,18 @@ class Entity final: public Sender, public Receiver {
 	auto& transform() { return _transform; }
 	auto& tr() { return transform(); }
 
-	// void load(IArchive& ar);
-	// void save(OArchive& ar) const;
-
 	template<class Archive>
 	void serialize(Archive& ar);
+
+	static void initDefaultSerializers();
+
+	template<class C>
+	static void registerComponentSerializer(std::string name, void (*deserializer)(IArchive& oa, Entity& e),
+	    void (*serializer)(OArchive& oa, Entity& e)) {
+		registerComponentSerializer(std::move(name), TypeId<C>(), deserializer, serializer);
+	}
+	static void registerComponentSerializer(std::string name, type_id_t id,
+	    void (*deserializer)(IArchive& oa, Entity& e), void (*serializer)(OArchive& oa, Entity& e));
 
   private:
 	Context& _context;

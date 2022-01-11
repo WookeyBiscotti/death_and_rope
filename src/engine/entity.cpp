@@ -77,7 +77,7 @@ inline void TransformDeserialize(IArchive& ia, Entity& e) {
 		c.serialize(ia);                                        \
 	});
 
-void Entity::initSerialization() {
+void Entity::initDefaultSerializers() {
 	serializeFns = {
 	    {"Transform", &TransformSerialize},
 	};
@@ -94,4 +94,12 @@ void Entity::initSerialization() {
 	ADD_COMPONENT(Camera);
 	ADD_COMPONENT(SpriteComponent);
 	ADD_COMPONENT(Group);
+}
+
+void Entity::registerComponentSerializer(std::string name, type_id_t id, void (*deserializer)(IArchive& oa, Entity& e),
+    void (*serializer)(OArchive& oa, Entity& e)) {
+
+	idToName.emplace(id, name);
+	serializeFns.emplace(name, serializer);
+	deserializeFns.emplace(std::move(name), deserializer);
 }

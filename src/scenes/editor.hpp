@@ -25,7 +25,7 @@ class EditorScene: public Scene {
   private:
 	Entity* _selected{};
 	// return - if node is deleted
-	bool drawNode(Entity& entity, Entity* selected);
+	bool drawNode(Entity& entity, Entity*& selected);
 
   private:
 	std::unique_ptr<Entity> _root;
