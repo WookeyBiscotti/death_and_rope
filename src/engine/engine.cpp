@@ -20,6 +20,7 @@
 //
 #include <scenes/default_scene.hpp>
 #include <scenes/dev_menu.hpp>
+#include <scenes/editor.hpp>
 #include <scenes/main_menu.hpp>
 #include <scenes/test.hpp>
 #include <scenes/test_physics.hpp>
@@ -38,6 +39,7 @@ static void addStandardScenes(Context& context) {
 	scenes.registerScene("dev_menu", [&context] { return std::make_shared<DevMenu>(context); });
 	scenes.registerScene("test", [&context] { return std::make_shared<TestScene>(context); });
 	scenes.registerScene("test_physics", [&context] { return std::make_shared<TestPhysicsScene>(context); });
+	scenes.registerScene("editor", [&context] { return std::make_shared<EditorScene>(context); });
 }
 
 void Engine::run(const char** argv, int argc, const EngineConfig& engineConfig) {
