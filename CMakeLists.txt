@@ -53,6 +53,11 @@ target_include_directories(death_and_rope_tests PUBLIC ${INCLUDES_DEPS_DIRS})
 target_link_libraries(death_and_rope_tests PUBLIC Catch2::Catch2WithMain
                                                   ${DEPS_LIBS})
 
+add_executable(death_and_rope_lib ${MAIN_SOURCES} ${DEPS_SOURCES})
+target_include_directories(death_and_rope_lib PUBLIC ${INCLUDES_DEPS_DIRS})
+target_link_libraries(death_and_rope_lib PUBLIC ${DEPS_LIBS})
+
+
 set(PROD_BUILD
     OFF
     CACHE BOOL "make prod build without logging/debug/imgui for performance")
