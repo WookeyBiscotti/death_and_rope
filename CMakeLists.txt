@@ -15,8 +15,8 @@ add_subdirectory(3rdparty/ChaiScript)
 
 add_compile_definitions(B2_USER_SETTINGS)
 
-file(GLOB_RECURSE MAIN_SOURCES RELATIVE "${CMAKE_SOURCE_DIR}" CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/src/*.cpp")
-file(GLOB_RECURSE TESTS_SOURCES RELATIVE "${CMAKE_SOURCE_DIR}" CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/tests/*.cpp")
+file(GLOB_RECURSE MAIN_SOURCES RELATIVE "${CMAKE_CURRENT_LIST_DIR}" CONFIGURE_DEPENDS "${CMAKE_CURRENT_LIST_DIR}/src/*.cpp")
+file(GLOB_RECURSE TESTS_SOURCES RELATIVE "${CMAKE_CURRENT_LIST_DIR}" CONFIGURE_DEPENDS "${CMAKE_CURRENT_LIST_DIR}/tests/*.cpp")
 
 set(DEPS_SOURCES
     3rdparty/imgui/imgui_tables.cpp 3rdparty/imgui/imgui_widgets.cpp
@@ -53,8 +53,13 @@ target_include_directories(death_and_rope_tests PUBLIC ${INCLUDES_DEPS_DIRS})
 target_link_libraries(death_and_rope_tests PUBLIC Catch2::Catch2WithMain
                                                   ${DEPS_LIBS})
 
-add_executable(death_and_rope_lib ${MAIN_SOURCES} ${DEPS_SOURCES})
+message(WARNING ${MAIN_SOURCES})
+message(WARNING ${CMAKE_SOURCE_DIR})
+
+add_library(death_and_rope_lib ${MAIN_SOURCES} ${DEPS_SOURCES})
 target_include_directories(death_and_rope_lib PUBLIC ${INCLUDES_DEPS_DIRS})
+target_include_directories(death_and_rope_lib PUBLIC include)
+target_include_directories(death_and_rope_lib PUBLIC include/alch)
 target_link_libraries(death_and_rope_lib PUBLIC ${DEPS_LIBS})
 
 
