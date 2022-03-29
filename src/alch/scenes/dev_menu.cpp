@@ -1,9 +1,9 @@
 #include "dev_menu.hpp"
 
-#include <common/imgui_utils.hpp>
-#include <engine/context.hpp>
-#include <systems/assets/asset_cache.hpp>
-#include <systems/scenes/scene_system.hpp>
+#include "alch/common/imgui_utils.hpp"
+#include "alch/engine/context.hpp"
+#include "alch/systems/assets/asset_cache.hpp"
+#include "alch/systems/scenes/scene_system.hpp"
 
 void DevMenu::onFrame() {
 	MIDDLE_WINDOW();

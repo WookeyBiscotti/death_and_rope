@@ -1,10 +1,10 @@
 #include "sprite_component.hpp"
 
-#include <common/consts.hpp>
-#include <engine/entity.hpp>
-#include <systems/assets/asset_cache.hpp>
-#include <systems/transform/events.hpp>
-#include <systems/transform/transform.hpp>
+#include "alch/common/consts.hpp"
+#include "alch/engine/entity.hpp"
+#include "alch/systems/assets/asset_cache.hpp"
+#include "alch/systems/transform/events.hpp"
+#include "alch/systems/transform/transform.hpp"
 //
 #include <SFML/Graphics.hpp>
 //

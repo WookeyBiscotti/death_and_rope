@@ -3,9 +3,9 @@
 #include "font.hpp"
 #include "texture.hpp"
 
-#include "arch/common/types.hpp"
-#include "arch/engine/system.hpp"
-#include "arch/systems/scenes/scene.hpp"
+#include "alch/common/types.hpp"
+#include "alch/engine/system.hpp"
+#include "alch/systems/scenes/scene.hpp"
 //
 #include <SFML/Graphics/Font.hpp>
 //

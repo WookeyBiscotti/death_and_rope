@@ -1,9 +1,8 @@
-
-#include "arch/engine/component.hpp"
-#include "arch/engine/context.hpp"
-#include "arch/engine/entity.hpp"
-#include "arch/systems/broker/broker.hpp"
-
+#include <alch/engine/component.hpp>
+#include <alch/engine/context.hpp>
+#include <alch/engine/entity.hpp>
+#include <alch/systems/broker/broker.hpp>
+//
 #include <catch2/catch_test_macros.hpp>
 //
 #include <memory>
@@ -16,6 +15,9 @@ class ComponentNum: public Component {
 	constexpr auto num() { return N; };
 
 	size_t val = 0;
+
+	void serialize(OArchive& archive) const {};
+	void deserialize(IArchive& archive){};
 };
 
 TEST_CASE("General", "[Entity]") {

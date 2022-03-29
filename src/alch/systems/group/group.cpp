@@ -1,10 +1,9 @@
 #include "group.hpp"
 
-#include "common/archive.hpp"
-
-#include <engine/entity.hpp>
-#include <systems/transform/events.hpp>
-#include <systems/transform/transform.hpp>
+#include "alch/common/archive.hpp"
+#include "alch/engine/entity.hpp"
+#include "alch/systems/transform/events.hpp"
+#include "alch/systems/transform/transform.hpp"
 
 Group::Group(Entity& entity, SyncMove_t): Component(entity), _moveChilds(true) {
 	entity.subscribe<PositionUpdate>(&entity, this, [this](const PositionUpdate& p) {

@@ -1,5 +1,5 @@
 #pragma once
-#include <systems/scenes/scene.hpp>
+#include "alch/systems/scenes/scene.hpp"
 
 class DevMenu: public Scene {
   public:

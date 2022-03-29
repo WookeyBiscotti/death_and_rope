@@ -1,7 +1,7 @@
 #pragma once
 
 #include "alch/engine/system.hpp"
-#include <systems/scenes/scene.hpp>
+#include "alch/systems/scenes/scene.hpp"
 //
 #include <functional>
 #include <memory>

@@ -1,9 +1,9 @@
 #include "circle_component.hpp"
 
-#include "engine/entity.hpp"
-#include "systems/render/drawable.hpp"
-#include "systems/transform/events.hpp"
-#include "systems/transform/transform.hpp"
+#include "alch/engine/entity.hpp"
+#include "alch/systems/render/drawable.hpp"
+#include "alch/systems/transform/events.hpp"
+#include "alch/systems/transform/transform.hpp"
 
 #include <SFML/Graphics.hpp>
 

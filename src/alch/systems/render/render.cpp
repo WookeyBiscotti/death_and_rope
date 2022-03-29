@@ -2,9 +2,9 @@
 #include "render.hpp"
 //
 #include <SFML/Graphics.hpp>
-#include <engine/context.hpp>
+#include "alch/engine/context.hpp"
 //
-#include <systems/window/window.hpp>
+#include "alch/systems/window/window.hpp"
 
 Render::Render(Context& context): _context(context), _target(context.systemRef<Window>().window()) {
 }

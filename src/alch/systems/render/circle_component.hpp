@@ -4,10 +4,10 @@
 #include "SFML/Graphics/Color.hpp"
 #include "drawable.hpp"
 
-#include <common/macros.hpp>
-#include <common/rect.hpp>
+#include "alch/common/macros.hpp"
+#include "alch/common/rect.hpp"
 #include "alch/common/vector2.hpp"
-#include <systems/assets/texture.hpp>
+#include "alch/systems/assets/texture.hpp"
 //
 #include <SFML/Graphics/CircleShape.hpp>
 //

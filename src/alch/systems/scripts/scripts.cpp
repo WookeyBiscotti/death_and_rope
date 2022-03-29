@@ -1,6 +1,6 @@
 #include "scripts.hpp"
 
-#include <systems/logging/logger.hpp>
+#include "alch/systems/logging/logger.hpp"
 //
 #include <chaiscript/chaiscript.hpp>
 //

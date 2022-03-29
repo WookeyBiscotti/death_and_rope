@@ -2,8 +2,8 @@
 
 #include "name_system.hpp"
 
-#include <engine/context.hpp>
-#include <engine/entity.hpp>
+#include "alch/engine/context.hpp"
+#include "alch/engine/entity.hpp"
 
 Name::Name(Entity& entity, std::string name): Component(entity), _name(std::move(name)) {
 	entity.context().systemRef<NameSystem>().add(_name, &entity);

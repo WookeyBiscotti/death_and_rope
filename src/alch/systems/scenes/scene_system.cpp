@@ -1,8 +1,8 @@
 #include "scene_system.hpp"
 
-#include <engine/context.hpp>
-#include <engine/entity.hpp>
-#include <systems/scripts/scripts.hpp>
+#include "alch/engine/context.hpp"
+#include "alch/engine/entity.hpp"
+#include "alch/systems/scripts/scripts.hpp"
 //
 #include <chaiscript/chaiscript.hpp>
 

@@ -3,10 +3,10 @@
 #include "events.hpp"
 #include "window.hpp"
 
-#include <engine/context.hpp>
-#include <engine/engine.hpp>
-#include <systems/broker/broker.hpp>
-#include <systems/config/config.hpp>
+#include "alch/engine/context.hpp"
+#include "alch/engine/engine.hpp"
+#include "alch/systems/broker/broker.hpp"
+#include "alch/systems/config/config.hpp"
 //
 #include <SFML/Graphics.hpp>
 

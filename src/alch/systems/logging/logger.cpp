@@ -2,8 +2,8 @@
 
 #if !defined(PROD_BUILD)
 
-#include <engine/context.hpp>
-#include <systems/scripts/scripts.hpp>
+#include "alch/engine/context.hpp"
+#include "alch/systems/scripts/scripts.hpp"
 //
 #include <chaiscript/chaiscript.hpp>
 #include <spdlog/details/null_mutex.h>

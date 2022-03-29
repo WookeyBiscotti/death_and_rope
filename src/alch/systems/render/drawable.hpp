@@ -1,7 +1,7 @@
 #pragma once
 
 #include "alch/common/vector2.hpp"
-#include <engine/component.hpp>
+#include "alch/engine/component.hpp"
 
 namespace sf {
 class RenderTarget;

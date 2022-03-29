@@ -1,7 +1,7 @@
-#include <arch/engine/component.hpp>
-#include <arch/engine/context.hpp>
-#include <arch/engine/entity.hpp>
-#include <arch/systems/broker/broker.hpp>
+#include <alch/engine/component.hpp>
+#include <alch/engine/context.hpp>
+#include <alch/engine/entity.hpp>
+#include <alch/systems/broker/broker.hpp>
 
 #include <catch2/catch_test_macros.hpp>
 //

@@ -1,12 +1,12 @@
 #pragma once
 
 //
-#include <common/archive.hpp>
-#include <common/rect.hpp>
+#include "alch/common/archive.hpp"
+#include "alch/common/rect.hpp"
 #include "alch/common/vector2.hpp"
-#include <engine/component.hpp>
-#include <engine/entity.hpp>
-#include <systems/transform/transform.hpp>
+#include "alch/engine/component.hpp"
+#include "alch/engine/entity.hpp"
+#include "alch/systems/transform/transform.hpp"
 //
 #include <SFML/Graphics/View.hpp>
 
