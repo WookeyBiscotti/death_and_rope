@@ -1,6 +1,8 @@
-#include "alch/common/prod_build_utils.hpp"
-#include "alch/engine/context.hpp"
 #include "alch/engine/engine.hpp"
+
+#include "alch/common/prod_build_utils.hpp"
+#include "alch/common/type_id.hpp"
+#include "alch/engine/context.hpp"
 #include "alch/engine/events.hpp"
 #include "alch/systems/assets/asset_cache.hpp"
 #include "alch/systems/broker/broker.hpp"
@@ -12,10 +14,15 @@
 #include "alch/systems/logging/logger.hpp"
 #include "alch/systems/names/name.hpp"
 #include "alch/systems/names/name_system.hpp"
+#include "alch/systems/physics/body.hpp"
 #include "alch/systems/physics/physics.hpp"
+#include "alch/systems/render/circle_component.hpp"
+#include "alch/systems/render/drawable.hpp"
 #include "alch/systems/render/render.hpp"
+#include "alch/systems/render/sprite_component.hpp"
 #include "alch/systems/scenes/scene_system.hpp"
 #include "alch/systems/scripts/scripts.hpp"
+#include "alch/systems/transform/transform.hpp"
 #include "alch/systems/window/window.hpp"
 //
 #include "alch/scenes/default_scene.hpp"
@@ -24,6 +31,7 @@
 #include "alch/scenes/main_menu.hpp"
 #include "alch/scenes/test.hpp"
 #include "alch/scenes/test_physics.hpp"
+#include "box2d/b2_user_settings.h"
 //
 #include <SFML/Graphics.hpp>
 #include <chaiscript/chaiscript.hpp>
@@ -89,6 +97,17 @@ void Engine::run(const char** argv, int argc, const EngineConfig& engineConfig) 
 	IF_NOT_PROD_BUILD(DebugSystem debug(context));
 	IF_NOT_PROD_BUILD(context.addSystem(&debug));
 
+	Entity::registerComponent<Transform>("Transform");
+	Entity::registerComponent<Group>("Group");
+	Entity::registerComponent<Name>("Name");
+
+	Entity::registerComponent<Camera>("Camera");
+	Entity::registerComponent<SpriteComponent>("SpriteComponent");
+	Entity::registerComponent<CircleComponent>("CircleComponent");
+
+	Entity::registerComponent<Body>("Body");
+	Entity::registerComponent<Collider>("Collider", TypeId<Body>());
+
 	if (_config.preBegin) {
 		_config.preBegin(context);
 	}
@@ -99,8 +118,6 @@ void Engine::run(const char** argv, int argc, const EngineConfig& engineConfig) 
 
 	scenes.findNext(_config.startScene);
 	scenes.applyNext();
-
-	// Entity::initDefaultSerializers();
 
 	float lastFps = 60;
 	while (true) {

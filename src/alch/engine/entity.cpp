@@ -203,4 +203,7 @@ void Entity::registerComponent(
 	data.name = name;
 	data.dependsOn = dependsOn;
 	data.creator = creator;
+
+	serializerData.emplace(id, std::move(data));
+	nameToTypeId.emplace(std::move(name), id);
 }

@@ -2,14 +2,13 @@
 
 #include "alch/common/archive.hpp"
 //
-#include "component.hpp"
-#include "context.hpp"
-
 #include "alch/common/prod_build_utils.hpp"
 #include "alch/common/type_id.hpp"
 #include "alch/systems/broker/broker.hpp"
 #include "alch/systems/logging/logger.hpp"
 #include "alch/systems/transform/transform.hpp"
+#include "component.hpp"
+#include "context.hpp"
 //
 #include <cassert>
 #include <memory>
@@ -55,6 +54,8 @@ class Entity final: public Sender, public Receiver {
 
 		return _components.erase(TypeId<C>()) != 0;
 	}
+
+	void clear() { _components.clear(); }
 
 	template<class C>
 	C* get() {
@@ -105,11 +106,13 @@ class Entity final: public Sender, public Receiver {
 	//     void (*deserializer)(IArchive& oa, Entity& e), void (*serializer)(OArchive& oa, Entity& e));
 
 	template<class C>
-	static void registerComponent(std::string name, type_id_t dependsOn = {}) {
-		bool registerComponent(
-		    TypeId<C>(), [](Entity& ent) { return std::make_unique<C>(ent); }, std::move(name), dependsOn);
+	static void registerComponent(std::string name, type_id_t dependsOn = type_id_t{}) {
+		registerComponent(
+		    TypeId<C>(), [](Entity& ent) -> std::unique_ptr<Component> { return std::make_unique<C>(ent); },
+		    std::move(name), dependsOn);
 	}
 
+  private:
 	static void registerComponent(
 	    type_id_t id, std::unique_ptr<Component> (*creator)(Entity& ent), std::string name, type_id_t dependsOn);
 
@@ -137,7 +140,7 @@ class Entity final: public Sender, public Receiver {
   private:
 	Context& _context;
 
-	static constexpr size_t BuiltInCount = 1; 
+	static constexpr size_t BuiltInCount = 1;
 	Transform _transform;
 
 	std::unordered_map<type_id_t, std::unique_ptr<Component>> _components;

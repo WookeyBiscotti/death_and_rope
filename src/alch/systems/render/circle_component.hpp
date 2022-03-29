@@ -1,15 +1,13 @@
 #pragma once
 
-#include "SFML/Graphics/CircleShape.hpp"
-#include "SFML/Graphics/Color.hpp"
-#include "drawable.hpp"
-
 #include "alch/common/macros.hpp"
 #include "alch/common/rect.hpp"
 #include "alch/common/vector2.hpp"
 #include "alch/systems/assets/texture.hpp"
-//
+#include "drawable.hpp"
+
 #include <SFML/Graphics/CircleShape.hpp>
+#include <SFML/Graphics/Color.hpp>
 //
 #include <memory>
 
@@ -20,8 +18,8 @@ class CircleComponent: public Drawable {
 
 	void draw(RenderTarget& target, const RenderStates& state) override;
 
-	template<class Archive>
-	void serialize(Archive& ar);
+	void serialize(OArchive& ar) const override;
+	void deserialize(IArchive& ar) override;
 
   private:
 	sf::CircleShape _shape;
