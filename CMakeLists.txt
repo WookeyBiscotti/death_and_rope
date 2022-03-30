@@ -50,14 +50,11 @@ target_include_directories(death_and_rope_lib PUBLIC ${INCLUDES_DEPS_DIRS})
 target_include_directories(death_and_rope_lib PUBLIC ${CMAKE_CURRENT_LIST_DIR}/src)
 target_link_libraries(death_and_rope_lib PUBLIC ${DEPS_LIBS})
 
-add_executable(death_and_rope_exe game/main.cpp ${MAIN_SOURCES}
-    ${DEPS_SOURCES})
-target_include_directories(death_and_rope_exe PUBLIC ${INCLUDES_DEPS_DIRS})
-target_link_libraries(death_and_rope_exe PUBLIC ${DEPS_LIBS})
+add_executable(death_and_rope_exe game/main.cpp)
+target_link_libraries(death_and_rope_exe PUBLIC death_and_rope_lib)
 
 add_executable(death_and_rope_tests ${TESTS_SOURCES})
-target_include_directories(death_and_rope_tests PUBLIC src)
-target_link_libraries(death_and_rope_tests PUBLIC death_and_rope_lib Catch2::Catch2WithMain ${DEPS_LIBS})
+target_link_libraries(death_and_rope_tests PUBLIC death_and_rope_lib Catch2::Catch2WithMain)
 
 
 set(PROD_BUILD
