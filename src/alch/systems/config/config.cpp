@@ -12,7 +12,7 @@
 #include <future>
 #include <unordered_map>
 
-#ifdef linux
+#if defined(linux) || defined(__APPLE__)
 #include <pwd.h>
 #include <sys/types.h>
 #include <unistd.h>
@@ -27,9 +27,9 @@ std::string getHomeDir() {
 	return homedir;
 }
 #else
-// define for other platforms
-static_assert();
+	static_assert(false, "define for other platforms");
 #endif
+
 using namespace std::literals::string_literals;
 namespace fs = std::filesystem;
 

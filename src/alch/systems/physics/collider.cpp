@@ -7,6 +7,8 @@
 //
 #include <box2d/box2d.h>
 
+#include <array>
+
 Collider::~Collider() {
 	auto& w = entity().context().systemRef<Physics>()._world;
 	for (auto f : _fixtures) {

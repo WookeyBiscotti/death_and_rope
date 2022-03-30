@@ -28,8 +28,6 @@ set(INCLUDES_DEPS_DIRS
     3rdparty/imgui/misc/cpp 3rdparty/box2d/include 3rdparty/lua)
 
 set(DEPS_LIBS
-    GL
-    GLU
     sfml-graphics
     sfml-audio
     nlohmann_json
@@ -40,6 +38,12 @@ set(DEPS_LIBS
     chaiscript
     ${CMAKE_DL_LIBS}
     )
+
+if(APPLE)
+    list(APPEND DEPS_LIBS "-framework OpenGL" "-framework GLUT")
+elseif(LINUX)
+    list(APPEND DEPS_LIBS GL GLU)
+endif()
 
 add_library(death_and_rope_lib ${MAIN_SOURCES} ${DEPS_SOURCES})
 target_include_directories(death_and_rope_lib PUBLIC ${INCLUDES_DEPS_DIRS})
@@ -67,4 +71,4 @@ endif()
 file(
   COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/alch/systems/physics/box2d_settings/b2_user_settings.h
   DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/box2d/include/box2d)
- 
+  
