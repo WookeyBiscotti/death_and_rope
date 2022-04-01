@@ -28,7 +28,7 @@ TEST_CASE("General", "[Entity]") {
 
 	auto c2 = std::make_unique<ComponentNum<2>>(entity, 17);
 
-	entity.add<ComponentNum<1>>(13).add(std::move(c2));
+	entity.addChain<ComponentNum<1>>(13).addChain(std::move(c2));
 
 	SECTION("Check component") {
 		REQUIRE(entity.get<ComponentNum<1>>());

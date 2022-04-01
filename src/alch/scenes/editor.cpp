@@ -1,6 +1,5 @@
-#include "editor.hpp"
-
 #include "alch/systems/group/group.hpp"
+#include "editor.hpp"
 //
 #include <imgui.h>
 #include <spdlog/fmt/fmt.h>
@@ -32,7 +31,7 @@ bool EditorScene::drawNode(Entity& entity, Entity*& selected) {
 		if (g) {
 			g->create();
 		} else {
-			entity.add<Group>().ref<Group>().create();
+			entity.addChain<Group>().ref<Group>().create();
 		}
 	}
 	if (&entity != _root.get() && (ImGui::SameLine(), ImGui::SmallButton("Delete"))) {

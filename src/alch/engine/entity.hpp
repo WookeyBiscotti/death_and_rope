@@ -31,7 +31,7 @@ class Entity final: public Sender, public Receiver {
 	Context& context() { return _context; }
 
 	template<class C>
-	auto& add(std::unique_ptr<C>&& component) {
+	auto& addChain(std::unique_ptr<C>&& component) {
 		static_assert(TypeId<C>() != TypeId<Transform>());
 
 		add(TypeId<C>(), std::move(component));
@@ -39,13 +39,23 @@ class Entity final: public Sender, public Receiver {
 		return *this;
 	}
 	template<class C, class... Args>
-	auto& add(Args&&... args) {
+	auto& addChain(Args&&... args) {
 		static_assert(TypeId<C>() != TypeId<Transform>());
 
 		auto c = std::make_unique<C>(*this, std::forward<Args>(args)...);
 		_components.emplace(TypeId<C>(), std::move(c));
 
 		return *this;
+	}
+
+	template<class C, class... Args>
+	C& add(Args&&... args) {
+		static_assert(TypeId<C>() != TypeId<Transform>());
+		auto c = std::make_unique<C>(*this, std::forward<Args>(args)...);
+		auto& ret = *c;
+		_components.emplace(TypeId<C>(), std::move(c));
+
+		return ret;
 	}
 
 	template<class C>
@@ -113,8 +123,8 @@ class Entity final: public Sender, public Receiver {
 	}
 
   private:
-	static void registerComponent(
-	    type_id_t id, std::unique_ptr<Component> (*creator)(Entity& ent), std::string name, type_id_t dependsOn);
+	static void registerComponent(type_id_t id, std::unique_ptr<Component> (*creator)(Entity& ent), std::string name,
+	    type_id_t dependsOn);
 
   private:
 	// unsafe

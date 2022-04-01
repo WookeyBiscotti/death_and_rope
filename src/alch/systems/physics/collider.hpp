@@ -1,9 +1,8 @@
 #pragma once
 
-#include "body.hpp"
-
 #include "alch/common/vector2.hpp"
 #include "alch/engine/component.hpp"
+#include "body.hpp"
 //
 
 class Entity;
@@ -13,7 +12,9 @@ class Collider: public Component {
 
   public:
 	struct Box_t {};
+	struct Circle_t {};
 	constexpr static auto Box = Box_t{};
+	constexpr static auto Circle = Circle_t{};
 
 	Collider(Entity& entity);
 
@@ -26,10 +27,12 @@ class Collider: public Component {
 	Collider(const Collider& other) = delete;
 
 	Collider(Entity& entity, Box_t, const Vector2f& size, float density = 1, const Vector2f& origin = {});
+	Collider(Entity& entity, Circle_t, float r, float density = 1, const Vector2f& origin = {});
 
 	~Collider();
 
 	void add(Box_t, const Vector2f& size, float density = 1, const Vector2f& origin = {});
+	void add(Circle_t, float r, float density = 1, const Vector2f& origin = {});
 
 	void serialize(OArchive& ar) const override;
 	void deserialize(IArchive& ar) override;

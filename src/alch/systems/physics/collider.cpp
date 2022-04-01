@@ -1,13 +1,11 @@
 #include "collider.hpp"
-
 #include "physics.hpp"
 //
 #include "alch/engine/context.hpp"
 #include "alch/engine/entity.hpp"
 //
-#include <box2d/box2d.h>
-
 #include <array>
+#include <box2d/box2d.h>
 
 Collider::~Collider() {
 	auto& w = entity().context().systemRef<Physics>()._world;
@@ -24,9 +22,19 @@ Collider::Collider(Entity& entity, Box_t, const Vector2f& size, float density, c
 	add(Box, size, density, origin);
 }
 
+Collider::Collider(Entity& entity, Circle_t, float r, float density, const Vector2f& origin): Component(entity) {
+	add(Circle, r, density, origin);
+}
+
 void Collider::add(Box_t, const Vector2f& size, float density, const Vector2f& origin) {
 	b2PolygonShape s;
 	s.SetAsBox(size.x * 0.5f, size.y * 0.5f, {size.x * 0.5f, size.y * 0.5f}, {});
+	_fixtures.push_back(entity().ref<Body>()._body->CreateFixture(&s, density));
+}
+
+void Collider::add(Circle_t, float r, float density, const Vector2f& origin) {
+	b2CircleShape s;
+	s.m_radius = r;
 	_fixtures.push_back(entity().ref<Body>()._body->CreateFixture(&s, density));
 }
 
