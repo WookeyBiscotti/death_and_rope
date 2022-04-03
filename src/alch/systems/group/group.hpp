@@ -3,6 +3,7 @@
 #include "alch/engine/component.hpp"
 //
 #include <memory>
+#include <string_view>
 #include <unordered_set>
 
 class Entity;
@@ -29,6 +30,8 @@ class Group: public Component {
 
 	void serialize(OArchive& ar) const override;
 	void deserialize(IArchive& ar) override;
+
+	ALCH_COMPONENT_NAME(Group);
 
   private:
 	bool _moveChilds{};

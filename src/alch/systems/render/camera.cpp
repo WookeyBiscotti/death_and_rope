@@ -13,6 +13,11 @@ Camera::~Camera() {
 	}
 }
 
+void Camera::makeCurrent() {
+	auto& r = entity().context().systemRef<Render>();
+	r.camera(this);
+}
+
 void Camera::deserialize(IArchive& ar) {
 	std::decay_t<decltype(_view.getViewport())> viewport;
 	::serialize(ar, viewport);

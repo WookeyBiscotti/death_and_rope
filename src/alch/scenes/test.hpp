@@ -29,7 +29,7 @@ class TestScene: public Scene {
 			return;
 		}
 		_head = std::make_unique<Entity>(context());
-		_head->addChain<SpriteComponent>(context().systemRef<AssetCache>().texture("head.png"))
+		_head->addChain<Sprite>(context().systemRef<AssetCache>().texture("head.png"))
 		    .addChain<Camera>()
 		    .ref<Transform>()
 		    .p(Vector2f{300, 300});

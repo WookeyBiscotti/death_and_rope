@@ -8,29 +8,32 @@
 
 #include <SFML/Graphics.hpp>
 
-CircleComponent::CircleComponent(Entity& entity): Drawable(entity) {
+CircleShape::CircleShape(Entity& entity): Drawable(entity) {
 	entity.subscribe<PositionUpdate>(&entity, this, [this](const PositionUpdate& p) { _shape.setPosition(p.neW); });
-};
+	_shape.setPosition(entity.tr().p());
+}
 
-CircleComponent::CircleComponent(Entity& entity, float r, sf::Color color): CircleComponent(entity) {
+CircleShape::CircleShape(Entity& entity, float r, sf::Color color): CircleShape(entity) {
 	_shape.setRadius(r);
 	_shape.setFillColor(color);
-};
+	_shape.setOrigin(r, r);
+}
 
-void CircleComponent::draw(RenderTarget& target, const RenderStates& state) {
+void CircleShape::draw(RenderTarget& target, const RenderStates& state) {
 	target.draw(_shape, state);
 }
 
-void CircleComponent::serialize(OArchive& ar) const {
+void CircleShape::serialize(OArchive& ar) const {
 	ar(_shape.getRadius());
 	::serialize(ar, _shape.getFillColor());
 }
 
-void CircleComponent::deserialize(IArchive& ar) {
+void CircleShape::deserialize(IArchive& ar) {
 	float r;
 	Color c;
 	ar(r);
 	::serialize(ar, c);
 	_shape.setRadius(r);
 	_shape.setFillColor(c);
+	_shape.setOrigin(r, r);
 }

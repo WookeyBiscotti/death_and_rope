@@ -9,29 +9,29 @@
 #include <SFML/Graphics.hpp>
 //
 
-SpriteComponent::SpriteComponent(Entity& entity): Drawable(entity) {
+Sprite::Sprite(Entity& entity): Drawable(entity) {
 	entity.subscribe<PositionUpdate>(&entity, this, [this](const PositionUpdate& p) { _sprite.setPosition(p.neW); });
 	entity.subscribe<RotationUpdate>(&entity, this,
 	    [this](const RotationUpdate& r) { _sprite.setRotation(180 * r.neW / kPIf); });
 }
 
-SpriteComponent::SpriteComponent(Entity& entity, const std::shared_ptr<Texture>& tex): SpriteComponent(entity) {
+Sprite::Sprite(Entity& entity, const std::shared_ptr<Texture>& tex): Sprite(entity) {
 	_texture = tex;
 	_sprite.setTexture(tex->sf());
 }
 
-SpriteComponent::SpriteComponent(Entity& entity, const std::shared_ptr<Texture>& tex, const Recti& rect):
-    SpriteComponent(entity) {
+Sprite::Sprite(Entity& entity, const std::shared_ptr<Texture>& tex, const Recti& rect):
+    Sprite(entity) {
 	_texture = tex;
 	_sprite.setTexture(tex->sf());
 	_sprite.setTextureRect(rect);
 }
 
-void SpriteComponent::draw(RenderTarget& target, const RenderStates& states) {
+void Sprite::draw(RenderTarget& target, const RenderStates& states) {
 	target.draw(_sprite, states);
 }
 
-void SpriteComponent::serialize(OArchive& ar) const {
+void Sprite::serialize(OArchive& ar) const {
 	ar(!!_texture);
 	if (_texture) {
 		ar(_texture->name());
@@ -41,7 +41,7 @@ void SpriteComponent::serialize(OArchive& ar) const {
 	ar(_sprite.getRotation());
 }
 
-void SpriteComponent::deserialize(IArchive& ar) {
+void Sprite::deserialize(IArchive& ar) {
 	bool inited;
 	ar(inited);
 	if (inited) {

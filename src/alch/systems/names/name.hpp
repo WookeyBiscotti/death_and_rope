@@ -17,6 +17,7 @@ class Name: public Component {
 	void serialize(OArchive& ar) const override;
 	void deserialize(IArchive& ar) override;
 
+	ALCH_COMPONENT_NAME(Name);
   private:
 	std::string _name;
 };

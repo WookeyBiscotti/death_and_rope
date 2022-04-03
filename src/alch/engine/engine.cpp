@@ -17,6 +17,7 @@
 #include "alch/systems/physics/body.hpp"
 #include "alch/systems/physics/physics.hpp"
 #include "alch/systems/render/circle_component.hpp"
+#include "alch/systems/render/rect_shape.hpp"
 #include "alch/systems/render/drawable.hpp"
 #include "alch/systems/render/render.hpp"
 #include "alch/systems/render/sprite_component.hpp"
@@ -97,16 +98,17 @@ void Engine::run(const char** argv, int argc, const EngineConfig& engineConfig) 
 	IF_NOT_PROD_BUILD(DebugSystem debug(context));
 	IF_NOT_PROD_BUILD(context.addSystem(&debug));
 
-	Entity::registerComponent<Transform>("Transform");
-	Entity::registerComponent<Group>("Group");
-	Entity::registerComponent<Name>("Name");
+	Entity::registerComponent<Transform>(context);
+	Entity::registerComponent<Group>(context);
+	Entity::registerComponent<Name>(context);
 
-	Entity::registerComponent<Camera>("Camera");
-	Entity::registerComponent<SpriteComponent>("SpriteComponent");
-	Entity::registerComponent<CircleComponent>("CircleComponent");
+	Entity::registerComponent<Camera>(context);
+	Entity::registerComponent<Sprite>(context);
+	Entity::registerComponent<CircleShape>(context);
+	Entity::registerComponent<RectShape>(context);
 
-	Entity::registerComponent<Body>("Body");
-	Entity::registerComponent<Collider>("Collider", TypeId<Body>());
+	Entity::registerComponent<Body>(context);
+	Entity::registerComponent<Collider>(context, TypeId<Body>());
 
 	if (_config.preBegin) {
 		_config.preBegin(context);

@@ -1,21 +1,20 @@
 #pragma once
 
-#include "drawable.hpp"
-
 #include "alch/common/macros.hpp"
 #include "alch/common/rect.hpp"
 #include "alch/common/vector2.hpp"
 #include "alch/systems/assets/texture.hpp"
+#include "drawable.hpp"
 //
 #include <SFML/Graphics/Sprite.hpp>
 //
 #include <memory>
 
-class SpriteComponent: public Drawable {
+class Sprite: public Drawable {
   public:
-	explicit SpriteComponent(Entity& entity);
-	SpriteComponent(Entity& entity, const std::shared_ptr<Texture>& tex);
-	SpriteComponent(Entity& entity, const std::shared_ptr<Texture>& tex, const Recti& rect);
+	explicit Sprite(Entity& entity);
+	Sprite(Entity& entity, const std::shared_ptr<Texture>& tex);
+	Sprite(Entity& entity, const std::shared_ptr<Texture>& tex, const Recti& rect);
 
 	void texture(const std::shared_ptr<Texture>& texture) {
 		_texture = texture;
@@ -30,6 +29,8 @@ class SpriteComponent: public Drawable {
 
 	void serialize(OArchive& ar) const override;
 	void deserialize(IArchive& ar) override;
+
+	ALCH_COMPONENT_NAME(Sprite);
 
   private:
 	std::shared_ptr<Texture> _texture;

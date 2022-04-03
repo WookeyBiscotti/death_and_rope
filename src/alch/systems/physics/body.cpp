@@ -1,14 +1,13 @@
 #include "body.hpp"
 
-#include "physics.hpp"
-
 #include "alch/engine/context.hpp"
 #include "alch/engine/entity.hpp"
 #include "alch/systems/transform/transform.hpp"
+#include "physics.hpp"
 //
 #include <box2d/box2d.h>
 
-Body::Body(Entity& entity): Component(entity) {
+Body::Body(Entity& entity): Body(entity, Type::STATIC) {
 }
 
 Body::Body(Entity& entity, Type type): Component(entity) {
@@ -31,61 +30,49 @@ Body::Body(Entity& entity, Type type): Component(entity) {
 }
 
 Body::~Body() {
-	if (_body) {
-		auto& w = entity().context().systemRef<Physics>()._world;
-		w.DestroyBody(_body);
-	}
+	auto& w = entity().context().systemRef<Physics>()._world;
+	w.DestroyBody(_body);
 }
 
 void Body::position(Vector2f position) {
-	if (_body) {
-		_body->SetTransform(to(position), _body->GetAngle());
-	}
+	_body->SetTransform(to(position), _body->GetAngle());
+	entity().tr().p(position);
 }
 
 void Body::serialize(OArchive& ar) const {
-	ar(!!_body);
-
-	if (_body) {
-		ar(                              //
-		    _body->GetType(),            //
-		    _body->GetPosition(),        //
-		    _body->GetAngle(),           //
-		    _body->GetLinearVelocity(),  //
-		    _body->GetAngularVelocity(), //
-		    _body->GetAngularDamping(),  //
-		    _body->IsSleepingAllowed(),  //
-		    _body->IsAwake(),            //
-		    _body->IsFixedRotation(),    //
-		    _body->IsBullet(),           //
-		    _body->IsEnabled(),          //
-		    _body->GetGravityScale()     //
-		);
-	}
+	ar(                              //
+	    _body->GetType(),            //
+	    _body->GetPosition(),        //
+	    _body->GetAngle(),           //
+	    _body->GetLinearVelocity(),  //
+	    _body->GetAngularVelocity(), //
+	    _body->GetAngularDamping(),  //
+	    _body->IsSleepingAllowed(),  //
+	    _body->IsAwake(),            //
+	    _body->IsFixedRotation(),    //
+	    _body->IsBullet(),           //
+	    _body->IsEnabled(),          //
+	    _body->GetGravityScale()     //
+	);
 }
 
 void Body::deserialize(IArchive& ar) {
-	bool inited;
-	ar(inited);
-
-	if (inited) {
-		b2BodyDef bd;
-		ar(                     //
-		    bd.type,            //
-		    bd.position,        //
-		    bd.angle,           //
-		    bd.linearVelocity,  //
-		    bd.angularVelocity, //
-		    bd.angularDamping,  //
-		    bd.allowSleep,      //
-		    bd.awake,           //
-		    bd.fixedRotation,   //
-		    bd.bullet,          //
-		    bd.enabled,         //
-		    bd.gravityScale     //
-		);
-		bd.userData.entity = &entity();
-		auto& w = entity().context().systemRef<Physics>().internalWorld();
-		_body = w.CreateBody(&bd);
-	}
+	b2BodyDef bd;
+	ar(                     //
+	    bd.type,            //
+	    bd.position,        //
+	    bd.angle,           //
+	    bd.linearVelocity,  //
+	    bd.angularVelocity, //
+	    bd.angularDamping,  //
+	    bd.allowSleep,      //
+	    bd.awake,           //
+	    bd.fixedRotation,   //
+	    bd.bullet,          //
+	    bd.enabled,         //
+	    bd.gravityScale     //
+	);
+	bd.userData.entity = &entity();
+	auto& w = entity().context().systemRef<Physics>().internalWorld();
+	_body = w.CreateBody(&bd);
 }

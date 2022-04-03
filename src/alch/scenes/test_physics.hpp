@@ -37,7 +37,7 @@ class TestPhysicsScene: public Scene {
 		auto tex = context().systemRef<AssetCache>().texture("head.png");
 		for (int i = 0; i != 100; ++i) {
 			auto& head = objs.ref<Group>().create();
-			head.addChain<SpriteComponent>(tex)
+			head.addChain<Sprite>(tex)
 			    .addChain<Body>(Body::DYNAMIC)
 			    .addChain<Collider>(Collider::Box, Vector2f(30, 30))
 			    .ref<Body>()

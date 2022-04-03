@@ -105,26 +105,18 @@ class Entity final: public Sender, public Receiver {
 	void serialize(OArchive& ar) const;
 	void deserialize(IArchive& ar);
 
-	// static void initDefaultSerializers();
-
-	// template<class C>
-	// static void registerComponentSerializer(std::string name, void (*deserializer)(IArchive& oa, Entity& e),
-	//     void (*serializer)(OArchive& oa, Entity& e)) {
-	// 	registerComponentSerializer(std::move(name), TypeId<C>(), deserializer, serializer);
-	// }
-	// static void registerComponentSerializer(std::string name, type_id_t id,
-	//     void (*deserializer)(IArchive& oa, Entity& e), void (*serializer)(OArchive& oa, Entity& e));
-
 	template<class C>
-	static void registerComponent(std::string name, type_id_t dependsOn = type_id_t{}) {
+	static void registerComponent(Context& context, type_id_t dependsOn = type_id_t{}) {
+		Entity ent(context);
+		auto c = C(ent);
 		registerComponent(
 		    TypeId<C>(), [](Entity& ent) -> std::unique_ptr<Component> { return std::make_unique<C>(ent); },
-		    std::move(name), dependsOn);
+		    std::string(c.cName()), dependsOn);
 	}
 
   private:
-	static void registerComponent(type_id_t id, std::unique_ptr<Component> (*creator)(Entity& ent), std::string name,
-	    type_id_t dependsOn);
+	static void registerComponent(
+	    type_id_t id, std::unique_ptr<Component> (*creator)(Entity& ent), std::string name, type_id_t dependsOn);
 
   private:
 	// unsafe

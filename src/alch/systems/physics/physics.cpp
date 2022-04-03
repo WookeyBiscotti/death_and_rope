@@ -12,7 +12,7 @@
 #include "alch/systems/transform/events.hpp"
 #include "alch/systems/transform/transform.hpp"
 
-Physics::Physics(Context& context): Receiver(context.systemRef<Broker>()), _contex(context), _world({0, 100}) {
+Physics::Physics(Context& context): Receiver(context.systemRef<Broker>()), _contex(context), _world({0, 0}) {
 	subscribe<EngineOnFrameStart>([this](const EngineOnFrameStart&) {
 		// TODO: use config
 		update(1 / 60.f);

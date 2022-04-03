@@ -1,4 +1,5 @@
 #include "collider.hpp"
+
 #include "physics.hpp"
 //
 #include "alch/engine/context.hpp"
@@ -28,13 +29,14 @@ Collider::Collider(Entity& entity, Circle_t, float r, float density, const Vecto
 
 void Collider::add(Box_t, const Vector2f& size, float density, const Vector2f& origin) {
 	b2PolygonShape s;
-	s.SetAsBox(size.x * 0.5f, size.y * 0.5f, {size.x * 0.5f, size.y * 0.5f}, {});
+	s.SetAsBox(size.x * 0.5f, size.y * 0.5f, {origin.x, origin.y}, {});
 	_fixtures.push_back(entity().ref<Body>()._body->CreateFixture(&s, density));
 }
 
 void Collider::add(Circle_t, float r, float density, const Vector2f& origin) {
 	b2CircleShape s;
 	s.m_radius = r;
+	s.m_p = {origin.x, origin.y};
 	_fixtures.push_back(entity().ref<Body>()._body->CreateFixture(&s, density));
 }
 

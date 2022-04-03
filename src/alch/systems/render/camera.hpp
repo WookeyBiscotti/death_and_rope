@@ -24,8 +24,12 @@ class Camera: public Component {
 
 	const sf::View& sf() { return _view; }
 
+	void makeCurrent();
+
 	void serialize(OArchive& ar) const override;
 	void deserialize(IArchive& ar) override;
+
+	ALCH_COMPONENT_NAME(Camera);
 
   private:
 	sf::View _view;

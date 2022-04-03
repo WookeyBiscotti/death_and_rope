@@ -18,6 +18,8 @@ class ComponentNum: public Component {
 
 	void serialize(OArchive& archive) const {};
 	void deserialize(IArchive& archive){};
+
+	ALCH_COMPONENT_NAME(ComponentN);
 };
 
 TEST_CASE("General", "[Entity]") {

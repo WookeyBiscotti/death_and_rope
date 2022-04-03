@@ -29,6 +29,11 @@ class ComponentNum1: public Component {
 		}
 		archive(val);
 	};
+
+	std::string_view cName() const override {       
+		static const std::string name = "ComponentNum1" + std::to_string(N); 
+		return name;                                
+	};
 };
 
 TEST_CASE("General", "[Serialize]") {
@@ -38,7 +43,7 @@ TEST_CASE("General", "[Serialize]") {
 	Context context;
 	context.addSystem(&logger);
 	context.addSystem(&broker);
-    Entity::registerComponent<Transform>("Transform");
+	Entity::registerComponent<Transform>("Transform");
 
 	Entity entity(context);
 
@@ -57,5 +62,5 @@ TEST_CASE("General", "[Serialize]") {
 	entity.deserialize(oa);
 
 	REQUIRE(entity.ref<ComponentNum1<1>>().val == 13);
-	REQUIRE(entity.ref<ComponentNum1<2>>().val == 77); 
+	REQUIRE(entity.ref<ComponentNum1<2>>().val == 77);
 }

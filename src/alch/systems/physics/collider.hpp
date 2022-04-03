@@ -37,6 +37,8 @@ class Collider: public Component {
 	void serialize(OArchive& ar) const override;
 	void deserialize(IArchive& ar) override;
 
+	ALCH_COMPONENT_NAME(Collider);
+
   private:
 	std::vector<b2Fixture*> _fixtures;
 };

@@ -31,6 +31,8 @@ class Transform: public Component {
 	void serialize(OArchive& ar) const override;
 	void deserialize(IArchive& ar) override;
 
+	ALCH_COMPONENT_NAME(Transform);
+
   private:
 	Vector2f _position{};
 	Vector2f _size{1, 1};

@@ -23,9 +23,12 @@ class Body: public Component {
 
 	void position(Vector2f position);
 
+	b2Body& body() { return *_body; }
+
 	void serialize(OArchive& ar) const override;
 	void deserialize(IArchive& ar) override;
 
+	ALCH_COMPONENT_NAME(Body);
   private:
 	b2Body* _body{};
 };
