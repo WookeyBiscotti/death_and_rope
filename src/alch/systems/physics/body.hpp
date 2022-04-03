@@ -14,6 +14,7 @@ class Body: public Component {
 		STATIC,
 		DYNAMIC,
 		KINETIC,
+		BULLET,
 	};
 
 	explicit Body(Entity& entity);

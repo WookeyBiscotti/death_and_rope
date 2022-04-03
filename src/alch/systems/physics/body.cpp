@@ -16,13 +16,14 @@ Body::Body(Entity& entity, Type type): Component(entity) {
 	bd.type = [type] {
 		if (type == STATIC) {
 			return b2_staticBody;
-		} else if (type == DYNAMIC) {
+		} else if (type == DYNAMIC || type == BULLET) {
 			return b2_dynamicBody;
 		} else {
 			return b2_kinematicBody;
 		}
 	}();
 	bd.position = to(entity.ref<Transform>().p());
+	bd.bullet = type == BULLET;
 
 	bd.userData.entity = &entity;
 
