@@ -40,6 +40,14 @@ void Collider::add(Circle_t, float r, float density, const Vector2f& origin) {
 	_fixtures.push_back(entity().ref<Body>()._body->CreateFixture(&s, density));
 }
 
+void Collider::setGroupIndex(int idx) {
+	for (const auto& f : _fixtures) {
+		auto fd = f->GetFilterData();
+		fd.groupIndex = idx;
+		f->SetFilterData(fd);
+	}
+}
+
 void Collider::serialize(OArchive& ar) const {
 	ar << static_cast<int>(_fixtures.size());
 	for (auto fp : _fixtures) {

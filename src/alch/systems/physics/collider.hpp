@@ -34,6 +34,8 @@ class Collider: public Component {
 	void add(Box_t, const Vector2f& size, float density = 1, const Vector2f& origin = {});
 	void add(Circle_t, float r, float density = 1, const Vector2f& origin = {});
 
+	void setGroupIndex(int idx);
+
 	void serialize(OArchive& ar) const override;
 	void deserialize(IArchive& ar) override;
 

@@ -7,7 +7,7 @@ class Context;
 class Entity;
 
 namespace sf {
-struct Event;
+class Event;
 }
 
 class Scene: public Receiver {

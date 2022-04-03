@@ -2,6 +2,7 @@
 
 #include "alch/common/archive.hpp"
 #include "alch/engine/entity.hpp"
+#include "alch/engine/events.hpp"
 #include "alch/systems/transform/events.hpp"
 #include "alch/systems/transform/transform.hpp"
 
@@ -12,7 +13,7 @@ Group::Group(Entity& entity, SyncMove_t): Component(entity), _moveChilds(true) {
 			return;
 		}
 		for (auto& it : _childs) {
-			it->ref<Transform>().p(it->ref<Transform>().p() + (p.neW - p.old));
+			it.first->ref<Transform>().p(it.first->ref<Transform>().p() + (p.neW - p.old));
 		}
 	});
 }
@@ -30,10 +31,21 @@ Entity& Group::create() {
 }
 
 void Group::add(std::unique_ptr<Entity> entity) {
-	_childs.insert(std::move(entity));
+	auto ptr = entity.get();
+	this->entity().subscribe<EntityWantsDelete>(ptr, this, [this, entity = ptr](const EntityWantsDelete&) {
+		this->entity().subscribe<EngineOnFrameEnd>([this](const EngineOnFrameEnd&) {
+			for(const auto d: this->_requestDelete){
+				remove(d);
+			}
+			_requestDelete.clear();
+		});
+
+		_requestDelete.push_back(entity);
+	});
+	_childs.emplace(ptr, std::move(entity));
 }
 
-void Group::remove(const std::unique_ptr<Entity>& entity) {
+void Group::remove(Entity* entity) {
 	_childs.erase(entity);
 }
 
@@ -50,6 +62,6 @@ void Group::serialize(OArchive& ar) const {
 	ar(_moveChilds);
 	ar(static_cast<int>(_childs.size()));
 	for (auto& c : _childs) {
-		c->serialize(ar);
+		c.first->serialize(ar);
 	}
 }

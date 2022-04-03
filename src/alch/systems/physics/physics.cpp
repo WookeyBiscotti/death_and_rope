@@ -1,8 +1,5 @@
 #include "physics.hpp"
 
-#include "body.hpp"
-#include "collider.hpp"
-
 #include "alch/common/rect.hpp"
 #include "alch/common/vector2.hpp"
 #include "alch/engine/context.hpp"
@@ -11,13 +8,50 @@
 #include "alch/systems/broker/broker.hpp"
 #include "alch/systems/transform/events.hpp"
 #include "alch/systems/transform/transform.hpp"
+#include "body.hpp"
+#include "collider.hpp"
+#include "events.hpp"
+
+#include <box2d/b2_world_callbacks.h>
+#include <memory>
+
+class ContactListener: public b2ContactListener {
+	Physics& _physics;
+
+  public:
+	ContactListener(Physics& physics): _physics(physics){};
+
+	std::vector<PhysicsBeginContact> beginContacts;
+
+	void BeginContact(b2Contact* contact) {
+		auto& ba = *contact->GetFixtureA()->GetBody();
+		auto& bb = *contact->GetFixtureB()->GetBody();
+		auto& ea = *ba.GetUserData().entity;
+		auto& eb = *bb.GetUserData().entity;
+		PhysicsBeginContact bc{ea, ba, eb, bb};
+		beginContacts.push_back(bc);
+	}
+
+	// void EndContact(b2Contact* contact) { /* handle end event */
+	// }
+
+	// void PreSolve(b2Contact* contact, const b2Manifold* oldManifold) { /* handle pre-solve event */
+	// }
+
+	// void PostSolve(b2Contact* contact, const b2ContactImpulse* impulse) { /* handle post-solve event */
+	// }
+};
 
 Physics::Physics(Context& context): Receiver(context.systemRef<Broker>()), _contex(context), _world({0, 0}) {
+	_contactListner = std::make_unique<ContactListener>(*this);
+	_world.SetContactListener(_contactListner.get());
 	subscribe<EngineOnFrameStart>([this](const EngineOnFrameStart&) {
 		// TODO: use config
 		update(1 / 60.f);
 	});
 }
+
+Physics::~Physics(){};
 
 void Physics::update(float dt) {
 	// TODO: get from config
@@ -33,4 +67,10 @@ void Physics::update(float dt) {
 		}
 		body = body->GetNext();
 	}
+
+	for (const auto& bc : _contactListner->beginContacts) {
+		bc.ea.send<PhysicsBeginContact>(bc);
+		bc.eb.send<PhysicsBeginContact>(bc);
+	}
+	_contactListner->beginContacts.clear();
 }

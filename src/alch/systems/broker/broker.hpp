@@ -14,28 +14,26 @@ class Broker: public System {
   public:
 	template<class Event>
 	void subscribe(Receiver* receiver, std::function<void(Sender* sender, const Event& event)> fn) {
-		_eventsFn.emplace(TypeId<Event>(), {TypeId<Event>(), [fn = std::move(fn)](Sender* sender, const void* data) {
-			                                    fn(sender, reinterpret_cast<Event*>(data));
-		                                    }});
+		_eventsFn[TypeId<Event>()] = {TypeId<Event>(),
+		    [fn = std::move(fn)](Sender* sender, const void* data) { fn(sender, reinterpret_cast<Event*>(data)); }};
 		_receiversFns[receiver].emplace(TypeId<Event>());
 	}
 
 	template<class Event>
 	void subscribe(Receiver* receiver, std::function<void(const Event& event)> fn) {
-		_eventsFn[TypeId<Event>()].emplace(receiver,
-		    EventFromAllListner{TypeId<Event>(),
-		        [fn = std::move(fn)](Sender* sender, const void* data) { fn(*reinterpret_cast<const Event*>(data)); }});
+		_eventsFn[TypeId<Event>()][receiver] = EventFromAllListner{TypeId<Event>(),
+		    [fn = std::move(fn)](Sender* sender, const void* data) { fn(*reinterpret_cast<const Event*>(data)); }};
 		_receiversFns[receiver].emplace(TypeId<Event>());
 	}
 
 	void subscribe(Receiver* receiver, type_id_t typeId, std::function<void(const void* event)> fn) {
-		_eventsFn[typeId].emplace(receiver,
-		    EventFromAllListner{typeId, [fn = std::move(fn)](Sender* sender, const void* data) { fn(data); }});
+		_eventsFn[typeId][receiver] =
+		    EventFromAllListner{typeId, [fn = std::move(fn)](Sender* sender, const void* data) { fn(data); }};
 		_receiversFns[receiver].emplace(typeId);
 	}
 
 	void subscribe(Receiver* receiver, type_id_t typeId, std::function<void(Sender* sender, const void* event)> fn) {
-		_eventsFn[typeId].emplace(receiver, EventFromAllListner{typeId, std::move(fn)});
+		_eventsFn[typeId][receiver] = EventFromAllListner{typeId, std::move(fn)};
 		_receiversFns[receiver].emplace(typeId);
 	}
 

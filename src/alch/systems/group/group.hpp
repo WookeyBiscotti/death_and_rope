@@ -21,12 +21,20 @@ class Group: public Component {
 	Entity& create();
 
 	void add(std::unique_ptr<Entity> entity);
-	void remove(const std::unique_ptr<Entity>& entity);
+	void remove(Entity* entity);
 
 	bool moveChilds() const { return _moveChilds; }
 	void moveChilds(bool moveChilds) { _moveChilds = moveChilds; }
 
-	const std::unordered_set<std::unique_ptr<Entity>>& childs() const { return _childs; }
+	std::vector<Entity*> childs() const {
+		std::vector<Entity*> childs;
+		childs.reserve(_childs.size());
+		for (const auto& c : _childs) {
+			childs.push_back(c.first);
+		}
+
+		return childs;
+	}
 
 	void serialize(OArchive& ar) const override;
 	void deserialize(IArchive& ar) override;
@@ -36,5 +44,7 @@ class Group: public Component {
   private:
 	bool _moveChilds{};
 
-	std::unordered_set<std::unique_ptr<Entity>> _childs;
+	std::vector<Entity*> _requestDelete;
+
+	std::unordered_map<Entity*, std::unique_ptr<Entity>> _childs;
 };

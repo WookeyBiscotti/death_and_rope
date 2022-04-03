@@ -17,6 +17,8 @@
 
 class Context;
 
+struct EntityWantsDelete {};
+
 class Entity final: public Sender, public Receiver {
   public:
 	explicit Entity(Context& context):
@@ -99,6 +101,8 @@ class Entity final: public Sender, public Receiver {
 		return _transform;
 	}
 
+	void requestDelete();
+
 	auto& transform() { return _transform; }
 	auto& tr() { return transform(); }
 
@@ -118,7 +122,6 @@ class Entity final: public Sender, public Receiver {
 	static void registerComponent(
 	    type_id_t id, std::unique_ptr<Component> (*creator)(Entity& ent), std::string name, type_id_t dependsOn);
 
-  private:
 	// unsafe
 	auto& add(type_id_t id, std::unique_ptr<Component>&& component) {
 		_components.emplace(id, std::move(component));
