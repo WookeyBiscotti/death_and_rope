@@ -21,7 +21,7 @@
 
 struct SerializerData {
 	std::string name;
-	type_id_t dependsOn{};
+	std::vector<type_id_t> dependsOn{};
 	std::unique_ptr<Component> (*creator)(Entity& ent){};
 };
 
@@ -49,8 +49,17 @@ void Entity::serialize(OArchive& ar) const {
 		const auto orderSize = componentInOrder.size();
 		for (const auto& [id, c] : _components) {
 			auto& sd = SD(id);
-			if (!componentInOrder.contains(id) &&
-			    (sd.dependsOn == type_id_t{} || componentInOrder.contains(sd.dependsOn))) {
+			if (!componentInOrder.contains(id)) {
+				bool canSerialize = true;
+				for (const auto dpOn : sd.dependsOn) {
+					if (!componentInOrder.contains(dpOn)) {
+						break;
+						canSerialize = false;
+					}
+				}
+				if (!canSerialize) {
+					continue;
+				}
 				componentInOrder.insert(id);
 				ar(sd.name);
 				c->serialize(ar);
@@ -98,26 +107,25 @@ void Entity::deserialize(IArchive& ar) {
 	}
 }
 
-void Entity::registerComponent(
-    type_id_t id, std::unique_ptr<Component> (*creator)(Entity& ent), std::string name, type_id_t dependsOn) {
+void Entity::registerComponent(type_id_t id, std::unique_ptr<Component> (*creator)(Entity& ent), std::string name,
+    std::vector<type_id_t> dependsOn) {
 	if (auto found = serializerData.find(id); found != serializerData.end()) {
-		LCRIT("Abort registration: serializer with such id({}) already registered. Registered info: id: {}, name: {}, "
-		      "dependsOn: {}. You try register: id: {}, name: {},, dependsOn: {}",
-		    id, id, found->second.name, found->second.dependsOn, id, name, dependsOn);
+		LCRIT("Abort registration: serializer with such id({}) already registered. Registered info: id: {}, name: {}. "
+		      "You try register: id: {}, name: {}",
+		    id, id, found->second.name, id, name);
 		exit(1);
 	}
 	if (auto found = nameToTypeId.find(name); found != nameToTypeId.end()) {
 		const auto& registeredSer = serializerData[nameToTypeId[name]];
-		LCRIT(
-		    "Abort registration: serializer with such name({}) already registered. Registered info: id: {}, name: {}, "
-		    "dependsOn: {}. You try register: id: {}, name: {}, dependsOn: {}",
-		    name, id, registeredSer.name, registeredSer.dependsOn, id, name, dependsOn);
+		LCRIT("Abort registration: serializer with such name({}) already registered. Registered info: id: {}, name: "
+		      "{}. You try register: id: {}, name: {}.",
+		    name, id, registeredSer.name, id, name);
 		exit(1);
 	}
 
 	SerializerData data;
 	data.name = name;
-	data.dependsOn = dependsOn;
+	data.dependsOn = std::move(dependsOn);
 	data.creator = creator;
 
 	serializerData.emplace(id, std::move(data));

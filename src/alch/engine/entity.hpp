@@ -108,17 +108,17 @@ class Entity final: public Sender {
 	void deserialize(IArchive& ar);
 
 	template<class C>
-	static void registerComponent(Context& context, type_id_t dependsOn = type_id_t{}) {
+	static void registerComponent(Context& context) {
 		Entity ent(context);
 		auto c = C(ent);
 		registerComponent(
 		    TypeId<C>(), [](Entity& ent) -> std::unique_ptr<Component> { return std::make_unique<C>(ent); },
-		    std::string(c.cName()), dependsOn);
+		    std::string(c.cName()), c.dependsOn());
 	}
 
   private:
-	static void registerComponent(
-	    type_id_t id, std::unique_ptr<Component> (*creator)(Entity& ent), std::string name, type_id_t dependsOn);
+	static void registerComponent(type_id_t id, std::unique_ptr<Component> (*creator)(Entity& ent), std::string name,
+	    std::vector<type_id_t> dependsOn);
 
 	// unsafe
 	auto& add(type_id_t id, std::unique_ptr<Component>&& component) {

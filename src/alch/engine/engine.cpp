@@ -108,7 +108,7 @@ void Engine::run(const char** argv, int argc, const EngineConfig& engineConfig) 
 	Entity::registerComponent<RectShape>(context);
 
 	Entity::registerComponent<Body>(context);
-	Entity::registerComponent<Collider>(context, TypeId<Body>());
+	Entity::registerComponent<Collider>(context);
 
 	if (_config.preBegin) {
 		_config.preBegin(context);

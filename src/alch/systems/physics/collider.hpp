@@ -40,6 +40,7 @@ class Collider: public Component {
 	void deserialize(IArchive& ar) override;
 
 	ALCH_COMPONENT_NAME(Collider);
+	ALCH_COMPONENT_DEPENDS_ON(Body);
 
   private:
 	std::vector<b2Fixture*> _fixtures;
