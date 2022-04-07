@@ -9,10 +9,10 @@
 #include <SFML/Graphics.hpp>
 //
 
-Sprite::Sprite(Entity& entity): Drawable(entity) {
-	entity.subscribe<PositionUpdate>(&entity, this, [this](const PositionUpdate& p) { _sprite.setPosition(p.neW); });
-	entity.subscribe<RotationUpdate>(&entity, this,
-	    [this](const RotationUpdate& r) { _sprite.setRotation(180 * r.neW / kPIf); });
+Sprite::Sprite(Entity& entity): Drawable(entity), Receiver(entity.context().systemRef<Broker>()) {
+	subscribe<PositionUpdate>(&entity, [this](const PositionUpdate& p) { _sprite.setPosition(p.neW); });
+	subscribe<RotationUpdate>(
+	    &entity, [this](const RotationUpdate& r) { _sprite.setRotation(180 * r.neW / kPIf); });
 }
 
 Sprite::Sprite(Entity& entity, const std::shared_ptr<Texture>& tex): Sprite(entity) {
@@ -20,8 +20,7 @@ Sprite::Sprite(Entity& entity, const std::shared_ptr<Texture>& tex): Sprite(enti
 	_sprite.setTexture(tex->sf());
 }
 
-Sprite::Sprite(Entity& entity, const std::shared_ptr<Texture>& tex, const Recti& rect):
-    Sprite(entity) {
+Sprite::Sprite(Entity& entity, const std::shared_ptr<Texture>& tex, const Recti& rect): Sprite(entity) {
 	_texture = tex;
 	_sprite.setTexture(tex->sf());
 	_sprite.setTextureRect(rect);

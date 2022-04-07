@@ -1,6 +1,7 @@
 #pragma once
 
 #include "alch/engine/component.hpp"
+#include "alch/systems/broker/receiver.hpp"
 //
 #include <memory>
 #include <string_view>
@@ -8,15 +9,13 @@
 
 class Entity;
 
-class Group: public Component {
+class Group: public Component, public Receiver {
   public:
 	struct SyncMove_t {};
 	inline static const SyncMove_t SyncMove;
 
-	explicit Group(Entity& entity): Component(entity) {}
+	explicit Group(Entity& entity);
 	Group(Entity& entity, SyncMove_t);
-
-	~Group();
 
 	Entity& create();
 

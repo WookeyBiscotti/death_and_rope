@@ -4,6 +4,7 @@
 #include "alch/engine/entity.hpp"
 #include "alch/engine/events.hpp"
 #include "alch/systems/assets/asset_cache.hpp"
+#include "alch/systems/broker/receiver.hpp"
 #include "alch/systems/group/group.hpp"
 #include "alch/systems/names/name.hpp"
 #include "alch/systems/physics/body.hpp"
@@ -67,7 +68,7 @@ class TestPhysicsScene: public Scene {
 
 		camera.add<Camera>();
 		camera.ref<Camera>().size((Vector2f)context().systemRef<Window>().window().getSize());
-		camera.subscribe<EngineOnFrameStart>([&camera, this](const EngineOnFrameStart& event) {
+		subscribe<EngineOnFrameStart>([&camera, this](const EngineOnFrameStart& event) {
 			if (Keyboard::isKeyPressed(Keyboard::Q)) {
 				camera.ref<Camera>().zoom(1.1);
 			}

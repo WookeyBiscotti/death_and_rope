@@ -8,8 +8,8 @@
 
 #include <SFML/Graphics.hpp>
 
-CircleShape::CircleShape(Entity& entity): Drawable(entity) {
-	entity.subscribe<PositionUpdate>(&entity, this, [this](const PositionUpdate& p) { _shape.setPosition(p.neW); });
+CircleShape::CircleShape(Entity& entity): Drawable(entity), Receiver(entity.context().systemRef<Broker>()) {
+	subscribe<PositionUpdate>(&entity, [this](const PositionUpdate& p) { _shape.setPosition(p.neW); });
 	_shape.setPosition(entity.tr().p());
 }
 

@@ -6,8 +6,12 @@
 #include "alch/systems/transform/events.hpp"
 #include "alch/systems/transform/transform.hpp"
 
-Group::Group(Entity& entity, SyncMove_t): Component(entity), _moveChilds(true) {
-	entity.subscribe<PositionUpdate>(&entity, this, [this](const PositionUpdate& p) {
+Group::Group(Entity& entity): Component(entity), Receiver(entity.context().systemRef<Broker>()) {
+}
+
+Group::Group(Entity& entity, SyncMove_t):
+    Component(entity), _moveChilds(true), Receiver(entity.context().systemRef<Broker>()) {
+	subscribe<PositionUpdate>(&entity, [this](const PositionUpdate& p) {
 		// TODO: use subscription
 		if (!_moveChilds) {
 			return;
@@ -16,10 +20,6 @@ Group::Group(Entity& entity, SyncMove_t): Component(entity), _moveChilds(true) {
 			it.first->ref<Transform>().p(it.first->ref<Transform>().p() + (p.neW - p.old));
 		}
 	});
-}
-
-Group::~Group() {
-	entity().unsubscribe<PositionUpdate>(&entity(), this);
 }
 
 Entity& Group::create() {
@@ -32,9 +32,9 @@ Entity& Group::create() {
 
 void Group::add(std::unique_ptr<Entity> entity) {
 	auto ptr = entity.get();
-	this->entity().subscribe<EntityWantsDelete>(ptr, this, [this, entity = ptr](const EntityWantsDelete&) {
-		this->entity().subscribe<EngineOnFrameEnd>([this](const EngineOnFrameEnd&) {
-			for(const auto d: this->_requestDelete){
+	subscribe<EntityWantsDelete>(ptr, [this, entity = ptr](const EntityWantsDelete&) {
+		subscribe<EngineOnFrameEnd>([this](const EngineOnFrameEnd&) {
+			for (const auto d : this->_requestDelete) {
 				remove(d);
 			}
 			_requestDelete.clear();

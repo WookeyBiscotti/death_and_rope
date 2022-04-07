@@ -79,42 +79,21 @@ class Broker: public System {
 			if (const auto& types = findValue(_personalEventsFn, sender); types) {
 				if (const auto& receivers = findValue(*types, typeId); receivers) {
 					for (const auto& r : *receivers) {
-						for (const auto& c : r.second) {
-							c.second.fn(data);
-						}
+						r.second.fn(data);
 					}
 				}
 			}
 		}
 	}
 
-	void subscribe(Receiver* r, Sender* s, type_id_t typeId, void* cbId, std::function<void(const void* event)> fn) {
-		_personalEventsFn[s][typeId][r][cbId] = EventFromOneListner{typeId, std::move(fn)};
+	void subscribe(Receiver* r, Sender* s, type_id_t typeId, std::function<void(const void* event)> fn) {
+		_personalEventsFn[s][typeId][r] = EventFromOneListner{typeId, std::move(fn)};
 		_personalReceiversFns[r][s].insert(typeId);
 	}
 
-	void unsubscribe(Receiver* receiver, Sender* sender, type_id_t typeId, void* cbId) {
-		if (auto types = findValue(_personalEventsFn, sender)) {
-			if (auto receivers = findValue(*types, typeId)) {
-				if (auto cbs = findValue(*receivers, receiver)) {
-					cbs->erase(cbId);
-					if (cbs->empty()) {
-						if (auto senders = findValue(_personalReceiversFns, receiver)) {
-							if (auto types = findValue(*senders, sender)) {
-								types->erase(typeId);
-							}
-						}
-						receivers->erase(receiver);
-					}
-					if (receivers->empty()) {
-						types->erase(typeId);
-					}
-					if (types->empty()) {
-						_personalEventsFn.erase(sender);
-					}
-				}
-			}
-		}
+	void unsubscribe(Receiver* receiver, Sender* sender, type_id_t typeId) {
+		_personalEventsFn[sender][typeId].erase(receiver);
+		_personalReceiversFns[receiver][sender].erase(typeId);
 	}
 
 	void unsubscribe(Receiver* receiver, Sender* sender) {
@@ -151,8 +130,7 @@ class Broker: public System {
 	std::unordered_map<type_id_t, std::unordered_map<Receiver*, EventFromAllListner>> _eventsFn;
 	std::unordered_map<Receiver*, std::unordered_set<type_id_t>> _receiversFns;
 
-	std::unordered_map<Sender*,
-	    std::unordered_map<type_id_t, std::unordered_map<Receiver*, std::unordered_map<void*, EventFromOneListner>>>>
+	std::unordered_map<Sender*, std::unordered_map<type_id_t, std::unordered_map<Receiver*, EventFromOneListner>>>
 	    _personalEventsFn;
 	std::unordered_map<Receiver*, std::unordered_map<Sender*, std::unordered_set<type_id_t>>> _personalReceiversFns;
 };

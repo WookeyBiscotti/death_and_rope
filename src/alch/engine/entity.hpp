@@ -19,11 +19,9 @@ class Context;
 
 struct EntityWantsDelete {};
 
-class Entity final: public Sender, public Receiver {
+class Entity final: public Sender {
   public:
-	explicit Entity(Context& context):
-	    Sender(context.systemRef<Broker>()), Receiver(context.systemRef<Broker>()), _context(context),
-	    _transform(*this) {}
+	explicit Entity(Context& context): Sender(context.systemRef<Broker>()), _context(context), _transform(*this) {}
 
 	Entity(const Entity&) = delete;
 	Entity(Entity&&) = delete;

@@ -4,13 +4,14 @@
 #include "alch/common/rect.hpp"
 #include "alch/common/vector2.hpp"
 #include "alch/systems/assets/texture.hpp"
+#include "alch/systems/broker/receiver.hpp"
 #include "drawable.hpp"
 //
 #include <SFML/Graphics/Sprite.hpp>
 //
 #include <memory>
 
-class Sprite: public Drawable {
+class Sprite: public Drawable, public Receiver{
   public:
 	explicit Sprite(Entity& entity);
 	Sprite(Entity& entity, const std::shared_ptr<Texture>& tex);

@@ -24,12 +24,12 @@ class Receiver {
 		    TypeId<Event>(), [fn = std::move(fn)](const void* data) { fn(*reinterpret_cast<const Event*>(data)); });
 	}
 	template<class Event>
-	void subscribe(Sender* sender, void* CbId, std::function<void(const Event& event)> fn) {
-		subscribe(sender, TypeId<Event>(), CbId,
+	void subscribe(Sender* sender, std::function<void(const Event& event)> fn) {
+		subscribe(sender, TypeId<Event>(),
 		    [fn = std::move(fn)](const void* data) { fn(*reinterpret_cast<const Event*>(data)); });
 	}
 
-	void subscribe(Sender* sender, type_id_t typeId, void* cbId, std::function<void(const void* data)> fn);
+	void subscribe(Sender* sender, type_id_t typeId, std::function<void(const void* data)> fn);
 	void subscribe(type_id_t typeId, std::function<void(Sender* sender, const void* data)> fn);
 	void subscribe(type_id_t typeId, std::function<void(const void* data)> fn);
 
@@ -38,13 +38,13 @@ class Receiver {
 		unsubscribe(TypeId<Event>());
 	}
 	template<class Event>
-	void unsubscribe(Sender* sender, void* CbId) {
-		unsubscribe(sender, TypeId<Event>(), CbId);
+	void unsubscribe(Sender* sender) {
+		unsubscribe(sender, TypeId<Event>());
 	}
 
 	void unsubscribeAll();
 	void unsubscribe(type_id_t typeId);
-	void unsubscribe(Sender* sender, type_id_t typeId, void* CbId);
+	void unsubscribe(Sender* sender, type_id_t typeId);
 
   private:
 	Broker& _broker;

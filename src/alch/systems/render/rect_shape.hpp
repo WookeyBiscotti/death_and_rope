@@ -5,6 +5,7 @@
 #include "alch/common/rect.hpp"
 #include "alch/common/vector2.hpp"
 #include "alch/systems/assets/texture.hpp"
+#include "alch/systems/broker/receiver.hpp"
 #include "drawable.hpp"
 
 #include <SFML/Graphics/CircleShape.hpp>
@@ -12,7 +13,7 @@
 //
 #include <memory>
 
-class RectShape: public Drawable {
+class RectShape: public Drawable, public Receiver {
   public:
 	explicit RectShape(Entity& entity);
 	RectShape(Entity& entity, Vector2f size, sf::Color color);

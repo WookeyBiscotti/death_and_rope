@@ -37,7 +37,7 @@ class TestScene: public Scene {
 		_camera = std::make_unique<Entity>(context());
 		_camera->add<Camera>();
 		_camera->ref<Camera>().size((Vector2f)context().systemRef<Window>().window().getSize());
-		_camera->subscribe<EngineOnFrameStart>([this](const EngineOnFrameStart& event) {
+		subscribe<EngineOnFrameStart>([this](const EngineOnFrameStart& event) {
 			if (Keyboard::isKeyPressed(Keyboard::Q)) {
 				_camera->ref<Camera>().zoom(1.1);
 			}
