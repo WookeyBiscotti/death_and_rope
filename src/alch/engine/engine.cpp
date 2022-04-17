@@ -17,13 +17,14 @@
 #include "alch/systems/physics/body.hpp"
 #include "alch/systems/physics/physics.hpp"
 #include "alch/systems/render/circle_component.hpp"
-#include "alch/systems/render/rect_shape.hpp"
 #include "alch/systems/render/drawable.hpp"
+#include "alch/systems/render/rect_shape.hpp"
 #include "alch/systems/render/render.hpp"
 #include "alch/systems/render/sprite_component.hpp"
 #include "alch/systems/scenes/scene_system.hpp"
 #include "alch/systems/scripts/scripts.hpp"
 #include "alch/systems/transform/transform.hpp"
+#include "alch/systems/ui/ui_system.hpp"
 #include "alch/systems/window/window.hpp"
 //
 #include "alch/scenes/default_scene.hpp"
@@ -54,49 +55,22 @@ static void addStandardScenes(Context& context) {
 void Engine::run(const char** argv, int argc, const EngineConfig& engineConfig) {
 	_config = engineConfig;
 
-	Context context;
+	Context context(*this);
 
-	context.addSystem(this);
-
-	IF_NOT_PROD_BUILD(Logger logger);
-	IF_NOT_PROD_BUILD(context.addSystem(&logger));
-
-	Broker broker;
-	context.addSystem(&broker);
-
-	Config config(context, argv, argc);
-	context.addSystem(&config);
-
-	FileSystem filesystem(context);
-	context.addSystem(&filesystem);
-
-	Scripts scripts;
-	context.addSystem(&scripts);
-
-	Window window(context);
-	context.addSystem(&window);
-
-	IF_NOT_PROD_BUILD(ImGuiSystem imgui(context));
-	IF_NOT_PROD_BUILD(context.addSystem(&imgui));
-
-	Render render(context);
-	context.addSystem(&render);
-
-	AssetCache cache(context);
-	context.addSystem(&cache);
-
-	SceneSystem scenes;
-	context.addSystem(&scenes);
-	addStandardScenes(context);
-
-	Physics physics(context);
-	context.addSystem(&physics);
-
-	NameSystem names;
-	context.addSystem(&names);
-
-	IF_NOT_PROD_BUILD(DebugSystem debug(context));
-	IF_NOT_PROD_BUILD(context.addSystem(&debug));
+	IF_NOT_PROD_BUILD(context.createSystem<Logger>());
+	auto& broker = context.createSystem<Broker>();
+	context.createSystem<Config>(context, argv, argc);
+	context.createSystem<FileSystem>(context);
+	context.createSystem<Scripts>();
+	auto& window = context.createSystem<Window>(context);
+	IF_NOT_PROD_BUILD(context.createSystem<ImGuiSystem>(context));
+	auto& render = context.createSystem<Render>(context);
+	auto& ui = context.createSystem<UISystem>(context);
+	context.createSystem<AssetCache>(context);
+	auto& scenes = context.createSystem<SceneSystem>();
+	context.createSystem<Physics>(context);
+	context.createSystem<NameSystem>();
+	IF_NOT_PROD_BUILD(context.createSystem<DebugSystem>(context));
 
 	Entity::registerComponent<Transform>(context);
 	Entity::registerComponent<Group>(context);
@@ -137,6 +111,8 @@ void Engine::run(const char** argv, int argc, const EngineConfig& engineConfig) 
 		broker.send(EngineOnFramePreRender{});
 
 		render.render();
+
+		ui.render();
 
 		broker.send(EngineOnFramePostRender{});
 

@@ -16,6 +16,10 @@ class Entity;
 class Body;
 class ContactListener;
 
+struct CastRayResult {
+	Entity* entity;
+};
+
 class Physics: public Receiver, public System {
 	friend class Body;
 	friend class Collider;
@@ -28,6 +32,8 @@ class Physics: public Receiver, public System {
 	void update(float dt);
 
 	b2World& internalWorld() { return _world; }
+
+	void castRay(Vector2f start, Vector2f end, const std::function<bool(const CastRayResult& result)>& callback);
 
   private:
 	Context& _contex;

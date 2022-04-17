@@ -74,3 +74,19 @@ void Physics::update(float dt) {
 	}
 	_contactListner->beginContacts.clear();
 }
+
+void Physics::castRay(Vector2f start, Vector2f end, const std::function<bool(const CastRayResult& result)>& callback) {
+	class RayCastCallback: public b2RayCastCallback {
+	  public:
+		CastRayResult result{};
+		Physics& physics;
+		decltype(callback)& callback;
+		RayCastCallback(Physics& physics, decltype(callback) callback): physics(physics), callback(callback){};
+		float ReportFixture(b2Fixture* fixture, const b2Vec2& point, const b2Vec2& normal, float fraction) override {
+			result.entity = fixture->GetBody()->GetUserData().entity;
+			return callback(result);
+		};
+	} rayCallback(*this, callback);
+
+	_world.RayCast(&rayCallback, to(start), to(end));
+}

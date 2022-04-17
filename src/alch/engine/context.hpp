@@ -12,11 +12,36 @@
 namespace sf {
 class RenderTarget;
 }
-class Context {
+
+class Engine;
+
+class Context final {
   public:
+	Engine& engine;
+
+	Context(Engine& engine): engine(engine) {}
+
+	~Context() {
+		while (!_store.empty()) {
+			_store.pop_back();
+		}
+		_systems.clear(); 
+	}
+
 	template<class S>
-	void addSystem(S* s) {
-		_systems.emplace(TypeId<S>(), s);
+	S* addSystem(std::unique_ptr<S> s) {
+		_systems.emplace(TypeId<S>(), s.get());
+		_store.emplace_back(std::move(s));
+	}
+
+	template<class S, class... Args>
+	S& createSystem(Args&&... args) {
+		auto s = std::make_unique<S>(std::forward<Args>(args)...);
+		auto ret = s.get();
+		_systems.emplace(TypeId<S>(), s.get());
+		_store.emplace_back(std::move(s));
+
+		return *ret;
 	}
 
 	template<class S>
@@ -49,4 +74,5 @@ class Context {
 
   private:
 	std::unordered_map<type_id_t, System*> _systems;
+	std::vector<std::unique_ptr<System>> _store;
 };

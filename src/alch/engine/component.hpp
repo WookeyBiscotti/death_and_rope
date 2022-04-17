@@ -1,6 +1,7 @@
 #pragma once
 
 #include "alch/common/archive.hpp"
+#include "alch/common/prod_build_utils.hpp"
 #include "alch/common/type_id.hpp"
 #include "alch/common/type_id_utils.hpp"
 
@@ -10,7 +11,14 @@ class Entity;
 
 class Component {
   public:
-	explicit Component(Entity& entity): _entity(entity){};
+	explicit Component(Entity& entity):
+	    _entity(entity){
+	        // if constexpr (IS_NOT_PROD_BUILD) {
+	        // 	for (const auto dp : dependsOn()) {
+	        // 		assert(entity().get(dp));
+	        // 	}
+	        // }
+	    };
 
 	virtual ~Component() = default;
 

@@ -2,6 +2,7 @@
 
 #include "alch/systems/config/config.hpp"
 #include "alch/systems/logging/logger.hpp"
+#include "alch/engine/engine.hpp"
 //
 #include "alch/common/types.hpp"
 //
@@ -12,9 +13,13 @@
 
 namespace fs = std::filesystem;
 
-static const Path TEXTURES_PATH = "assets/textures/";
-static const Path FONTS_PATH = "assets/fonts/";
-static const Path ENTITY_PATH = "assets/entity/";
+// static const Path TEXTURES_PATH = "assets/textures/";
+// static const Path FONTS_PATH = "assets/fonts/";
+// static const Path ENTITY_PATH = "assets/entity/";
+
+static const Path TEXTURES_PATH = "";
+static const Path FONTS_PATH = "";
+static const Path ENTITY_PATH = "";
 
 static const std::string DEFAULT_FONT = "UbuntuMono-Bold.ttf";
 
@@ -34,7 +39,7 @@ Path AssetCache::texturesPath() const {
 	return fs::path(_root) / TEXTURES_PATH;
 }
 
-AssetCache::AssetCache(Context& context): _context(context), _root(context.systemRef<Config>().staticConfig().root) {
+AssetCache::AssetCache(Context& context): _context(context), _root(context.engine.config().root) {
 	LINFO("Asset cache root: {}", _root);
 };
 

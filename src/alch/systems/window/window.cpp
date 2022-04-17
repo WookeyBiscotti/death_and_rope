@@ -1,18 +1,18 @@
-#include "SFML/Config.hpp"
-#include "SFML/Window/WindowStyle.hpp"
-#include "events.hpp"
 #include "window.hpp"
 
+#include "SFML/Config.hpp"
+#include "SFML/Window/WindowStyle.hpp"
 #include "alch/engine/context.hpp"
 #include "alch/engine/engine.hpp"
 #include "alch/systems/broker/broker.hpp"
 #include "alch/systems/config/config.hpp"
+#include "events.hpp"
 //
 #include <SFML/Graphics.hpp>
 
 Window::Window(Context& context): Sender(context.systemRef<Broker>()), _context(context) {
 	auto& config = context.systemRef<Config>().staticConfig();
-	auto& engineConfig = context.systemRef<Engine>().config();
+	auto& engineConfig = context.engine.config();
 	sf::Uint32 flags{};
 	if (!config.window.borderless) {
 		flags |= sf::Style::Close | sf::Style::Titlebar;
@@ -33,8 +33,15 @@ RenderWindow& Window::window() {
 }
 
 void Window::pullEvents() {
-	WindowEvent event;
-	while (_window->pollEvent(event.event)) {
-		send(event);
+	bool captured = false;
+	WindowUIEvent e{captured};
+	while (_window->pollEvent(e.general.event)) {
+		if (e.general.event.type != sf::Event::Closed && e.general.event.type != sf::Event::LostFocus &&
+		    e.general.event.type != sf::Event::GainedFocus && e.general.event.type != sf::Event::Resized) {
+			send(e);
+		}
+		if (!captured) {
+			send(e.general);
+		}
 	}
 }

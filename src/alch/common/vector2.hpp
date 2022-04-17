@@ -1,6 +1,7 @@
 #pragma once
 
 #include "alch/common/archive.hpp"
+#include "alch/common/consts.hpp"
 //
 #include <SFML/System/Vector2.hpp>
 #include <box2d/b2_math.h>
@@ -47,6 +48,18 @@ inline float sin(const Vector2f& a1, const Vector2f& a2, const Vector2f& b1, con
 	auto a = a2 - a1;
 	auto b = b2 - b1;
 	return vec(a, b) / (cross(a, a) * cross(b, b));
+}
+
+inline float sin(const Vector2f& a, const Vector2f& b) {
+	return vec(a, b) / (cross(a, a) * cross(b, b));
+}
+
+inline float angle(const Vector2f& a) {
+	return std::atan2(a.y, a.x);
+}
+
+inline Vector2f rotated(float rads) {
+	return {std::cos(rads), std::sin(rads)};
 }
 
 template<class Archive, class T>
