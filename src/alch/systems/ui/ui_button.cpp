@@ -7,6 +7,8 @@
 UIButton::UIButton(UIElement* parent, Context& context, std::string content, std::shared_ptr<Font> font):
     UIElement(parent, context.systemRef<UISystem>()), Sender(context.systemRef<Broker>()), _content(std::move(content)),
     _font(std::move(font)) {
+	_bg.setOutlineColor(sf::Color::Black);
+	_bg.setOutlineThickness(3);
 }
 
 void UIButton::draw(sf::RenderTarget& target) {

@@ -26,7 +26,7 @@ void UIText::onMove() {
 void UIText::onTransform() {
 	_text.setFont(_font->sf());
 	_text.setString(_content);
-	_text.setCharacterSize(24);
+	_text.setCharacterSize(12);
 	_text.setFillColor(sf::Color::Black);
 	// _text.setStyle(sf::Text::Bold | sf::Text::Underlined);
 
