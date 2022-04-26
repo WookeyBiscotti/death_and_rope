@@ -7,6 +7,24 @@
 #include "ui_element.hpp"
 #include "ui_events.hpp"
 
+class UnchangeableLayout: public UIElement {
+  public:
+	UnchangeableLayout(UIElement* parent, UISystem& system): UIElement(parent, system) { _layout = UIElement::FREE; }
+
+	void layout(Layout) override {}
+};
+
+class UIRoot: public UIElement {
+  public:
+	UIRoot(UIElement* parent, UISystem& system): UIElement(parent, system) {}
+
+	void draw(sf::RenderTarget& target) override {
+		for (auto it = _childs.rbegin(); it != _childs.rend(); ++it) {
+			(*it)->draw(target);
+		}
+	};
+};
+
 UIElement* UISystem::getElementUnderPoint(UIElement* el, Vector2f p) {
 	if (el->isGlobalPointIn(p)) {
 		for (const auto& c : el->_childs) {
@@ -22,10 +40,14 @@ UIElement* UISystem::getElementUnderPoint(UIElement* el, Vector2f p) {
 }
 
 UISystem::UISystem(Context& context): Receiver(context.systemRef<Broker>()), _context(context) {
-	_root = std::make_unique<UIElement>(nullptr, *this);
-	_lastHovered = _root.get();
+	_root = std::make_unique<UIRoot>(nullptr, *this);
+	_userRoot = _root->create<UIElement>(*this);
+	_freeLayout = _root->create<UnchangeableLayout>(*this);
+	_lastHovered = _userRoot;
 	const auto windowSize = context.systemRef<Window>().window().getSize();
 	_root->size(Vector2f(windowSize.x, windowSize.y));
+	_userRoot->size(Vector2f(windowSize.x, windowSize.y));
+	_freeLayout->size(Vector2f(windowSize.x, windowSize.y));
 
 	subscribe<WindowUIEvent>([this](const WindowUIEvent& e) {
 		const auto& eType = e.general.event.type;
@@ -71,6 +93,8 @@ UISystem::UISystem(Context& context): Receiver(context.systemRef<Broker>()), _co
 		}
 		if (eType == sf::Event::Resized) {
 			_root->size(Vector2f(e.general.event.size.width, e.general.event.size.height));
+			_freeLayout->size(Vector2f(e.general.event.size.width, e.general.event.size.height));
+			_userRoot->size(Vector2f(e.general.event.size.width, e.general.event.size.height));
 		}
 		if (eType == sf::Event::MouseLeft) {
 			if (_lastDraged) {
@@ -81,7 +105,7 @@ UISystem::UISystem(Context& context): Receiver(context.systemRef<Broker>()), _co
 }
 
 UIElement* UISystem::root() {
-	return _root.get();
+	return _userRoot;
 }
 
 UISystem::~UISystem() {

@@ -28,6 +28,8 @@ class UISystem final: public Receiver, public System {
 
   private:
 	std::unique_ptr<UIElement> _root;
+	UIElement* _freeLayout;
+	UIElement* _userRoot;
 	Context& _context;
 
 	UIElement* _lastHovered{};

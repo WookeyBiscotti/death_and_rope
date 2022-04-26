@@ -58,8 +58,8 @@ class UIElement {
 	}
 	bool resizeable() const { return _resizeable; }
 
-	Layout layout() const { return _layout; }
-	void layout(Layout layout) { _layout = layout; }
+	virtual Layout layout() const { return _layout; }
+	virtual void layout(Layout layout) { _layout = layout; }
 
 	bool focused() const { return _focused; }
 
@@ -79,6 +79,7 @@ class UIElement {
 		for (auto it = _childs.begin(); it != _childs.end(); ++it) {
 			if (it->get() == element) {
 				_childs.erase(it);
+				break;
 			}
 		}
 	}
