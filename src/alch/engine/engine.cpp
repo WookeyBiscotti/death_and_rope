@@ -119,7 +119,7 @@ void Engine::run(const char** argv, int argc, const EngineConfig& engineConfig) 
 		window.window().display();
 		window.window().clear();
 
-		if (scenes.next()) {
+		if (scenes.newSceneRequired()) {
 			scenes.applyNext();
 		}
 
@@ -145,8 +145,7 @@ void Engine::exportScriptFunctions(Context& context) {
 	auto& chai = context.systemRef<Scripts>().internal();
 	chai.add(fun([&context] {
 		auto& scene = context.systemRef<SceneSystem>();
-		scene.next({});
-		scene.applyNext();
+		scene.exit();
 	}),
 	    "exit");
 

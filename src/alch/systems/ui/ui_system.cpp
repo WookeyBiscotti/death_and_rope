@@ -14,22 +14,14 @@ class UnchangeableLayout: public UIElement {
 	void layout(Layout) override {}
 };
 
-class UIRoot: public UIElement {
-  public:
-	UIRoot(UIElement* parent, UISystem& system): UIElement(parent, system) {}
-
-	void draw(sf::RenderTarget& target) override {
-		for (auto it = _childs.rbegin(); it != _childs.rend(); ++it) {
-			(*it)->draw(target);
-		}
-	};
-};
-
 UIElement* UISystem::getElementUnderPoint(UIElement* el, Vector2f p) {
 	if (el->isGlobalPointIn(p)) {
-		for (const auto& c : el->_childs) {
+		for (auto it = el->_childs.rbegin(); it != el->_childs.rend(); ++it) {
+			const auto& c = *it;
 			if (c->isGlobalPointIn(p)) {
-				return getElementUnderPoint(c.get(), p);
+				if (auto ret = getElementUnderPoint(c.get(), p)) {
+					return ret;
+				}
 			}
 		}
 	} else {
@@ -40,9 +32,9 @@ UIElement* UISystem::getElementUnderPoint(UIElement* el, Vector2f p) {
 }
 
 UISystem::UISystem(Context& context): Receiver(context.systemRef<Broker>()), _context(context) {
-	_root = std::make_unique<UIRoot>(nullptr, *this);
-	_userRoot = _root->create<UIElement>(*this);
+	_root = std::make_unique<UIElement>(nullptr, *this);
 	_freeLayout = _root->create<UnchangeableLayout>(*this);
+	_userRoot = _root->create<UIElement>(*this);
 	_lastHovered = _userRoot;
 	const auto windowSize = context.systemRef<Window>().window().getSize();
 	_root->size(Vector2f(windowSize.x, windowSize.y));

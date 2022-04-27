@@ -13,14 +13,14 @@ class SceneSystem: public System {
 
 	const std::shared_ptr<Scene>& current() { return _current; }
 
-	void next(std::shared_ptr<Scene> scene) { _next = std::move(scene); }
-	const std::shared_ptr<Scene>& next() { return _next; }
+	bool newSceneRequired() const { return _newSceneRequired; }
 
 	bool findNext(const std::string& name) {
 		auto n = find(name);
 		auto loaded = !!n;
+		_newSceneRequired = true;
 		_next = std::move(n);
-                                                 
+
 		return loaded;
 	}
 
@@ -31,7 +31,13 @@ class SceneSystem: public System {
 		if (_next) {
 			_next->active(true);
 		}
+		_newSceneRequired = false;
 		_current = std::move(_next);
+	}
+
+	void exit() {
+		_next = {};
+		_newSceneRequired = true;
 	}
 
 	std::vector<std::string> list() const;
@@ -44,6 +50,7 @@ class SceneSystem: public System {
 
   private:
 	std::shared_ptr<Scene> _current;
+	bool _newSceneRequired{};
 	std::shared_ptr<Scene> _next;
 
 	struct SceneCreator {

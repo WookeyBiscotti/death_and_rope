@@ -16,8 +16,7 @@ void MainMenu::onFrame() {
 		context().systemRef<SceneSystem>().findNext("dev_menu");
 	}
 	if (ImGui::Button("Exit")) {
-		context().systemRef<SceneSystem>().next(nullptr);
-		context().systemRef<SceneSystem>().applyNext();
+		context().systemRef<SceneSystem>().exit();
 	}
 	ImGui::End();
 }

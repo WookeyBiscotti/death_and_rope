@@ -49,7 +49,6 @@ void SceneSystem::exportScriptFunctions(Context& context) {
 	chai.add(fun(&SceneSystem::applyNext), "applyNext");
 	chai.add(fun(&SceneSystem::list), "list");
 	chai.add(fun(&SceneSystem::find), "find");
-	chai.add(fun<void (SceneSystem::*)(std::shared_ptr<Scene>)>(&SceneSystem::next), "next");
 	chai.add_global_const(const_var(std::shared_ptr<Scene>{}), "nullScene");
 
 	chai.add(fun(&Scene::root), "root");
