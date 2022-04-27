@@ -21,6 +21,8 @@ class UIText: public UIElement, public Sender {
 
 	void onTransform();
 
+	bool eventable() const override { return true; }
+
   protected:
 	std::string _content;
 	std::shared_ptr<Font> _font;

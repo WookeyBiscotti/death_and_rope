@@ -18,6 +18,8 @@ class UIScroll: public UIElement {
 
 	sf::RectangleShape& shape() { return _shape; }
 
+	bool eventable() const override { return true; }
+
   private:
 	sf::RectangleShape _shape;
 };

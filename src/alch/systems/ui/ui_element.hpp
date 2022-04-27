@@ -117,13 +117,15 @@ class UIElement {
 
 	virtual bool onHovered(const UIHovered&) { return false; }
 	virtual bool onUnhovered(const UIUnhovered&) { return false; }
-	
+
 	virtual bool onPressed(const UIMouseButtonPressed&) { return false; }
 	virtual bool onReleased(const UIMouseButtonReleased&) { return false; }
 
 	virtual bool onDragStart(const UIMouseDragStart&) { return false; }
 	virtual bool onDrag(const UIMouseDrag&) { return false; }
 	virtual bool onDragStop(const UIMouseDragStop&) { return false; }
+
+	virtual bool eventable() const { return false; }
 
   private:
 	void focused(bool focused) { _focused = focused; }

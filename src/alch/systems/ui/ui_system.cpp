@@ -28,13 +28,13 @@ UIElement* UISystem::getElementUnderPoint(UIElement* el, Vector2f p) {
 		return nullptr;
 	}
 
-	return el;
+	return el->eventable() ? el : nullptr;
 }
 
 UISystem::UISystem(Context& context): Receiver(context.systemRef<Broker>()), _context(context) {
 	_root = std::make_unique<UIElement>(nullptr, *this);
-	_freeLayout = _root->create<UnchangeableLayout>(*this);
 	_userRoot = _root->create<UIElement>(*this);
+	_freeLayout = _root->create<UnchangeableLayout>(*this);
 	_lastHovered = _userRoot;
 	const auto windowSize = context.systemRef<Window>().window().getSize();
 	_root->size(Vector2f(windowSize.x, windowSize.y));

@@ -16,6 +16,8 @@ class UIPanel: public UIElement {
 	bool onPressed(const UIMouseButtonPressed&) override;
 	bool onReleased(const UIMouseButtonReleased&) override;
 
+	bool eventable() const override { return true; }
+
 	sf::RectangleShape& shape() { return _shape; }
 
   private:

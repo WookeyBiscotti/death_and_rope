@@ -26,6 +26,8 @@ class UISlider: public UIElement, public Sender {
 	bool onDrag(const UIMouseDrag&) override;
 	bool onDragStop(const UIMouseDragStop&) override;
 
+	bool eventable() const override { return true; }
+
   protected:
 	void onTransform();
 	void setValueFromPoint(Vector2f p);
