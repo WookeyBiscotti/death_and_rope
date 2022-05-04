@@ -5,7 +5,7 @@
 #include "ui_system.hpp"
 
 UIText::UIText(UIElement* parent, Context& context, std::string content, std::shared_ptr<Font> font):
-    UIElement(parent, context.systemRef<UISystem>()), Sender(context.systemRef<Broker>()), _content(std::move(content)),
+    UIElement(parent, context), Sender(context.systemRef<Broker>()), _content(std::move(content)),
     _font(std::move(font)) {
 }
 

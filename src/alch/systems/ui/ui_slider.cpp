@@ -5,7 +5,7 @@
 #include "ui_system.hpp"
 
 UISlider::UISlider(UIElement* parent, Context& context, float curr, float min, float max, std::shared_ptr<Font> font):
-    UIElement(parent, context.systemRef<UISystem>()), Sender(context.systemRef<Broker>()), _font(font), _current(curr),
+    UIElement(parent, context), Sender(context.systemRef<Broker>()), _font(font), _current(curr),
     _min(min), _max(max) {
 	_slider.setFillColor(sf::Color::Green);
 }

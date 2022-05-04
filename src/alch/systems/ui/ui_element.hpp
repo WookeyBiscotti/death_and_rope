@@ -11,6 +11,7 @@
 #include <string>
 
 class UISystem;
+class Context;
 
 class UIElement {
 	friend class UISystem;
@@ -22,7 +23,7 @@ class UIElement {
 		FREE,
 	};
 
-	UIElement(UIElement* parent, UISystem& system): _parent(parent), _system(system) {}
+	UIElement(UIElement* parent, Context& context);
 
 	virtual ~UIElement();
 
@@ -68,7 +69,7 @@ class UIElement {
 
 	template<class E, class... Args>
 	E* create(Args&&... args) {
-		auto sPtr = std::make_unique<E>(this, std::forward<Args>(args)...);
+		auto sPtr = std::make_unique<E>(this, _context, std::forward<Args>(args)...);
 		auto ptr = sPtr.get();
 		add(std::move(sPtr));
 
@@ -127,11 +128,15 @@ class UIElement {
 
 	virtual bool eventable() const { return false; }
 
+	virtual Vector2f wantsSize() const { return {}; }
+
+	UISystem& system() const;
+
   private:
 	void focused(bool focused) { _focused = focused; }
 
   protected:
-	UISystem& _system;
+	Context& _context;
 
 	UIElement* _parent;
 

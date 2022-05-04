@@ -7,7 +7,7 @@
 
 class UIPanel: public UIElement {
   public:
-	UIPanel(UIElement* parent, UISystem& system): UIElement(parent, system) {}
+	UIPanel(UIElement* parent, Context& context): UIElement(parent, context) {}
 
 	void draw(sf::RenderTarget& target) override;
 

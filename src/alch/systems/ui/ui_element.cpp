@@ -1,9 +1,17 @@
 #include "ui_element.hpp"
 
+#include "alch/engine/context.hpp"
 #include "ui_system.hpp"
 
+UIElement::UIElement(UIElement* parent, Context& context): _parent(parent), _context(context) {
+}
+
 UIElement::~UIElement() {
-	_system.remove(this);
+	system().remove(this);
+}
+
+UISystem& UIElement::system() const {
+	return _context.systemRef<UISystem>();
 }
 
 void UIElement::onMove() {
