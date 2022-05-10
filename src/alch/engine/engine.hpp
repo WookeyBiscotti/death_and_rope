@@ -13,6 +13,7 @@ struct EngineConfig {
 	std::string startScene;
 	std::function<void(Context& context)> preBegin;
 	std::function<void(Context& context)> preEnd;
+	bool enableDefaultScenes{};
 };
 
 class Engine: public System {

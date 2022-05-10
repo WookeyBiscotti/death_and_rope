@@ -15,6 +15,9 @@ class UnchangeableLayout: public UIElement {
 };
 
 UIElement* UISystem::getElementUnderPoint(UIElement* el, Vector2f p) {
+	if(!el->_debug.empty()) {
+		int a = 0;
+	}
 	if (el->isGlobalPointIn(p)) {
 		for (auto it = el->_childs.rbegin(); it != el->_childs.rend(); ++it) {
 			const auto& c = *it;

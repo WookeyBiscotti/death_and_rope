@@ -24,7 +24,9 @@ void UIText::onMove() {
 }
 
 void UIText::onTransform() {
-	_text.setFont(_font->sf());
+	if (_font) {
+		_text.setFont(_font->sf());
+	}
 	_text.setString(_content);
 	_text.setCharacterSize(12);
 	_text.setFillColor(sf::Color::Black);

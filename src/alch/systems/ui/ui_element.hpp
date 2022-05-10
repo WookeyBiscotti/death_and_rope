@@ -22,12 +22,18 @@ class UIElement {
 		HORIZONTAL,
 		FREE,
 	};
+	std::string _debug;
 
 	UIElement(UIElement* parent, Context& context);
 
 	virtual ~UIElement();
 
 	UIElement* parent() const { return _parent; }
+	void parent(UIElement* parent) {
+		_parent = parent;
+		onResize();
+		onMove();
+	}
 
 	Vector2f position() const { return _position; }
 	void position(Vector2f position) {
@@ -35,16 +41,15 @@ class UIElement {
 		onMove();
 	}
 
-	Vector2f size() const { return _size; }
-	void size(Vector2f size) {
+	virtual Vector2f size() const { return _size; }
+	virtual void size(Vector2f size, bool noParentCallback = false) {
 		if (size == _size) {
 			return;
 		}
 		_size = size;
-		if (_parent) {
+		onResize();
+		if (!noParentCallback && _parent) {
 			_parent->onResize();
-		} else {
-			onResize();
 		}
 	}
 
@@ -65,7 +70,7 @@ class UIElement {
 	bool focused() const { return _focused; }
 
 	virtual void add(std::unique_ptr<UIElement> element);
-	virtual void add(UIElement* element);
+	void add(UIElement* element);
 
 	template<class E, class... Args>
 	E* create(Args&&... args) {

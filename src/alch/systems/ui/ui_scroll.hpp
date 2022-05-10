@@ -1,25 +1,28 @@
 #pragma once
 
 #include "ui_element.hpp"
+#include "ui_field.hpp"
+#include "ui_slider.hpp"
+#include "alch/systems/broker/receiver.hpp"
 //
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <memory>
 
-class UIScroll: public UIElement {
+class UIScroll: public UIElement, public Receiver {
   public:
-	UIScroll(UIElement* parent, UISystem& system): UIElement(parent, system) {}
+	UIScroll(UIElement* parent, Context& context);
 
-	void draw(sf::RenderTarget& target) override;
+	void layout(UIElement::Layout l) override;
 
-	bool onHovered(const UIHovered&) override;
-	bool onUnhovered(const UIUnhovered&) override;
-	bool onPressed(const UIMouseButtonPressed&) override;
-	bool onReleased(const UIMouseButtonReleased&) override;
-
-	sf::RectangleShape& shape() { return _shape; }
-
-	bool eventable() const override { return true; }
+	void add(std::unique_ptr<UIElement> element) override;
 
   private:
-	sf::RectangleShape _shape;
+	void onLayoutUpdate();
+
+	void onResize() override;
+
+  private:
+	UIElement* _root;
+	UIField* _content;
+	UISlider* _slider;
 };

@@ -22,10 +22,13 @@ void UIElement::onMove() {
 
 void UIElement::onResize() {
 	if (_layout == FREE) {
+		// for (auto& c : _childs) {
+		// 	c->onResize();
+		// }
 	} else if (_layout == HORIZONTAL) {
 		if (_childs.size() == 1) {
 			if (_childs.front()->resizeable()) {
-				_childs.front()->size(_size);
+				_childs.front()->size(_size, true);
 			}
 			return;
 		}
@@ -45,9 +48,9 @@ void UIElement::onResize() {
 		float startPos = 0.0f;
 		for (auto& c : _childs) {
 			if (!c->resizeable()) {
-				c->size(Vector2f(c->size().x, _size.y));
+				c->size(Vector2f(c->size().x, _size.y), true);
 			} else {
-				c->size(Vector2f(dw, _size.y));
+				c->size(Vector2f(dw, _size.y), true);
 			}
 			c->position(Vector2f(startPos, 0));
 			startPos += c->size().x;
@@ -55,7 +58,7 @@ void UIElement::onResize() {
 	} else if (_layout == VERICAL) {
 		if (_childs.size() == 1) {
 			if (_childs.front()->resizeable()) {
-				_childs.front()->size(_size);
+				_childs.front()->size(_size, true);
 			}
 			return;
 		}
@@ -75,9 +78,9 @@ void UIElement::onResize() {
 		float startPos = 0.0f;
 		for (auto& c : _childs) {
 			if (!c->resizeable()) {
-				c->size(Vector2f(_size.x, c->size().y));
+				c->size(Vector2f(_size.x, c->size().y), true);
 			} else {
-				c->size(Vector2f(_size.x, dh));
+				c->size(Vector2f(_size.x, dh), true);
 			}
 			c->position(Vector2f(0, startPos));
 			startPos += c->size().y;
@@ -86,7 +89,10 @@ void UIElement::onResize() {
 }
 
 void UIElement::add(std::unique_ptr<UIElement> element) {
+	auto e = element.get();
+	element->parent(this);
 	_childs.push_back(std::move(element));
+	e->onMove();
 
 	if (_layout != FREE) {
 		onResize();

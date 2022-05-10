@@ -8,7 +8,7 @@ UIButton::UIButton(UIElement* parent, Context& context, std::string content, std
     UIElement(parent, context), Sender(context.systemRef<Broker>()), _content(std::move(content)),
     _font(std::move(font)) {
 	_bg.setOutlineColor(sf::Color::Black);
-	_bg.setOutlineThickness(3);
+	_bg.setOutlineThickness(-3);
 }
 
 void UIButton::draw(sf::RenderTarget& target) {
@@ -40,7 +40,9 @@ void UIButton::onMove() {
 }
 
 void UIButton::onTransform() {
-	_text.setFont(_font->sf());
+	if (_font) {
+		_text.setFont(_font->sf());
+	}
 	_text.setString(_content);
 	_text.setCharacterSize(24);
 	_text.setFillColor(sf::Color::Black);

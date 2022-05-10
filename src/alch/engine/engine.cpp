@@ -30,11 +30,13 @@
 #include "alch/scenes/default_scene.hpp"
 #include "alch/scenes/dev_menu.hpp"
 #include "alch/scenes/editor.hpp"
+#include "alch/scenes/gui_exemple_scene.hpp"
 #include "alch/scenes/main_menu.hpp"
 #include "alch/scenes/test.hpp"
 #include "alch/scenes/test_physics.hpp"
-#include "box2d/b2_user_settings.h"
 //
+#include "box2d/b2_user_settings.h"
+
 #include <SFML/Graphics.hpp>
 #include <chaiscript/chaiscript.hpp>
 #include <imgui-SFML.h>
@@ -50,6 +52,7 @@ static void addStandardScenes(Context& context) {
 	scenes.registerScene("test", [&context] { return std::make_shared<TestScene>(context); });
 	scenes.registerScene("test_physics", [&context] { return std::make_shared<TestPhysicsScene>(context); });
 	scenes.registerScene("editor", [&context] { return std::make_shared<EditorScene>(context); });
+	scenes.registerScene("ui", [&context] { return std::make_shared<GuiExempleScene>(context); });
 }
 
 void Engine::run(const char** argv, int argc, const EngineConfig& engineConfig) {
@@ -83,6 +86,10 @@ void Engine::run(const char** argv, int argc, const EngineConfig& engineConfig) 
 
 	Entity::registerComponent<Body>(context);
 	Entity::registerComponent<Collider>(context);
+
+	if (engineConfig.enableDefaultScenes) {
+		addStandardScenes(context);
+	}
 
 	if (_config.preBegin) {
 		_config.preBegin(context);
