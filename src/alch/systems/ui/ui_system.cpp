@@ -15,7 +15,7 @@ class UnchangeableLayout: public UIElement {
 };
 
 UIElement* UISystem::getElementUnderPoint(UIElement* el, Vector2f p) {
-	if(!el->_debug.empty()) {
+	if (!el->_debug.empty()) {
 		int a = 0;
 	}
 	if (el->isGlobalPointIn(p)) {
@@ -49,41 +49,27 @@ UISystem::UISystem(Context& context): Receiver(context.systemRef<Broker>()), _co
 		if (eType != sf::Event::Closed && eType != sf::Event::LostFocus && eType != sf::Event::GainedFocus &&
 		    eType != sf::Event::Resized) {
 			if (eType == sf::Event::MouseMoved) {
-				if (_lastDraged) {
-					_lastDraged->onDrag(UIMouseDrag{e.general.event.mouseMove});
-				}
-				auto el = getElementUnderPoint(
-				    _root.get(), Vector2f(e.general.event.mouseMove.x, e.general.event.mouseMove.y));
-				if (el) {
-					if (_lastHovered != el) {
-						if (_lastHovered) {
-							_lastHovered->onUnhovered(UIUnhovered{e.general.event.mouseMove});
-						}
-						_lastHovered = el;
+				_root->onMouseMove({UIMouseMove{e.general.event.mouseMove}});
+				for (auto& [_, w] : _lastDraged) {
+					if (w) {
+						w->onDrag({e.general.event.mouseMove});
 					}
-					e.eventCaptured = el->onHovered(UIHovered{e.general.event.mouseMove});
 				}
 			} else if (eType == sf::Event::MouseButtonPressed) {
-				if (_lastDraged) {
-					_lastDraged->onDragStop({});
-				}
-				auto el = getElementUnderPoint(
-				    _root.get(), Vector2f(e.general.event.mouseButton.x, e.general.event.mouseButton.y));
-				if (el) {
-					e.eventCaptured = el->onPressed(UIMouseButtonPressed{e.general.event.mouseButton});
-					el->onDragStart(UIMouseDragStart{e.general.event.mouseButton});
-					_lastDraged = el;
+				_root->onPressed(UIMouseButtonPressed{e.general.event.mouseButton});
+				auto wg = _root->onDragStart(UIMouseDragStart{e.general.event.mouseButton});
+				if (wg) {
+					_lastDraged[e.general.event.mouseButton.button] = wg;
 				}
 			} else if (eType == sf::Event::MouseButtonReleased) {
-				if (_lastDraged) {
-					_lastDraged->onDragStop({});
-					_lastDraged = {};
+				_root->onReleased(UIMouseButtonReleased{e.general.event.mouseButton});
+				auto wg = _lastDraged[e.general.event.mouseButton.button];
+				if (wg) {
+					wg->onDragStop({e.general.event.mouseButton});
 				}
-				auto el = getElementUnderPoint(
-				    _root.get(), Vector2f(e.general.event.mouseButton.x, e.general.event.mouseButton.y));
-				if (el) {
-					e.eventCaptured = el->onReleased(UIMouseButtonReleased{e.general.event.mouseButton});
-				}
+				_lastDraged.erase(e.general.event.mouseButton.button);
+			}else if (eType == sf::Event::MouseWheelScrolled) {
+				_root->onMouseWheel(UIMouseWheel{e.general.event.mouseWheelScroll});
 			}
 		}
 		if (eType == sf::Event::Resized) {
@@ -91,11 +77,11 @@ UISystem::UISystem(Context& context): Receiver(context.systemRef<Broker>()), _co
 			_freeLayout->size(Vector2f(e.general.event.size.width, e.general.event.size.height));
 			_userRoot->size(Vector2f(e.general.event.size.width, e.general.event.size.height));
 		}
-		if (eType == sf::Event::MouseLeft) {
-			if (_lastDraged) {
-				_lastHovered->onDragStop({});
-			}
-		}
+		// if (eType == sf::Event::MouseLeft) {
+		// 	if (_lastDraged) {
+		// 		_lastHovered->onDragStop({});
+		// 	}
+		// }
 	});
 }
 

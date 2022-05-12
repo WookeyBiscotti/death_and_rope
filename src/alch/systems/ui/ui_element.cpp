@@ -102,3 +102,103 @@ void UIElement::add(std::unique_ptr<UIElement> element) {
 void UIElement::add(UIElement* element) {
 	add(std::unique_ptr<UIElement>(element));
 }
+
+UIElement* UIElement::onMouseMove(const UIMouseMove& e) {
+	if (eventInside(e)) {
+		for (auto& c : _childs) {
+			if (c->eventInside(e)) {
+				if (system().lastHovered() == c.get()) {
+
+					return c->onMouseMove({e.event});
+				} else {
+					auto hovered = c->onHovered({e.event});
+
+					if (system().lastHovered() && system().lastHovered() != hovered) {
+						system().lastHovered()->onUnhovered({e.event});
+						system().lastHovered(hovered);
+					}
+
+					return hovered;
+				}
+			}
+		}
+
+		return this;
+	}
+
+	return nullptr;
+}
+
+UIElement* UIElement::onHovered(const UIHovered& e) {
+	return UIElement::onMouseMove({e.event});
+}
+
+UIElement* UIElement::onUnhovered(const UIUnhovered& e) {
+	return nullptr;
+}
+
+UIElement* UIElement::onPressed(const UIMouseButtonPressed& e) {
+	if (eventInside(e)) {
+		for (auto& c : _childs) {
+			if (c->eventInside(e)) {
+				return c->onPressed(e);
+			}
+		}
+	}
+
+	return nullptr;
+}
+
+UIElement* UIElement::onReleased(const UIMouseButtonReleased& e) {
+	if (eventInside(e)) {
+		for (auto& c : _childs) {
+			if (c->eventInside(e)) {
+				return c->onReleased(e);
+			}
+		}
+	}
+
+	return nullptr;
+}
+
+UIElement* UIElement::onDragStart(const UIMouseDragStart& e) {
+	if (eventInside(e)) {
+		for (auto& c : _childs) {
+			if (c->eventInside(e)) {
+				return c->onDragStart(e);
+			}
+		}
+	}
+
+	return nullptr;
+}
+
+UIElement* UIElement::onDrag(const UIMouseDrag& e) {
+	return nullptr;
+}
+
+UIElement* UIElement::onDragStop(const UIMouseDragStop& e) {
+	return nullptr;
+}
+
+UIElement* UIElement::onMouseWheel(const UIMouseWheel& e) {
+	if (eventInside(e)) {
+		for (auto& c : _childs) {
+			if (c->eventInside(e)) {
+				auto wg = c->onMouseWheel(e);
+				if (wg) {
+					return wg;
+				}
+			}
+		}
+
+		for (auto& c : _childs) {
+			auto wg = c->onMouseWheel(e);
+			if (wg) {
+				return wg;
+			}
+		}
+	}
+
+	return nullptr;
+}

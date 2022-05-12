@@ -13,19 +13,3 @@ void UIPanel::draw(sf::RenderTarget& target) {
 		c->draw(target);
 	}
 }
-
-bool UIPanel::onHovered(const UIHovered&) {
-	return true;
-}
-
-bool UIPanel::onUnhovered(const UIUnhovered&) {
-	return true;
-}
-
-bool UIPanel::onPressed(const UIMouseButtonPressed&) {
-	return true;
-}
-
-bool UIPanel::onReleased(const UIMouseButtonReleased&) {
-	return true;
-}

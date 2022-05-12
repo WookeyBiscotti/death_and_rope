@@ -52,7 +52,7 @@ static void addStandardScenes(Context& context) {
 	scenes.registerScene("test", [&context] { return std::make_shared<TestScene>(context); });
 	scenes.registerScene("test_physics", [&context] { return std::make_shared<TestPhysicsScene>(context); });
 	scenes.registerScene("editor", [&context] { return std::make_shared<EditorScene>(context); });
-	scenes.registerScene("ui", [&context] { return std::make_shared<GuiExempleScene>(context); });
+	scenes.registerScene("ui_example", [&context] { return std::make_shared<GuiExempleScene>(context); });
 }
 
 void Engine::run(const char** argv, int argc, const EngineConfig& engineConfig) {

@@ -121,19 +121,23 @@ class UIElement {
 	virtual void onResize();
 	virtual void onMove();
 
-	virtual bool onHovered(const UIHovered&) { return false; }
-	virtual bool onUnhovered(const UIUnhovered&) { return false; }
+	virtual UIElement* onHovered(const UIHovered&);
+	virtual UIElement* onMouseMove(const UIMouseMove&);
+	virtual UIElement* onUnhovered(const UIUnhovered&);
 
-	virtual bool onPressed(const UIMouseButtonPressed&) { return false; }
-	virtual bool onReleased(const UIMouseButtonReleased&) { return false; }
+	virtual UIElement* onPressed(const UIMouseButtonPressed&);
+	virtual UIElement* onReleased(const UIMouseButtonReleased&);
 
-	virtual bool onDragStart(const UIMouseDragStart&) { return false; }
-	virtual bool onDrag(const UIMouseDrag&) { return false; }
-	virtual bool onDragStop(const UIMouseDragStop&) { return false; }
+	virtual UIElement* onDragStart(const UIMouseDragStart&);
+	virtual UIElement* onDrag(const UIMouseDrag&);
+	virtual UIElement* onDragStop(const UIMouseDragStop&);
 
-	virtual bool eventable() const { return false; }
+	virtual UIElement* onMouseWheel(const UIMouseWheel&);
 
-	virtual Vector2f wantsSize() const { return {}; }
+	virtual bool eventable() const { return true; }
+
+	template<class E>
+	bool eventInside(const E& e);
 
 	UISystem& system() const;
 
@@ -156,3 +160,11 @@ class UIElement {
 	bool _focused = false;
 	bool _enabled = true;
 };
+
+template<class E>
+bool UIElement::eventInside(const E& e) {
+	const auto globalPos = toWorldCoords(_position);
+
+	return globalPos.x <= e.event.x && e.event.x <= globalPos.x + _size.x && globalPos.y <= e.event.y &&
+	       e.event.y <= globalPos.y + _size.y;
+}

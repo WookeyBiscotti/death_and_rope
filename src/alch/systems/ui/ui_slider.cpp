@@ -35,20 +35,16 @@ void UISlider::onTransform() {
 	}
 }
 
-bool UISlider::onDragStart(const UIMouseDragStart& e) {
+UIElement* UISlider::onDragStart(const UIMouseDragStart& e) {
 	setValueFromPoint(Vector2f(e.event.x, e.event.y));
 
-	return true;
+	return this;
 }
 
-bool UISlider::onDrag(const UIMouseDrag& e) {
+UIElement* UISlider::onDrag(const UIMouseDrag& e) {
 	setValueFromPoint(Vector2f(e.event.x, e.event.y));
 
-	return true;
-}
-
-bool UISlider::onDragStop(const UIMouseDragStop&) {
-	return true;
+	return this;
 }
 
 void UISlider::setValueFromPoint(Vector2f p) {
@@ -68,7 +64,19 @@ void UISlider::setValueFromPoint(Vector2f p) {
 	send<UISliderOnValueChange>({_current, _min, _max});
 }
 
+void UISlider::value(float value) {
+	_current = std::max(_min, (std::min(value, _max)));
+	onTransform();
+	send<UISliderOnValueChange>({_current, _min, _max});
+}
+
 void UISlider::draw(sf::RenderTarget& target) {
 	target.draw(_bg);
 	target.draw(_slider);
+}
+
+UIElement* UISlider::onMouseWheel(const UIMouseWheel& e) {
+	value(value() - (e.event.delta > 0 ? 1 : -1));
+
+	return this;
 }

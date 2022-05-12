@@ -27,9 +27,10 @@ class UISlider: public UIElement, public Sender {
 	void onResize() override;
 	void onMove() override;
 
-	bool onDragStart(const UIMouseDragStart&) override;
-	bool onDrag(const UIMouseDrag&) override;
-	bool onDragStop(const UIMouseDragStop&) override;
+	UIElement* onDragStart(const UIMouseDragStart&) override;
+	UIElement* onDrag(const UIMouseDrag&) override;
+
+	UIElement* onMouseWheel(const UIMouseWheel& e) override;
 
 	bool eventable() const override { return true; }
 
@@ -37,7 +38,7 @@ class UISlider: public UIElement, public Sender {
 	void vertical(bool vertial) { _isVertical = vertial; }
 
 	float value() const { return _current; }
-	void value(float value) { _current = std::max(_min, (std::min(value, _max))); }
+	void value(float value);
 
 	float min() const { return _min; }
 	float max() const { return _max; }

@@ -6,6 +6,10 @@ struct UIHovered {
 	const sf::Event::MouseMoveEvent& event;
 };
 
+struct UIMouseMove {
+	const sf::Event::MouseMoveEvent& event;
+};
+
 struct UIUnhovered {
 	const sf::Event::MouseMoveEvent& event;
 };
@@ -26,4 +30,10 @@ struct UIMouseDrag {
 	const sf::Event::MouseMoveEvent& event;
 };
 
-struct UIMouseDragStop {};
+struct UIMouseDragStop {
+		const sf::Event::MouseButtonEvent& event;
+};
+
+struct UIMouseWheel {
+		const sf::Event::MouseWheelScrollEvent& event;
+};

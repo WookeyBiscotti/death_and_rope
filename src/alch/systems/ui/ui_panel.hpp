@@ -11,11 +11,6 @@ class UIPanel: public UIElement {
 
 	void draw(sf::RenderTarget& target) override;
 
-	bool onHovered(const UIHovered&) override;
-	bool onUnhovered(const UIUnhovered&) override;
-	bool onPressed(const UIMouseButtonPressed&) override;
-	bool onReleased(const UIMouseButtonReleased&) override;
-
 	bool eventable() const override { return true; }
 
 	sf::RectangleShape& shape() { return _shape; }

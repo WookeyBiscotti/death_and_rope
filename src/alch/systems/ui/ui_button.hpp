@@ -21,9 +21,9 @@ class UIButton: public UIElement, public Sender {
 	void onResize() override;
 	void onMove() override;
 
-	bool onUnhovered(const UIUnhovered&) override;
-	bool onReleased(const UIMouseButtonReleased&) override;
-	bool onPressed(const UIMouseButtonPressed&) override;
+	UIElement* onUnhovered(const UIUnhovered&) override;
+	UIElement* onReleased(const UIMouseButtonReleased&) override;
+	UIElement* onPressed(const UIMouseButtonPressed&) override;
 
 	bool eventable() const override { return true; }
 

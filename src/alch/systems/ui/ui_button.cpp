@@ -58,25 +58,28 @@ void UIButton::onTransform() {
 	_bg.setPosition(gp);
 }
 
-bool UIButton::onUnhovered(const UIUnhovered&) {
+UIElement* UIButton::onUnhovered(const UIUnhovered&) {
 	if (_pressed) {
 		_pressed = false;
 	}
-	return true;
+
+	return this;
 }
 
-bool UIButton::onReleased(const UIMouseButtonReleased&) {
+UIElement* UIButton::onReleased(const UIMouseButtonReleased&) {
 	if (_pressed) {
 		_pressed = false;
 		send(UIButtonOnRelease{});
+
+		return this;
 	}
 
-	return true;
+	return nullptr;
 }
 
-bool UIButton::onPressed(const UIMouseButtonPressed&) {
+UIElement* UIButton::onPressed(const UIMouseButtonPressed&) {
 	_pressed = true;
 	send(UIButtonOnPress{});
 
-	return true;
+	return this;
 }
