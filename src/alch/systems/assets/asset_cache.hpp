@@ -24,7 +24,6 @@ class AssetCache: public System {
 
 	std::shared_ptr<Texture> texture(const std::string& name);
 	std::shared_ptr<Font> font(const std::string& name = "");
-	// std::shared_ptr<Font> fontOrDefault(const std::string& name);
 
 	std::string readFile(const std::string& filePath);
 	std::vector<uint8_t> readBinaryFile(const std::string& filePath);

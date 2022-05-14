@@ -29,39 +29,18 @@ class UIElement {
 	virtual ~UIElement();
 
 	UIElement* parent() const { return _parent; }
-	void parent(UIElement* parent) {
-		_parent = parent;
-		onResize();
-		onMove();
-	}
+	void parent(UIElement* parent);
 
 	Vector2f position() const { return _position; }
-	void position(Vector2f position) {
-		_position = position;
-		onMove();
-	}
+	void position(Vector2f position);
 
 	virtual Vector2f size() const { return _size; }
-	virtual void size(Vector2f size, bool noParentCallback = false) {
-		if (size == _size) {
-			return;
-		}
-		_size = size;
-		onResize();
-		if (!noParentCallback && _parent) {
-			_parent->onResize();
-		}
-	}
+	virtual void size(Vector2f size, bool noParentCallback = false);
 
 	void enabled(bool enabled) { _enabled = enabled; }
 	bool enabled() const { return _enabled; }
 
-	void resizeable(bool resizeable) {
-		_resizeable = resizeable;
-		if (_parent) {
-			_parent->onResize();
-		}
-	}
+	void resizeable(bool resizeable);
 	bool resizeable() const { return _resizeable; }
 
 	virtual Layout layout() const { return _layout; }
@@ -81,14 +60,7 @@ class UIElement {
 		return ptr;
 	}
 
-	virtual void remove(UIElement* element) {
-		for (auto it = _childs.begin(); it != _childs.end(); ++it) {
-			if (it->get() == element) {
-				_childs.erase(it);
-				break;
-			}
-		}
-	}
+	virtual void remove(UIElement* element);
 
 	Vector2f toWorldCoords(Vector2f p) {
 		for (auto par = parent(); par;) {

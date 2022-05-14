@@ -11,10 +11,12 @@ UIText::UIText(UIElement* parent, Context& context, std::string content, std::sh
 	if (!_font) {
 		_font = context.systemRef<AssetCache>().font();
 	}
+	_bg.setOutlineColor(sf::Color::Black);
+	_bg.setOutlineThickness(-3);
+	_bg.setFillColor(sf::Color(100, 100, 100));
 }
 
 void UIText::draw(sf::RenderTarget& target) {
-	_bg.setFillColor(sf::Color(130, 150, 140));
 	target.draw(_bg);
 	target.draw(_text);
 }
@@ -32,7 +34,7 @@ void UIText::onTransform() {
 		_text.setFont(_font->sf());
 	}
 	_text.setString(_content);
-	_text.setCharacterSize(12);
+	_text.setCharacterSize(24);
 	_text.setFillColor(sf::Color::Black);
 	// _text.setStyle(sf::Text::Bold | sf::Text::Underlined);
 

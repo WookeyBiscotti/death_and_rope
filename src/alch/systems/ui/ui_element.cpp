@@ -202,3 +202,38 @@ UIElement* UIElement::onMouseWheel(const UIMouseWheel& e) {
 
 	return nullptr;
 }
+
+void UIElement::parent(UIElement* parent) {
+	_parent = parent;
+	onResize();
+	onMove();
+}
+
+void UIElement::position(Vector2f position) {
+	_position = position;
+	onMove();
+}
+void UIElement::size(Vector2f size, bool noParentCallback) {
+	if (size == _size) {
+		return;
+	}
+	_size = size;
+	onResize();
+	if (!noParentCallback && _parent) {
+		_parent->onResize();
+	}
+}
+void UIElement::resizeable(bool resizeable) {
+	_resizeable = resizeable;
+	if (_parent) {
+		_parent->onResize();
+	}
+}
+void UIElement::remove(UIElement* element) {
+	for (auto it = _childs.begin(); it != _childs.end(); ++it) {
+		if (it->get() == element) {
+			_childs.erase(it);
+			break;
+		}
+	}
+}

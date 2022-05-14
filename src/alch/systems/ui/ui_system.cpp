@@ -68,7 +68,7 @@ UISystem::UISystem(Context& context): Receiver(context.systemRef<Broker>()), _co
 					wg->onDragStop({e.general.event.mouseButton});
 				}
 				_lastDraged.erase(e.general.event.mouseButton.button);
-			}else if (eType == sf::Event::MouseWheelScrolled) {
+			} else if (eType == sf::Event::MouseWheelScrolled) {
 				_root->onMouseWheel(UIMouseWheel{e.general.event.mouseWheelScroll});
 			}
 		}
