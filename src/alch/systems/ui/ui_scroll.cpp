@@ -8,7 +8,7 @@ UIScroll::UIScroll(UIElement* parent, Context& context):
 	_layout = UIElement::HORIZONTAL;
 
 	auto content = std::make_unique<UIField>(this, context);
-	auto slider = std::make_unique<UISlider>(this, context, 0, 0, 100);
+	auto slider = std::make_unique<UISlider>(this, context, 0, 0, 10);
 
 	_content = content.get();
 	_slider = slider.get();

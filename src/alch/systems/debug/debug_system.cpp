@@ -95,7 +95,7 @@ void DebugSystem::loadHistoryFromFilesystem() {
 DebugSystem::DebugSystem(Context& context): Receiver(context.systemRef<Broker>()), _context(context) {
 	loadHistoryFromFilesystem();
 
-	_font = context.systemRef<AssetCache>().font("default");
+	_font = context.systemRef<AssetCache>().font();
 
 	_text.setFont(_font->sf());
 	_text.setCharacterSize(40);

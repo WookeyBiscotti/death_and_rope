@@ -1,12 +1,16 @@
 #include "ui_text.hpp"
 
 #include "alch/engine/context.hpp"
+#include "alch/systems/assets/asset_cache.hpp"
 #include "alch/systems/broker/broker.hpp"
 #include "ui_system.hpp"
 
 UIText::UIText(UIElement* parent, Context& context, std::string content, std::shared_ptr<Font> font):
     UIElement(parent, context), Sender(context.systemRef<Broker>()), _content(std::move(content)),
     _font(std::move(font)) {
+	if (!_font) {
+		_font = context.systemRef<AssetCache>().font();
+	}
 }
 
 void UIText::draw(sf::RenderTarget& target) {

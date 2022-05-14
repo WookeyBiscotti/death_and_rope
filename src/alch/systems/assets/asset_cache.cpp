@@ -1,8 +1,9 @@
 #include "asset_cache.hpp"
 
+#include "alch/engine/engine.hpp"
 #include "alch/systems/config/config.hpp"
 #include "alch/systems/logging/logger.hpp"
-#include "alch/engine/engine.hpp"
+#include "builtin_font.hpp"
 //
 #include "alch/common/types.hpp"
 //
@@ -21,11 +22,7 @@ static const Path TEXTURES_PATH = "";
 static const Path FONTS_PATH = "";
 static const Path ENTITY_PATH = "";
 
-static const std::string DEFAULT_FONT = "UbuntuMono-Bold.ttf";
-
-static const std::unordered_map<std::string, std::string> FONT_DEFAULTS_MAP = {
-    {"default", DEFAULT_FONT},
-};
+static const std::string DEFAULT_FONT = "__default__";
 
 Path AssetCache::entityPath() const {
 	return fs::path(_root) / ENTITY_PATH;
@@ -89,6 +86,9 @@ std::vector<uint8_t> AssetCache::readBinaryFile(const std::string& filePath) {
 }
 
 std::shared_ptr<Font> AssetCache::font(const std::string& name) {
+	if (name == "") {
+		return font(DEFAULT_FONT);
+	}
 	if (auto found = _fonts.find(name); found != _fonts.end()) {
 		LINFO("Load font from cache: {}", name);
 
@@ -105,19 +105,13 @@ std::shared_ptr<Font> AssetCache::font(const std::string& name) {
 		LINFO("Can't load font file: {}. Try to check defaults", name);
 	}
 
-	if (auto found = FONT_DEFAULTS_MAP.find(name); found != FONT_DEFAULTS_MAP.end()) {
-		if (!font->loadFromFile(fontsPath() / found->second)) {
-			LINFO("Can't load defaut font: {}: {}", found->first, found->second);
-		} else {
-			LINFO("Load defaut font: {}: {}", found->first, found->second);
-		}
-
-		_fonts.emplace(name, font);
-
-		return font;
-	} else {
-		LERR("Can't find font: {}, load default: {}", name, DEFAULT_FONT);
-
-		return AssetCache::font(DEFAULT_FONT);
+	if (auto found = _fonts.find(DEFAULT_FONT); found == _fonts.end()) {
+		auto [data, size] = builtinFontMemory();
+		auto font = std::make_shared<Font>(DEFAULT_FONT);
+		font->sf().loadFromMemory(data, size);
+		_fonts.emplace(DEFAULT_FONT, std::move(font));
 	}
+	LERR("Can't find font: {}, load default: {}", name, DEFAULT_FONT);
+
+	return _fonts[DEFAULT_FONT];
 }

@@ -1,12 +1,17 @@
 #include "ui_button.hpp"
 
 #include "alch/engine/context.hpp"
+#include "alch/systems/assets/asset_cache.hpp"
 #include "alch/systems/broker/broker.hpp"
 #include "ui_system.hpp"
 
 UIButton::UIButton(UIElement* parent, Context& context, std::string content, std::shared_ptr<Font> font):
     UIElement(parent, context), Sender(context.systemRef<Broker>()), _content(std::move(content)),
     _font(std::move(font)) {
+	if (!_font) {
+		_font = context.systemRef<AssetCache>().font();
+	}
+
 	_bg.setOutlineColor(sf::Color::Black);
 	_bg.setOutlineThickness(-3);
 }
