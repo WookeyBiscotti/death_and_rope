@@ -13,7 +13,7 @@ UIText::UIText(UIElement* parent, Context& context, std::string content, std::sh
 	}
 	_bg.setOutlineColor(sf::Color::Black);
 	_bg.setOutlineThickness(-3);
-	_bg.setFillColor(sf::Color(100, 100, 100));
+	_bg.setFillColor(sf::Color(250, 250, 250));
 }
 
 void UIText::draw(sf::RenderTarget& target) {

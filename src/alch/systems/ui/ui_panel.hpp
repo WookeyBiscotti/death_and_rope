@@ -11,8 +11,6 @@ class UIPanel: public UIElement {
 
 	void draw(sf::RenderTarget& target) override;
 
-	bool eventable() const override { return true; }
-
 	sf::RectangleShape& shape() { return _shape; }
 
   private:

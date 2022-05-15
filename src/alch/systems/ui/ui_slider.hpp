@@ -32,8 +32,6 @@ class UISlider: public UIElement, public Sender {
 
 	UIElement* onMouseWheel(const UIMouseWheel& e) override;
 
-	bool eventable() const override { return true; }
-
 	bool vertical() const { return _isVertical; }
 	void vertical(bool vertial) { _isVertical = vertial; }
 

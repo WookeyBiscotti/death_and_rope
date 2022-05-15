@@ -25,8 +25,6 @@ class UIButton: public UIElement, public Sender {
 	UIElement* onReleased(const UIMouseButtonReleased&) override;
 	UIElement* onPressed(const UIMouseButtonPressed&) override;
 
-	bool eventable() const override { return true; }
-
   protected:
 	virtual void drawIdle(sf::RenderTarget& target);
 	virtual void drawPressed(sf::RenderTarget& target);

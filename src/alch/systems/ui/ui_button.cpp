@@ -26,12 +26,14 @@ void UIButton::draw(sf::RenderTarget& target) {
 
 void UIButton::drawIdle(sf::RenderTarget& target) {
 	_bg.setFillColor(sf::Color(200, 200, 200));
+	_bg.setOutlineThickness(-3);
 	target.draw(_bg);
 	target.draw(_text);
 }
 
 void UIButton::drawPressed(sf::RenderTarget& target) {
 	_bg.setFillColor(sf::Color(100, 100, 100));
+	_bg.setOutlineThickness(-6);
 	target.draw(_bg);
 	target.draw(_text);
 }

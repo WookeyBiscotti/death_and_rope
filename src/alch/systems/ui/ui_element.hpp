@@ -37,12 +37,6 @@ class UIElement {
 	virtual Vector2f size() const { return _size; }
 	virtual void size(Vector2f size, bool noParentCallback = false);
 
-	void enabled(bool enabled) { _enabled = enabled; }
-	bool enabled() const { return _enabled; }
-
-	void resizeable(bool resizeable);
-	bool resizeable() const { return _resizeable; }
-
 	virtual Layout layout() const { return _layout; }
 	virtual void layout(Layout layout) { _layout = layout; }
 
@@ -84,11 +78,7 @@ class UIElement {
 		return isLocalPointIn(p);
 	}
 
-	virtual void draw(sf::RenderTarget& target) {
-		for (auto& c : _childs) {
-			c->draw(target);
-		}
-	};
+	virtual void draw(sf::RenderTarget& target);
 
 	virtual void onResize();
 	virtual void onMove();
@@ -106,7 +96,14 @@ class UIElement {
 
 	virtual UIElement* onMouseWheel(const UIMouseWheel&);
 
-	virtual bool eventable() const { return true; }
+	bool eventable() const { return _eventable && _enabled; }
+	void eventable(bool eventable) { _eventable = eventable; }
+
+	void enabled(bool enabled);
+	bool enabled() const { return _enabled; }
+
+	void resizeable(bool resizeable);
+	bool resizeable() const { return _resizeable; }
 
 	template<class E>
 	bool eventInside(const E& e);
@@ -131,6 +128,7 @@ class UIElement {
 	bool _resizeable = true;
 	bool _focused = false;
 	bool _enabled = true;
+	bool _eventable = true;
 };
 
 template<class E>

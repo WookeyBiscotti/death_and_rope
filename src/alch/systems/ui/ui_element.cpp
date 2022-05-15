@@ -3,6 +3,8 @@
 #include "alch/engine/context.hpp"
 #include "ui_system.hpp"
 
+#include <vector>
+
 UIElement::UIElement(UIElement* parent, Context& context): _parent(parent), _context(context) {
 }
 
@@ -21,20 +23,27 @@ void UIElement::onMove() {
 }
 
 void UIElement::onResize() {
+	std::vector<UIElement*> childs;
+	for (auto& c : _childs) {
+		if (c) {
+			childs.push_back(c.get());
+		}
+	};
+
 	if (_layout == FREE) {
 		// for (auto& c : _childs) {
 		// 	c->onResize();
 		// }
 	} else if (_layout == HORIZONTAL) {
-		if (_childs.size() == 1) {
-			if (_childs.front()->resizeable()) {
-				_childs.front()->size(_size, true);
+		if (childs.size() == 1) {
+			if (childs.front()->resizeable()) {
+				childs.front()->size(_size, true);
 			}
 			return;
 		}
 		auto w = _size.x;
 		int count = 0;
-		for (auto& c : _childs) {
+		for (auto& c : childs) {
 			if (!c->resizeable()) {
 				w -= c->size().x;
 			} else {
@@ -46,7 +55,7 @@ void UIElement::onResize() {
 		}
 		const auto dw = w / count;
 		float startPos = 0.0f;
-		for (auto& c : _childs) {
+		for (auto& c : childs) {
 			if (!c->resizeable()) {
 				c->size(Vector2f(c->size().x, _size.y), true);
 			} else {
@@ -56,15 +65,15 @@ void UIElement::onResize() {
 			startPos += c->size().x;
 		}
 	} else if (_layout == VERICAL) {
-		if (_childs.size() == 1) {
-			if (_childs.front()->resizeable()) {
-				_childs.front()->size(_size, true);
+		if (childs.size() == 1) {
+			if (childs.front()->resizeable()) {
+				childs.front()->size(_size, true);
 			}
 			return;
 		}
 		auto h = _size.y;
 		int count = 0;
-		for (auto& c : _childs) {
+		for (auto& c : childs) {
 			if (!c->resizeable()) {
 				h -= c->size().y;
 			} else {
@@ -76,7 +85,7 @@ void UIElement::onResize() {
 		}
 		const auto dh = h / count;
 		float startPos = 0.0f;
-		for (auto& c : _childs) {
+		for (auto& c : childs) {
 			if (!c->resizeable()) {
 				c->size(Vector2f(_size.x, c->size().y), true);
 			} else {
@@ -104,9 +113,9 @@ void UIElement::add(UIElement* element) {
 }
 
 UIElement* UIElement::onMouseMove(const UIMouseMove& e) {
-	if (eventInside(e)) {
+	if (eventable() && eventInside(e)) {
 		for (auto& c : _childs) {
-			if (c->eventInside(e)) {
+			if (c->eventable() && c->eventInside(e)) {
 				if (system().lastHovered() == c.get()) {
 
 					return c->onMouseMove({e.event});
@@ -138,9 +147,9 @@ UIElement* UIElement::onUnhovered(const UIUnhovered& e) {
 }
 
 UIElement* UIElement::onPressed(const UIMouseButtonPressed& e) {
-	if (eventInside(e)) {
+	if (eventable() && eventInside(e)) {
 		for (auto& c : _childs) {
-			if (c->eventInside(e)) {
+			if (c->eventable() && c->eventInside(e)) {
 				return c->onPressed(e);
 			}
 		}
@@ -150,9 +159,9 @@ UIElement* UIElement::onPressed(const UIMouseButtonPressed& e) {
 }
 
 UIElement* UIElement::onReleased(const UIMouseButtonReleased& e) {
-	if (eventInside(e)) {
+	if (eventable() && eventInside(e)) {
 		for (auto& c : _childs) {
-			if (c->eventInside(e)) {
+			if (c->eventable() && c->eventInside(e)) {
 				return c->onReleased(e);
 			}
 		}
@@ -162,9 +171,9 @@ UIElement* UIElement::onReleased(const UIMouseButtonReleased& e) {
 }
 
 UIElement* UIElement::onDragStart(const UIMouseDragStart& e) {
-	if (eventInside(e)) {
+	if (eventable() && eventInside(e)) {
 		for (auto& c : _childs) {
-			if (c->eventInside(e)) {
+			if (c->eventable() && c->eventInside(e)) {
 				return c->onDragStart(e);
 			}
 		}
@@ -182,9 +191,9 @@ UIElement* UIElement::onDragStop(const UIMouseDragStop& e) {
 }
 
 UIElement* UIElement::onMouseWheel(const UIMouseWheel& e) {
-	if (eventInside(e)) {
+	if (eventable() && eventInside(e)) {
 		for (auto& c : _childs) {
-			if (c->eventInside(e)) {
+			if (c->eventable() && c->eventInside(e)) {
 				auto wg = c->onMouseWheel(e);
 				if (wg) {
 					return wg;
@@ -213,6 +222,7 @@ void UIElement::position(Vector2f position) {
 	_position = position;
 	onMove();
 }
+
 void UIElement::size(Vector2f size, bool noParentCallback) {
 	if (size == _size) {
 		return;
@@ -223,17 +233,36 @@ void UIElement::size(Vector2f size, bool noParentCallback) {
 		_parent->onResize();
 	}
 }
+
 void UIElement::resizeable(bool resizeable) {
 	_resizeable = resizeable;
 	if (_parent) {
 		_parent->onResize();
 	}
 }
+
 void UIElement::remove(UIElement* element) {
 	for (auto it = _childs.begin(); it != _childs.end(); ++it) {
 		if (it->get() == element) {
 			_childs.erase(it);
+			onResize();
 			break;
 		}
 	}
 }
+
+void UIElement::enabled(bool enabled) {
+	if (_enabled == enabled && _parent) {
+		_parent->onResize();
+	}
+
+	_enabled = enabled;
+}
+
+void UIElement::draw(sf::RenderTarget& target) {
+	for (auto& c : _childs) {
+		if (c->enabled()) {
+			c->draw(target);
+		}
+	}
+};

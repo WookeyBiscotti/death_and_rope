@@ -6,8 +6,12 @@
 
 UISlider::UISlider(UIElement* parent, Context& context, float curr, float min, float max):
     UIElement(parent, context), Sender(context.systemRef<Broker>()), _current(curr), _min(min), _max(max) {
-	_slider.setFillColor(sf::Color::Green);
-	_bg.setFillColor(sf::Color(100, 150, 200));
+	_slider.setFillColor(sf::Color(200, 200, 200));
+	_slider.setOutlineColor(sf::Color::Black);
+	_slider.setOutlineThickness(-3);
+	_bg.setFillColor(sf::Color(100, 100, 100));
+	_bg.setOutlineColor(sf::Color::Black);
+	_bg.setOutlineThickness(-1);
 }
 
 void UISlider::onResize() {
