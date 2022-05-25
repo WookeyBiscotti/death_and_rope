@@ -18,7 +18,7 @@ struct UISliderOnValueChange {
 	float max;
 };
 
-class UISlider: public UIElement, public Sender {
+class UISlider: public UIElement {
   public:
 	UISlider(UIElement* parent, Context& context, float curr, float min, float max);
 

@@ -31,9 +31,9 @@ struct UIMouseDrag {
 };
 
 struct UIMouseDragStop {
-		const sf::Event::MouseButtonEvent& event;
+	const sf::Event::MouseButtonEvent& event;
 };
 
 struct UIMouseWheel {
-		const sf::Event::MouseWheelScrollEvent& event;
+	const sf::Event::MouseWheelScrollEvent& event;
 };

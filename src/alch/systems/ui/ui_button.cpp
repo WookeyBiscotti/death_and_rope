@@ -6,8 +6,7 @@
 #include "ui_system.hpp"
 
 UIButton::UIButton(UIElement* parent, Context& context, std::string content, std::shared_ptr<Font> font):
-    UIElement(parent, context), Sender(context.systemRef<Broker>()), _content(std::move(content)),
-    _font(std::move(font)) {
+    UIElement(parent, context), _content(content), _font(std::move(font)) {
 	if (!_font) {
 		_font = context.systemRef<AssetCache>().font();
 	}
@@ -51,7 +50,7 @@ void UIButton::onTransform() {
 		_text.setFont(_font->sf());
 	}
 	_text.setString(_content);
-	_text.setCharacterSize(24);
+	_text.setCharacterSize(14);
 	_text.setFillColor(sf::Color::Black);
 	// _text.setStyle(sf::Text::Bold | sf::Text::Underlined);
 

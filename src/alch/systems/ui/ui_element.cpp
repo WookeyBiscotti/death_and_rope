@@ -1,11 +1,13 @@
 #include "ui_element.hpp"
 
 #include "alch/engine/context.hpp"
+#include "alch/systems/broker/broker.hpp"
 #include "ui_system.hpp"
 
 #include <vector>
 
-UIElement::UIElement(UIElement* parent, Context& context): _parent(parent), _context(context) {
+UIElement::UIElement(UIElement* parent, Context& context):
+    Sender(context.systemRef<Broker>()), Receiver(context.systemRef<Broker>()), _parent(parent), _context(context) {
 }
 
 UIElement::~UIElement() {
@@ -29,6 +31,9 @@ void UIElement::onResize() {
 			childs.push_back(c.get());
 		}
 	};
+	if (childs.empty()) {
+		return;
+	}
 
 	if (_layout == FREE) {
 		// for (auto& c : _childs) {
@@ -38,6 +43,8 @@ void UIElement::onResize() {
 		if (childs.size() == 1) {
 			if (childs.front()->resizeable()) {
 				childs.front()->size(_size, true);
+			} else {
+				childs.front()->size({childs.front()->size().x, size().y}, true);
 			}
 			return;
 		}
@@ -68,6 +75,8 @@ void UIElement::onResize() {
 		if (childs.size() == 1) {
 			if (childs.front()->resizeable()) {
 				childs.front()->size(_size, true);
+			} else {
+				childs.front()->size({size().x, childs.front()->size().y}, true);
 			}
 			return;
 		}

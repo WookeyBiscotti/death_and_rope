@@ -49,27 +49,34 @@ UISystem::UISystem(Context& context): Receiver(context.systemRef<Broker>()), _co
 		if (eType != sf::Event::Closed && eType != sf::Event::LostFocus && eType != sf::Event::GainedFocus &&
 		    eType != sf::Event::Resized) {
 			if (eType == sf::Event::MouseMoved) {
-				_root->onMouseMove({UIMouseMove{e.general.event.mouseMove}});
+				_freeLayout->onMouseMove({UIMouseMove{e.general.event.mouseMove}}) ||
+				    _userRoot->onMouseMove({UIMouseMove{e.general.event.mouseMove}});
 				for (auto& [_, w] : _lastDraged) {
 					if (w) {
 						w->onDrag({e.general.event.mouseMove});
 					}
 				}
 			} else if (eType == sf::Event::MouseButtonPressed) {
-				_root->onPressed(UIMouseButtonPressed{e.general.event.mouseButton});
-				auto wg = _root->onDragStart(UIMouseDragStart{e.general.event.mouseButton});
+				_freeLayout->onPressed(UIMouseButtonPressed{e.general.event.mouseButton}) ||
+				    _userRoot->onPressed(UIMouseButtonPressed{e.general.event.mouseButton});
+				auto wg = _freeLayout->onDragStart(UIMouseDragStart{e.general.event.mouseButton});
+				if (!wg) {
+					wg = _userRoot->onDragStart({UIMouseDragStart{e.general.event.mouseButton}});
+				}
 				if (wg) {
 					_lastDraged[e.general.event.mouseButton.button] = wg;
 				}
 			} else if (eType == sf::Event::MouseButtonReleased) {
-				_root->onReleased(UIMouseButtonReleased{e.general.event.mouseButton});
+				_freeLayout->onReleased(UIMouseButtonReleased{e.general.event.mouseButton}) ||
+				    _userRoot->onReleased(UIMouseButtonReleased{e.general.event.mouseButton});
 				auto wg = _lastDraged[e.general.event.mouseButton.button];
 				if (wg) {
 					wg->onDragStop({e.general.event.mouseButton});
 				}
 				_lastDraged.erase(e.general.event.mouseButton.button);
 			} else if (eType == sf::Event::MouseWheelScrolled) {
-				_root->onMouseWheel(UIMouseWheel{e.general.event.mouseWheelScroll});
+				_freeLayout->onMouseWheel(UIMouseWheel{e.general.event.mouseWheelScroll}) ||
+				    _userRoot->onMouseWheel(UIMouseWheel{e.general.event.mouseWheelScroll});
 			}
 		}
 		if (eType == sf::Event::Resized) {
@@ -98,4 +105,8 @@ void UISystem::render() {
 	w.window().setView(w.window().getDefaultView());
 	_root->draw(w.window());
 	w.window().setView(currentView);
+}
+
+UIElement* UISystem::popout() {
+	return _freeLayout;
 }

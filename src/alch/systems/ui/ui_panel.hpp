@@ -7,7 +7,9 @@
 
 class UIPanel: public UIElement {
   public:
-	UIPanel(UIElement* parent, Context& context): UIElement(parent, context) {}
+	UIPanel(UIElement* parent, Context& context): UIElement(parent, context) {
+		_shape.setFillColor(sf::Color(200, 200, 200));
+	}
 
 	void draw(sf::RenderTarget& target) override;
 

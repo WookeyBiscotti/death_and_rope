@@ -5,7 +5,7 @@
 #include "ui_system.hpp"
 
 UISlider::UISlider(UIElement* parent, Context& context, float curr, float min, float max):
-    UIElement(parent, context), Sender(context.systemRef<Broker>()), _current(curr), _min(min), _max(max) {
+    UIElement(parent, context), _current(curr), _min(min), _max(max) {
 	_slider.setFillColor(sf::Color(200, 200, 200));
 	_slider.setOutlineColor(sf::Color::Black);
 	_slider.setOutlineThickness(-3);
@@ -28,14 +28,15 @@ void UISlider::onTransform() {
 	_bg.setSize(_size);
 	_bg.setPosition(gp);
 
+	const auto n = (_current - _min) / (_max - _min);
 	if (_isVertical) {
 		_slider.setSize(Vector2f(_size.x, _size.y * 0.05));
-		_slider.setOrigin(0, _slider.getSize().y * _current / (_max - _min));
-		_slider.setPosition(Vector2f(gp.x, gp.y + _size.y * _current / (_max - _min)));
+		_slider.setOrigin(0, _slider.getSize().y * n);
+		_slider.setPosition(Vector2f(gp.x, gp.y + _size.y * n));
 	} else {
 		_slider.setSize(Vector2f(_size.x * 0.05, _size.y));
-		_slider.setOrigin(_slider.getSize().x * _current / (_max - _min), 0);
-		_slider.setPosition(Vector2f(gp.x + _size.x * _current / (_max - _min), gp.y));
+		_slider.setOrigin(_slider.getSize().x * n, 0);
+		_slider.setPosition(Vector2f(gp.x + _size.x * n, gp.y));
 	}
 }
 

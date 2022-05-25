@@ -5,6 +5,7 @@
 #include "alch/common/vector2.hpp"
 #include "alch/engine/component.hpp"
 #include "alch/systems/broker/sender.hpp"
+#include "alch/systems/broker/receiver.hpp"
 #include "ui_events.hpp"
 //
 #include <SFML/Graphics.hpp>
@@ -13,7 +14,7 @@
 class UISystem;
 class Context;
 
-class UIElement {
+class UIElement: public Sender, public Receiver {
 	friend class UISystem;
 
   public:
@@ -33,6 +34,8 @@ class UIElement {
 
 	Vector2f position() const { return _position; }
 	void position(Vector2f position);
+
+	Vector2f globalPosition() { return toWorldCoords(position()); }
 
 	virtual Vector2f size() const { return _size; }
 	virtual void size(Vector2f size, bool noParentCallback = false);

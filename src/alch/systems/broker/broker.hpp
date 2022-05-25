@@ -69,9 +69,13 @@ class Broker: public System {
 	}
 
 	void send(Sender* sender, type_id_t typeId, const void* data) {
+		//TODO: use small vector
+		std::vector<std::function<void(Sender * sender, const void* data)>> allFnStack;
+		std::vector<std::function<void(const void* data)>> oneFnStack;
+
 		if (auto receivers = findValue(_eventsFn, typeId); receivers) {
 			for (auto r : *receivers) {
-				r.second.fn(sender, data);
+				allFnStack.push_back(r.second.fn);
 			}
 		}
 
@@ -79,10 +83,21 @@ class Broker: public System {
 			if (const auto& types = findValue(_personalEventsFn, sender); types) {
 				if (const auto& receivers = findValue(*types, typeId); receivers) {
 					for (const auto& r : *receivers) {
-						r.second.fn(data);
+						oneFnStack.push_back(r.second.fn);
 					}
 				}
 			}
+		}
+
+		while (!allFnStack.empty()) {
+			auto fn = std::move(allFnStack.back());
+			allFnStack.pop_back();
+			fn(sender, data);
+		}
+		while (!oneFnStack.empty()) {
+			auto fn = std::move(oneFnStack.back());
+			oneFnStack.pop_back();
+			fn(data);
 		}
 	}
 

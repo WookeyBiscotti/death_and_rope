@@ -2,6 +2,7 @@
 
 #include "alch/systems/assets/font.hpp"
 #include "alch/systems/broker/sender.hpp"
+#include "alch/systems/broker/receiver.hpp"
 #include "ui_element.hpp"
 //
 #include <memory>
@@ -9,11 +10,13 @@
 
 class Context;
 
-class UIText: public UIElement, public Sender {
+class UIText: public UIElement {
   public:
 	UIText(UIElement* parent, Context& context, std::string content, std::shared_ptr<Font> font = nullptr);
 
 	void draw(sf::RenderTarget& target) override;
+
+	void value(const std::string& s);
 
   protected:
 	void onResize() override;

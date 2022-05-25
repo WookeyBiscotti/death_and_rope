@@ -12,7 +12,7 @@ class Context;
 struct UIButtonOnRelease {};
 struct UIButtonOnPress {};
 
-class UIButton: public UIElement, public Sender {
+class UIButton: public UIElement{
   public:
 	UIButton(UIElement* parent, Context& context, std::string content, std::shared_ptr<Font> font = nullptr);
 

@@ -3,8 +3,7 @@
 #include "alch/engine/context.hpp"
 #include "alch/systems/broker/broker.hpp"
 
-UIScroll::UIScroll(UIElement* parent, Context& context):
-    UIElement(parent, context), Receiver(context.systemRef<Broker>()) {
+UIScroll::UIScroll(UIElement* parent, Context& context): UIElement(parent, context) {
 	_layout = UIElement::HORIZONTAL;
 
 	auto content = std::make_unique<UIField>(this, context);

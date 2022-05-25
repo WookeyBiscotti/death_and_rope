@@ -16,6 +16,7 @@ class UISystem final: public Receiver, public System {
 	~UISystem();
 
 	UIElement* root();
+	UIElement* popout();
 
 	void render();
 
@@ -25,7 +26,12 @@ class UISystem final: public Receiver, public System {
 		if (_lastHovered == el) {
 			_lastHovered = nullptr;
 		}
-	};
+		for (auto& [k, v] : _lastDraged) {
+			if (v == el) {
+				_lastDraged.erase(k);
+			}
+		}
+	}
 
 	UIElement* lastHovered() const { return _lastHovered; }
 	void lastHovered(UIElement* lastHovered) { _lastHovered = lastHovered; }
