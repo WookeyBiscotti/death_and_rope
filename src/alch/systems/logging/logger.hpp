@@ -5,6 +5,7 @@
 #include <deque>
 #include <memory>
 #include <string>
+#include <cassert>
 
 namespace spdlog::sinks {
 class sink;
@@ -37,6 +38,7 @@ class Logger: public System {
 #define LERR(...)   spdlog::error(__VA_ARGS__)
 #define LDEBUG(...) spdlog::debug(__VA_ARGS__)
 #define LCRIT(...) spdlog::critical(__VA_ARGS__)
+#define LASSERT(...) assert(__VA_ARGS__);
 
 #define LERR_IF(COND, ...)          \
 	if (COND) {                     \
