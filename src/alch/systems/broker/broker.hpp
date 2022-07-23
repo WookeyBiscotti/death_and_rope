@@ -9,6 +9,8 @@
 //
 #include <unordered_map>
 #include <unordered_set>
+#include <functional>
+#include <vector>
 
 class Broker: public System {
   public:

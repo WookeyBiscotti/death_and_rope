@@ -1,8 +1,7 @@
-#include "alch/engine/engine.hpp"
-
 #include "alch/common/prod_build_utils.hpp"
 #include "alch/common/type_id.hpp"
 #include "alch/engine/context.hpp"
+#include "alch/engine/engine.hpp"
 #include "alch/engine/events.hpp"
 #include "alch/systems/assets/asset_cache.hpp"
 #include "alch/systems/broker/broker.hpp"
@@ -10,6 +9,7 @@
 #include "alch/systems/debug/debug_system.hpp"
 #include "alch/systems/filesystem/filesystem.hpp"
 #include "alch/systems/group/group_system.hpp"
+#include "alch/systems/i18n/localization.hpp"
 #include "alch/systems/imgui/imgui_system.hpp"
 #include "alch/systems/logging/logger.hpp"
 #include "alch/systems/names/name.hpp"
@@ -64,6 +64,7 @@ void Engine::run(const char** argv, int argc, const EngineConfig& engineConfig) 
 	auto& broker = context.createSystem<Broker>();
 	context.createSystem<Config>(context, argv, argc);
 	context.createSystem<FileSystem>(context);
+	context.createSystem<Localization>(context, "");
 	context.createSystem<Scripts>();
 	auto& window = context.createSystem<Window>(context);
 	IF_NOT_PROD_BUILD(context.createSystem<ImGuiSystem>(context));
