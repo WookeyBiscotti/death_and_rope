@@ -3,6 +3,7 @@
 #include "alch/common/archive.hpp"
 #include "alch/common/types.hpp"
 #include "alch/engine/system.hpp"
+#include "alch/common/hash.hpp"
 //
 #include <array>
 #include <deque>
@@ -54,8 +55,8 @@ class Localization: public System {
 	Context& _context;
 
 	Language _currentLanguage = EN;
-	std::unordered_map<std::string_view /*text in code*/, std::array<std::string_view, LANGS_COUNT>> _langs;
-	std::unordered_map<std::string_view /*text in code*/, bool*> _updatedState;
+	std::unordered_map<std::string_view /*text in code*/, std::array<std::string_view, LANGS_COUNT>, HashOfPtr> _langs;
+	// std::unordered_map<std::string_view /*text in code*/, bool*, decltype(hashOfPtr)> _updatedState;
 };
 
 // #define ALTR(MSG, LANG) Localization::global()->_translateWithStaticState<__FILE__, __LINE__>(MSG)

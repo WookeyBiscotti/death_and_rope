@@ -64,7 +64,7 @@ void Engine::run(const char** argv, int argc, const EngineConfig& engineConfig) 
 	auto& broker = context.createSystem<Broker>();
 	context.createSystem<Config>(context, argv, argc);
 	context.createSystem<FileSystem>(context);
-	context.createSystem<Localization>(context, "");
+	context.createSystem<Localization>(context, Path{});
 	context.createSystem<Scripts>();
 	auto& window = context.createSystem<Window>(context);
 	IF_NOT_PROD_BUILD(context.createSystem<ImGuiSystem>(context));

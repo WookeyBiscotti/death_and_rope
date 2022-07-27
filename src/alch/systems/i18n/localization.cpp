@@ -5,11 +5,11 @@ Localization::Localization(Context& context, Path localoiationFile): _context(co
 }
 
 void Localization::language(Language lang) {
-	if (lang != _currentLanguage) {
-		for (auto [_, v] : _updatedState) {
-			*v = false;
-		}
-	}
+	// if (lang != _currentLanguage) {
+	// 	for (auto [_, v] : _updatedState) {
+	// 		*v = false;
+	// 	}
+	// }
 	_currentLanguage = lang;
 }
 
