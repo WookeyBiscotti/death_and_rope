@@ -49,7 +49,8 @@ void UIButton::onTransform() {
 	if (_font) {
 		_text.setFont(_font->sf());
 	}
-	_text.setString(_content);
+	// sf::String::toUtf8(_content);
+	_text.setString(sf::String::fromUtf8(_content.begin(), _content.end()));
 	_text.setCharacterSize(14);
 	_text.setFillColor(sf::Color::Black);
 	// _text.setStyle(sf::Text::Bold | sf::Text::Underlined);

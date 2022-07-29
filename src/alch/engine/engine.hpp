@@ -10,6 +10,7 @@ class Context;
 struct EngineConfig {
 	std::string windowName;
 	Path root;
+	Path localizationFile;
 	std::string startScene;
 	std::function<void(Context& context)> preBegin;
 	std::function<void(Context& context)> preEnd;

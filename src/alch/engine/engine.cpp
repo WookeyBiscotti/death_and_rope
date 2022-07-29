@@ -1,7 +1,8 @@
+#include "alch/engine/engine.hpp"
+
 #include "alch/common/prod_build_utils.hpp"
 #include "alch/common/type_id.hpp"
 #include "alch/engine/context.hpp"
-#include "alch/engine/engine.hpp"
 #include "alch/engine/events.hpp"
 #include "alch/systems/assets/asset_cache.hpp"
 #include "alch/systems/broker/broker.hpp"
@@ -64,7 +65,7 @@ void Engine::run(const char** argv, int argc, const EngineConfig& engineConfig) 
 	auto& broker = context.createSystem<Broker>();
 	context.createSystem<Config>(context, argv, argc);
 	context.createSystem<FileSystem>(context);
-	context.createSystem<Localization>(context, Path{});
+	context.createSystem<Localization>(context, _config.localizationFile);
 	context.createSystem<Scripts>();
 	auto& window = context.createSystem<Window>(context);
 	IF_NOT_PROD_BUILD(context.createSystem<ImGuiSystem>(context));

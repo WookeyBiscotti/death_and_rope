@@ -1,0 +1,22 @@
+{
+  "used": [
+    {
+      "meta": {
+        "file": "./test_file.cpp"
+      },
+      "origin": "EN",
+      "text": {
+        "EN": "Test string 1"
+      }
+    },
+    {
+      "meta": {
+        "file": "./test_file.cpp"
+      },
+      "origin": "EN",
+      "text": {
+        "EN": "Test string 2"
+      }
+    }
+  ]
+}
