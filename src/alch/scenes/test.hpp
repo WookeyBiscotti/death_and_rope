@@ -11,10 +11,12 @@
 #include "alch/systems/transform/transform.hpp"
 #include "alch/systems/window/inputs.hpp"
 #include "alch/systems/window/window.hpp"
+#include "alch/common/smart_ptr.hpp"
 //
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/View.hpp>
+
 //
 #include <memory>
 
