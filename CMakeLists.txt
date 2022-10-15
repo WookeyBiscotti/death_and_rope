@@ -1,8 +1,15 @@
-cmake_minimum_required(VERSION 3.18.0)
+cmake_minimum_required(VERSION 3.21.0)
 
-project(death_and_rope VERSION 0.1.0)
+project(
+  AlchemyEngine
+  VERSION 0.1.0
+  LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
+
+add_library(AlchemyEngineLib)
+
+set(SDL_STATIC TRUE)
 
 add_subdirectory(3rdparty/SFML)
 add_subdirectory(3rdparty/json)
@@ -12,8 +19,9 @@ add_subdirectory(3rdparty/Catch2)
 add_subdirectory(3rdparty/AABBTree)
 add_subdirectory(3rdparty/box2d)
 add_subdirectory(3rdparty/ChaiScript)
+add_subdirectory(3rdparty/SDL)
 
-add_compile_definitions(B2_USER_SETTINGS)
+target_compile_definitions(AlchemyEngineLib PUBLIC B2_USER_SETTINGS)
 
 file(
   GLOB_RECURSE MAIN_SOURCES
@@ -37,7 +45,9 @@ set(INCLUDES_DEPS_DIRS
     3rdparty/imgui-filebrowser
     3rdparty/imgui/misc/cpp
     3rdparty/box2d/include
-    3rdparty/lua)
+    3rdparty/lua
+    3rdparty/bgfx/include
+    3rdparty/bx/include)
 
 set(DEPS_LIBS
     sfml-graphics
@@ -48,34 +58,43 @@ set(DEPS_LIBS
     aabb_tree
     box2d
     chaiscript
+    bgfxRelease
+    # SDL2::SDL2-static
     ${CMAKE_DL_LIBS})
+
+set(ALCH_DEPS_LIBS_PATH "")
 
 if(APPLE)
   list(APPEND DEPS_LIBS "-framework OpenGL" "-framework GLUT")
-elseif(LINUX)
+elseif(UNIX)
   list(APPEND DEPS_LIBS GL GLU)
+  list(APPEND ALCH_DEPS_LIBS_PATH
+       ${CMAKE_CURRENT_LIST_DIR}/3rdparty/bgfx/.build/linux64_gcc/bin)
 endif()
 
-add_library(death_and_rope_lib ${MAIN_SOURCES} ${DEPS_SOURCES})
-target_include_directories(death_and_rope_lib PUBLIC ${INCLUDES_DEPS_DIRS})
-target_include_directories(death_and_rope_lib
+target_link_libraries(AlchemyEngineLib PUBLIC ${DEPS_LIBS})
+
+target_sources(AlchemyEngineLib PUBLIC ${MAIN_SOURCES} ${DEPS_SOURCES})
+target_include_directories(AlchemyEngineLib PUBLIC ${INCLUDES_DEPS_DIRS})
+target_include_directories(AlchemyEngineLib
                            PUBLIC ${CMAKE_CURRENT_LIST_DIR}/src)
-target_link_libraries(death_and_rope_lib PUBLIC ${DEPS_LIBS})
+target_link_directories(AlchemyEngineLib PUBLIC ${ALCH_DEPS_LIBS_PATH})
 
-add_executable(death_and_rope_exe game/main.cpp)
-target_link_libraries(death_and_rope_exe PUBLIC death_and_rope_lib)
+add_library(AlchemyEngineLib::AlchemyEngineLib ALIAS AlchemyEngineLib)
 
-add_executable(death_and_rope_tests ${TESTS_SOURCES})
-target_link_libraries(death_and_rope_tests PUBLIC death_and_rope_lib
-                                                  Catch2::Catch2WithMain)
+# add_executable(death_and_rope_exe game/main.cpp)
+# target_link_libraries(death_and_rope_exe PUBLIC death_and_rope_lib)
+
+# add_executable(death_and_rope_tests ${TESTS_SOURCES})
+# target_link_libraries(death_and_rope_tests PUBLIC death_and_rope_lib
+# Catch2::Catch2WithMain)
 
 set(PROD_BUILD
     OFF
     CACHE BOOL "make prod build without logging/debug/imgui for performance")
 
-if(${PROD_BUILD})
-  target_compile_definitions(death_and_rope_exe PUBLIC PROD_BUILD)
-endif()
+# if(${PROD_BUILD}) target_compile_definitions(death_and_rope_exe PUBLIC
+# PROD_BUILD) endif()
 
 file(
   COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/alch/systems/physics/box2d_settings/b2_user_settings.h
