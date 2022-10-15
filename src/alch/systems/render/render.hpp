@@ -1,17 +1,20 @@
 #pragma once
 
-#include "drawable.hpp"
-
 #include "alch/engine/system.hpp"
+#include "alch/systems/window/window.hpp"
+#include "drawable.hpp"
 //
 #include <memory>
 #include <unordered_set>
+
+namespace alch {
 
 class Context;
 class Camera;
 class Render: public System {
   public:
 	explicit Render(Context& context);
+	~Render();
 
 	void add(Drawable* drawable) { _drawables.insert(drawable); }
 	void remove(Drawable* drawable) { _drawables.erase(drawable); }
@@ -21,7 +24,7 @@ class Render: public System {
 
 	void render();
 
-	RenderTarget& target() { return _target; };
+	RenderWindow& target() { return _target; };
 
   private:
 	Context& _context;
@@ -30,5 +33,7 @@ class Render: public System {
 
 	std::unordered_set<Drawable*> _drawables;
 
-	RenderTarget& _target;
+	RenderWindow& _target;
 };
+
+} // namespace alch

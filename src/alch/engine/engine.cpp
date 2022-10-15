@@ -125,8 +125,8 @@ void Engine::run(const char** argv, int argc, const EngineConfig& engineConfig) 
 
 		broker.send(EngineOnFramePostRender{});
 
-		window.window().display();
-		window.window().clear();
+		// window.window().display();
+		// window.window().clear();
 
 		if (scenes.newSceneRequired()) {
 			scenes.applyNext();

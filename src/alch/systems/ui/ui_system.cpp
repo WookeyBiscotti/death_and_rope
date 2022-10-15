@@ -39,7 +39,7 @@ UISystem::UISystem(Context& context): Receiver(context.systemRef<Broker>()), _co
 	_userRoot = _root->create<UIElement>();
 	_freeLayout = _root->create<UnchangeableLayout>();
 	_lastHovered = _userRoot;
-	const auto windowSize = context.systemRef<Window>().window().getSize();
+	const auto windowSize = context.systemRef<WindowSystem>().window().getSize();
 	_root->size(Vector2f(windowSize.x, windowSize.y));
 	_userRoot->size(Vector2f(windowSize.x, windowSize.y));
 	_freeLayout->size(Vector2f(windowSize.x, windowSize.y));
@@ -49,40 +49,40 @@ UISystem::UISystem(Context& context): Receiver(context.systemRef<Broker>()), _co
 		if (eType != sf::Event::Closed && eType != sf::Event::LostFocus && eType != sf::Event::GainedFocus &&
 		    eType != sf::Event::Resized) {
 			if (eType == sf::Event::MouseMoved) {
-				_freeLayout->onMouseMove({UIMouseMove{e.general.event.mouseMove}}) ||
-				    _userRoot->onMouseMove({UIMouseMove{e.general.event.mouseMove}});
+				_freeLayout->onMouseMove({UIMouseMove{e.general.event.motion}}) ||
+				    _userRoot->onMouseMove({UIMouseMove{e.general.event.motion}});
 				for (auto& [_, w] : _lastDraged) {
 					if (w) {
-						w->onDrag({e.general.event.mouseMove});
+						w->onDrag({e.general.event.motion});
 					}
 				}
 			} else if (eType == sf::Event::MouseButtonPressed) {
-				_freeLayout->onPressed(UIMouseButtonPressed{e.general.event.mouseButton}) ||
-				    _userRoot->onPressed(UIMouseButtonPressed{e.general.event.mouseButton});
-				auto wg = _freeLayout->onDragStart(UIMouseDragStart{e.general.event.mouseButton});
+				_freeLayout->onPressed(UIMouseButtonPressed{e.general.event.button}) ||
+				    _userRoot->onPressed(UIMouseButtonPressed{e.general.event.button});
+				auto wg = _freeLayout->onDragStart(UIMouseDragStart{e.general.event.button});
 				if (!wg) {
-					wg = _userRoot->onDragStart({UIMouseDragStart{e.general.event.mouseButton}});
+					wg = _userRoot->onDragStart({UIMouseDragStart{e.general.event.button}});
 				}
 				if (wg) {
-					_lastDraged[e.general.event.mouseButton.button] = wg;
+					_lastDraged[e.general.event.button.button] = wg;
 				}
 			} else if (eType == sf::Event::MouseButtonReleased) {
-				_freeLayout->onReleased(UIMouseButtonReleased{e.general.event.mouseButton}) ||
-				    _userRoot->onReleased(UIMouseButtonReleased{e.general.event.mouseButton});
-				auto wg = _lastDraged[e.general.event.mouseButton.button];
+				_freeLayout->onReleased(UIMouseButtonReleased{e.general.event.button}) ||
+				    _userRoot->onReleased(UIMouseButtonReleased{e.general.event.button});
+				auto wg = _lastDraged[e.general.event.button.button];
 				if (wg) {
-					wg->onDragStop({e.general.event.mouseButton});
+					wg->onDragStop({e.general.event.button});
 				}
-				_lastDraged.erase(e.general.event.mouseButton.button);
+				_lastDraged.erase(e.general.event.button.button);
 			} else if (eType == sf::Event::MouseWheelScrolled) {
-				_freeLayout->onMouseWheel(UIMouseWheel{e.general.event.mouseWheelScroll}) ||
-				    _userRoot->onMouseWheel(UIMouseWheel{e.general.event.mouseWheelScroll});
+				_freeLayout->onMouseWheel(UIMouseWheel{e.general.event.wheel}) ||
+				    _userRoot->onMouseWheel(UIMouseWheel{e.general.event.wheel});
 			}
 		}
-		if (eType == sf::Event::Resized) {
-			_root->size(Vector2f(e.general.event.size.width, e.general.event.size.height));
-			_freeLayout->size(Vector2f(e.general.event.size.width, e.general.event.size.height));
-			_userRoot->size(Vector2f(e.general.event.size.width, e.general.event.size.height));
+		if (eType == SDL_WINDOWEVENT_RESIZED) {
+			_root->size(Vector2f(e.general.event.window.data1, e.general.event.window.data2));
+			_freeLayout->size(Vector2f(e.general.event.window.data1, e.general.event.window.data2));
+			_userRoot->size(Vector2f(e.general.event.window.data1, e.general.event.window.data2));
 		}
 		// if (eType == sf::Event::MouseLeft) {
 		// 	if (_lastDraged) {

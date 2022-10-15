@@ -7,16 +7,14 @@
 
 class Context;
 
-namespace sf {
-class RenderWindow;
-}
+class SDL_Window;
 
-using RenderWindow = sf::RenderWindow;
+using RenderWindow = SDL_Window;
 
-class Window: private Sender, public System {
+class WindowSystem: private Sender, public System {
   public:
-	explicit Window(Context& context);
-	~Window();
+	explicit WindowSystem(Context& context);
+	~WindowSystem();
 
 	RenderWindow& window();
 
@@ -25,5 +23,5 @@ class Window: private Sender, public System {
   private:
 	Context& _context;
 
-	std::shared_ptr<RenderWindow> _window;
+	SDL_Window* _window;
 };

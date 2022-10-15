@@ -18,3 +18,4 @@ class UIPanel: public UIElement {
   private:
 	sf::RectangleShape _shape;
 };
+

@@ -4,6 +4,8 @@
 #include "alch/engine/entity.hpp"
 #include "alch/systems/render/render.hpp"
 
+using namespace alch;
+
 Drawable::Drawable(Entity& entity): Component(entity) {
 	entity.context().systemRef<Render>().add(this);
 }

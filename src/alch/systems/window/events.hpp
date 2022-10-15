@@ -2,10 +2,12 @@
 
 #include "alch/common/vector2.hpp"
 
-#include <SFML/Window/Event.hpp>
+#include <SDL_events.h>
+
+// #include <SFML/Window/Event.hpp>
 
 struct WindowEvent {
-	sf::Event event;
+	SDL_Event event;
 };
 
 struct WindowUIEvent {

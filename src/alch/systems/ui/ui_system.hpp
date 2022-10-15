@@ -4,7 +4,9 @@
 #include "alch/engine/system.hpp"
 #include "alch/systems/broker/receiver.hpp"
 //
-#include <SFML/Window/Mouse.hpp>
+// #include <SFML/Window/Mouse.hpp>
+#include <SDL_events.h>
+// 
 #include <memory>
 
 class Context;
@@ -36,7 +38,7 @@ class UISystem final: public Receiver, public System {
 	UIElement* lastHovered() const { return _lastHovered; }
 	void lastHovered(UIElement* lastHovered) { _lastHovered = lastHovered; }
 
-	UIElement* lastDraged(sf::Mouse::Button b) const {
+	UIElement* lastDraged(Uint8 b) const {
 		if (auto found = _lastDraged.find(b); found != _lastDraged.end()) {
 			return found->second;
 		}
@@ -44,7 +46,7 @@ class UISystem final: public Receiver, public System {
 		return nullptr;
 	}
 
-	void lastDraged(sf::Mouse::Button b, UIElement* lastDraged) { _lastDraged[b] = lastDraged; }
+	void lastDraged(Uint8 b, UIElement* lastDraged) { _lastDraged[b] = lastDraged; }
 
   private:
 	std::unique_ptr<UIElement> _root;
@@ -53,5 +55,5 @@ class UISystem final: public Receiver, public System {
 	Context& _context;
 
 	UIElement* _lastHovered{};
-	std::unordered_map<sf::Mouse::Button, UIElement*> _lastDraged;
+	std::unordered_map<Uint8, UIElement*> _lastDraged;
 };
