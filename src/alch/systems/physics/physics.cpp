@@ -15,7 +15,9 @@
 #include <box2d/b2_world_callbacks.h>
 #include <memory>
 
-class ContactListener: public b2ContactListener {
+using namespace al;
+
+class al::ContactListener: public b2ContactListener {
 	Physics& _physics;
 
   public:

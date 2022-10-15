@@ -2,6 +2,8 @@
 
 #include <utility>
 
+namespace al {
+
 template<class Cont, class Element, class Fn>
 void ifExist(Cont& cont, Element&& element, Fn&& fn) {
 	if (auto found = cont.find(element); found != cont.end()) {
@@ -25,4 +27,6 @@ template<class Cont, class Element>
 	}
 
 	return decltype(&cont.begin()->second){nullptr};
+}
+
 }

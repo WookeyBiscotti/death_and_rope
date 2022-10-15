@@ -14,6 +14,8 @@
 #include <deque>
 #include <mutex>
 
+using namespace al;
+
 template<typename Mutex, size_t N = 1024>
 class Sink: public spdlog::sinks::base_sink<Mutex> {
   public:

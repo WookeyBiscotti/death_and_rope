@@ -21,6 +21,8 @@
 //
 #include <memory>
 
+namespace al {
+
 class TestPhysicsScene: public Scene {
   public:
 	explicit TestPhysicsScene(Context& context): Scene(context){};
@@ -97,3 +99,5 @@ class TestPhysicsScene: public Scene {
   private:
 	std::unique_ptr<Entity> _root;
 };
+
+}

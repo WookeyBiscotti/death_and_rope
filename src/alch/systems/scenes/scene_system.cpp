@@ -6,6 +6,8 @@
 //
 #include <chaiscript/chaiscript.hpp>
 
+using namespace al;
+
 void SceneSystem::registerScene(const std::string& name, std::function<std::shared_ptr<Scene>()> creator) {
 	_creator[name] = {std::move(creator), nullptr};
 }

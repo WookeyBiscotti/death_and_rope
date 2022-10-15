@@ -7,6 +7,8 @@
 #include <SFML/Window/Mouse.hpp>
 #include <memory>
 
+namespace al {
+
 class Context;
 class UIElement;
 
@@ -55,3 +57,5 @@ class UISystem final: public Receiver, public System {
 	UIElement* _lastHovered{};
 	std::unordered_map<sf::Mouse::Button, UIElement*> _lastDraged;
 };
+
+}

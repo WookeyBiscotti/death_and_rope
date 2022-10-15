@@ -1,7 +1,10 @@
 #pragma once
 
-class Entity;
 class b2Body;
+
+namespace al {
+
+class Entity;
 
 struct PhysicsBeginContact {
 	Entity& ea;
@@ -9,3 +12,5 @@ struct PhysicsBeginContact {
 	Entity& eb;
 	b2Body& bb;
 };
+
+}

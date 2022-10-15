@@ -2,6 +2,8 @@
 
 #include "broker.hpp"
 
+using namespace al;
+
 Receiver::~Receiver() {
 	_broker.unsubscribeAll(this);
 };

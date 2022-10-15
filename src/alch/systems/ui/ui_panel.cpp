@@ -2,6 +2,8 @@
 
 #include "alch/systems/logging/logger.hpp"
 
+using namespace al;
+
 void UIPanel::draw(sf::RenderTarget& target) {
 	auto p = toWorldCoords(_position);
 	_shape.setPosition(p);

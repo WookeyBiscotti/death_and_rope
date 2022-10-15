@@ -12,6 +12,8 @@
 #include <string>
 #include <unordered_map>
 
+using namespace al;
+
 namespace fs = std::filesystem;
 
 // static const Path TEXTURES_PATH = "assets/textures/";

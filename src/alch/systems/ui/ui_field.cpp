@@ -1,5 +1,7 @@
 #include "ui_field.hpp"
 
+using namespace al;
+
 class FieldRoot: public UIElement {
   public:
 	FieldRoot(UIElement* parent, Context& context): UIElement(parent, context) {}

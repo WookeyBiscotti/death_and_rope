@@ -8,6 +8,8 @@
 //
 #include <chaiscript/chaiscript.hpp>
 
+using namespace al;
+
 void NameSystem::exportScriptFunctions(Context& context) {
 	using namespace chaiscript;
 	auto& chai = context.systemRef<Scripts>().internal();

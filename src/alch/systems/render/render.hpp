@@ -7,6 +7,8 @@
 #include <memory>
 #include <unordered_set>
 
+namespace al {
+
 class Context;
 class Camera;
 class Render: public System {
@@ -32,3 +34,5 @@ class Render: public System {
 
 	RenderTarget& _target;
 };
+
+}

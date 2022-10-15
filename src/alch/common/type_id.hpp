@@ -33,6 +33,8 @@ const T* const type_id_ptr<T>::id = nullptr;
 
 } // namespace detail
 
+namespace al {
+
 /**
  * The type of a type id.
  */
@@ -47,4 +49,6 @@ using type_id_t = const void*;
 template<typename T>
 constexpr auto TypeId() noexcept -> type_id_t {
 	return &detail::type_id_ptr<T>::id;
+}
+
 }

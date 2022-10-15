@@ -9,6 +9,8 @@ namespace chaiscript {
 class ChaiScript;
 }
 
+namespace al {
+
 class Scripts: public System {
   public:
 	Scripts();
@@ -20,3 +22,5 @@ class Scripts: public System {
   private:
 	std::unique_ptr<chaiscript::ChaiScript> _state;
 };
+
+}

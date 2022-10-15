@@ -4,6 +4,8 @@
 
 #include <SFML/Window/Event.hpp>
 
+namespace al {
+
 struct WindowEvent {
 	sf::Event event;
 };
@@ -17,3 +19,5 @@ struct WindowResize {
 	Vector2i oldSize;
 	Vector2i newSize;
 };
+
+}

@@ -12,6 +12,8 @@
 //
 #include <memory>
 
+namespace al {
+
 class DefaultScene: public Scene {
   public:
 	explicit DefaultScene(Context& context): Scene(context){};
@@ -29,3 +31,5 @@ class DefaultScene: public Scene {
   private:
 	std::unique_ptr<Entity> _root;
 };
+
+}

@@ -10,6 +10,8 @@
 #include <imgui-SFML.h>
 #include <imgui.h>
 
+using namespace al;
+
 ImGuiSystem::ImGuiSystem(Context& context): Receiver(context.systemRef<Broker>()), _context(context) {
 	ImGui::SFML::Init(context.systemRef<Window>().window());
 

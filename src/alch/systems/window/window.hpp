@@ -5,11 +5,13 @@
 //
 #include <memory>
 
-class Context;
-
 namespace sf {
 class RenderWindow;
 }
+
+namespace al {
+
+class Context;
 
 using RenderWindow = sf::RenderWindow;
 
@@ -27,3 +29,5 @@ class Window: private Sender, public System {
 
 	std::shared_ptr<RenderWindow> _window;
 };
+
+} // namespace al

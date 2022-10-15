@@ -5,6 +5,8 @@
 #include "alch/engine/context.hpp"
 #include "alch/engine/entity.hpp"
 
+using namespace al;
+
 void Transform::position(const Vector2f& position) {
 	if (_position != position) {
 		PositionUpdate e{_position, position};

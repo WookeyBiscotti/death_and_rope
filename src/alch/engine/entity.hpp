@@ -15,6 +15,8 @@
 #include <unordered_map>
 #include <utility>
 
+namespace al {
+
 class Context;
 
 struct EntityWantsDelete {};
@@ -148,3 +150,5 @@ class Entity final: public Sender {
 
 	std::unordered_map<type_id_t, std::unique_ptr<Component>> _components;
 };
+
+}

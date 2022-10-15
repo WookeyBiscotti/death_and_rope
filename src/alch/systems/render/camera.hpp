@@ -10,6 +10,8 @@
 //
 #include <SFML/Graphics/View.hpp>
 
+namespace al {
+
 class Camera: public Component {
   public:
 	explicit Camera(Entity& entity): Component(entity) {}
@@ -34,3 +36,5 @@ class Camera: public Component {
   private:
 	sf::View _view;
 };
+
+}

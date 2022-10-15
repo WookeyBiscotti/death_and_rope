@@ -6,6 +6,8 @@
 #include <string>
 #include <unordered_map>
 
+namespace al {
+
 class Entity;
 
 class NameSystem: public System {
@@ -51,3 +53,5 @@ class NameSystem: public System {
   private:
 	std::unordered_map<std::string, std::deque<Entity*>> _names;
 };
+
+}

@@ -13,6 +13,8 @@
 //
 #include <memory>
 
+namespace al {
+
 class RectShape: public Drawable, public Receiver {
   public:
 	explicit RectShape(Entity& entity);
@@ -28,3 +30,5 @@ class RectShape: public Drawable, public Receiver {
   private:
 	sf::RectangleShape _shape;
 };
+
+}

@@ -8,6 +8,8 @@
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <memory>
 
+namespace al {
+
 class UIScroll: public UIElement {
   public:
 	UIScroll(UIElement* parent, Context& context);
@@ -26,3 +28,5 @@ class UIScroll: public UIElement {
 	UIField* _content;
 	UISlider* _slider;
 };
+
+}

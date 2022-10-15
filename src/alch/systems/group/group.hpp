@@ -7,6 +7,8 @@
 #include <string_view>
 #include <unordered_set>
 
+namespace al {
+
 class Entity;
 
 class Group: public Component, public Receiver {
@@ -47,3 +49,5 @@ class Group: public Component, public Receiver {
 
 	std::unordered_map<Entity*, std::unique_ptr<Entity>> _childs;
 };
+
+}

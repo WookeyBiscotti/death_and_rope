@@ -4,6 +4,8 @@
 //
 #include <functional>
 
+namespace al {
+
 class Broker;
 class Sender;
 
@@ -49,3 +51,5 @@ class Receiver {
   private:
 	Broker& _broker;
 };
+
+}

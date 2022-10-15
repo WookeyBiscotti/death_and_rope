@@ -8,6 +8,8 @@
 #include <memory>
 #include <string>
 
+namespace al {
+
 class Context;
 
 class UIText: public UIElement {
@@ -30,3 +32,5 @@ class UIText: public UIElement {
 	sf::RectangleShape _bg;
 	sf::Text _text;
 };
+
+}

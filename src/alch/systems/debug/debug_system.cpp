@@ -22,7 +22,9 @@
 
 constexpr auto HISTORY_PATH = ".commands_history";
 
-class Box2dDebugDraw: public b2Draw {
+using namespace al;
+
+class al::Box2dDebugDraw: public b2Draw {
   public:
 	Box2dDebugDraw(RenderTarget& target): _target(target) {}
 	void DrawPolygon(const b2Vec2* vertices, int32 vertexCount, const b2Color& color) override {

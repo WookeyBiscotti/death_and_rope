@@ -5,6 +5,8 @@
 #include <chaiscript/chaiscript.hpp>
 //
 
+using namespace al;
+
 Scripts::Scripts() {
 	using namespace chaiscript;
 

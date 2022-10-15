@@ -11,6 +11,8 @@
 //
 #include <memory>
 
+namespace al {
+
 class Sprite: public Drawable, public Receiver{
   public:
 	explicit Sprite(Entity& entity);
@@ -37,3 +39,5 @@ class Sprite: public Drawable, public Receiver{
 	std::shared_ptr<Texture> _texture;
 	sf::Sprite _sprite;
 };
+
+}

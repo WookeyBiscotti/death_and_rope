@@ -11,11 +11,13 @@ namespace spdlog::sinks {
 class sink;
 }
 
-class Context;
-
 namespace {
 using SinkImp = spdlog::sinks::sink;
 }
+
+namespace al {
+
+class Context;
 
 class Logger: public System {
   public:
@@ -29,6 +31,8 @@ class Logger: public System {
   private:
 	std::shared_ptr<SinkImp> _sink;
 };
+
+}
 
 #if !defined(PROD_BUILD)
 

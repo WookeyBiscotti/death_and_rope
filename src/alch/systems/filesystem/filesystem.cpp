@@ -6,6 +6,8 @@
 //
 #include <fstream>
 
+using namespace al;
+
 FileSystem::FileSystem(Context& context): _context(context){};
 
 void FileSystem::save(const Path& path, const std::string& data) {

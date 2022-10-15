@@ -10,6 +10,8 @@
 #include <deque>
 #include <memory>
 
+namespace al {
+
 class Context;
 class Box2dDebugDraw;
 
@@ -37,3 +39,5 @@ class DebugSystem: private Receiver, public System {
 	int _commandsHistoryPos = -1;
 	std::array<char, 2048> _buffer;
 };
+
+}

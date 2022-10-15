@@ -7,6 +7,8 @@
 
 #include <string_view>
 
+namespace al {
+
 class Entity;
 
 class Component {
@@ -43,3 +45,5 @@ class Component {
 
 #define ALCH_COMPONENT_DEPENDS_ON(...) \
 	std::vector<type_id_t> dependsOn() const override { return TypeIds<__VA_ARGS__>(); }
+
+}

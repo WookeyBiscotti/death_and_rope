@@ -8,6 +8,8 @@
 #include <deque>
 #include <memory>
 
+namespace al {
+
 class Context;
 
 class FileSystem: public System {
@@ -25,3 +27,5 @@ class FileSystem: public System {
   private:
 	Context& _context;
 };
+
+}

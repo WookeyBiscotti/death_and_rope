@@ -5,6 +5,8 @@
 //
 #include <string>
 
+namespace al {
+
 class Entity;
 
 class Name: public Component {
@@ -21,3 +23,5 @@ class Name: public Component {
   private:
 	std::string _name;
 };
+
+}

@@ -7,6 +7,8 @@
 //
 #include <nlohmann/json.hpp>
 
+namespace al {
+
 using Json = nlohmann::json;
 
 template<class T>
@@ -51,3 +53,5 @@ inline void jsonWrite<Vector2u>(Json& js, const char* name, const Vector2u& val)
 	js[name]["y"] = val.y;
 }
 #define JSON_WRITE(JS, VAL) jsonWrite(JS, #VAL, VAL)
+
+}

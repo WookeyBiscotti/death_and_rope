@@ -3,6 +3,8 @@
 #include <fstream>
 #include <string>
 
+namespace al {
+
 inline std::string readFromFile(const std::string& filePath) {
 	std::ifstream t(filePath);
 	if (!t.is_open()) {
@@ -28,4 +30,6 @@ inline bool writeToFile(const std::string& data, const std::string& filePath) {
 	t.write(data.data(), data.size());
 
 	return !t.bad();
+}
+
 }

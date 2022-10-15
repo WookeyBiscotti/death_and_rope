@@ -9,6 +9,8 @@
 
 #include <SFML/Graphics.hpp>
 
+using namespace al;
+
 RectShape::RectShape(Entity& entity): Drawable(entity), Receiver(entity.context().systemRef<Broker>()) {
 	subscribe<PositionUpdate>(&entity, [this](const PositionUpdate& p) { _shape.setPosition(p.neW); });
 	_shape.setPosition(entity.tr().p());

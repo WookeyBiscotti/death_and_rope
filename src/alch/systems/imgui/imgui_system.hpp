@@ -5,6 +5,8 @@
 //
 #include <SFML/System/Clock.hpp>
 
+namespace al {
+
 class Context;
 
 class ImGuiSystem: public Receiver, public System {
@@ -19,3 +21,5 @@ class ImGuiSystem: public Receiver, public System {
 
 	sf::Clock _deltaClock;
 };
+
+}

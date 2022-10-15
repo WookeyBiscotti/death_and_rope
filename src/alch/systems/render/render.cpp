@@ -6,6 +6,8 @@
 //
 #include "alch/systems/window/window.hpp"
 
+using namespace al;
+
 Render::Render(Context& context): _context(context), _target(context.systemRef<Window>().window()) {
 }
 

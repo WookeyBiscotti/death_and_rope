@@ -6,6 +6,8 @@
 
 class b2Body;
 
+namespace al {
+
 class Body: public Component {
 	friend class Collider;
 
@@ -33,3 +35,5 @@ class Body: public Component {
   private:
 	b2Body* _body{};
 };
+
+}

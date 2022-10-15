@@ -4,6 +4,8 @@
 #include <imgui.h>
 #include <spdlog/fmt/fmt.h>
 
+using namespace al;
+
 void EditorScene::active(bool active) {
 	if (!active) {
 		_root.reset();

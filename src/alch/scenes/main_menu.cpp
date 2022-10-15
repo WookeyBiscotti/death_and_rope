@@ -8,6 +8,8 @@
 #include <cstddef>
 #include <imgui.h>
 
+using namespace al;
+
 void MainMenu::onFrame() {
 	MIDDLE_WINDOW();
 	ImGui::Begin("Main menu", nullptr, MENU_FLAGS);

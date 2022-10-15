@@ -7,6 +7,8 @@
 //
 #include <box2d/box2d.h>
 
+using namespace al;
+
 Body::Body(Entity& entity): Body(entity, Type::STATIC) {
 }
 

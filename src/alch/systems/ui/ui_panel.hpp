@@ -5,6 +5,8 @@
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <memory>
 
+namespace al {
+
 class UIPanel: public UIElement {
   public:
 	UIPanel(UIElement* parent, Context& context): UIElement(parent, context) {
@@ -18,3 +20,5 @@ class UIPanel: public UIElement {
   private:
 	sf::RectangleShape _shape;
 };
+
+}

@@ -11,6 +11,8 @@
 #include <unordered_map>
 #include <unordered_set>
 
+namespace al {
+
 class Context;
 class Entity;
 class Body;
@@ -42,3 +44,5 @@ class Physics: public Receiver, public System {
 
 	std::unique_ptr<ContactListener> _contactListner;
 };
+
+}

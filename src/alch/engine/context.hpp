@@ -13,6 +13,8 @@ namespace sf {
 class RenderTarget;
 }
 
+namespace al {
+
 class Engine;
 
 class Context final {
@@ -76,3 +78,5 @@ class Context final {
 	std::unordered_map<type_id_t, System*> _systems;
 	std::vector<std::unique_ptr<System>> _store;
 };
+
+}

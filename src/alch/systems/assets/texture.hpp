@@ -4,6 +4,8 @@
 
 #include <SFML/Graphics/Texture.hpp>
 
+namespace al {
+
 class Texture: public Asset {
   public:
 	explicit Texture(std::string name): Asset(std::move(name)){};
@@ -15,3 +17,5 @@ class Texture: public Asset {
   private:
 	sf::Texture _texture;
 };
+
+}

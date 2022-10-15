@@ -12,6 +12,8 @@
 #include <memory>
 #include <unordered_map>
 
+namespace al {
+
 class Context;
 
 class AssetCache: public System {
@@ -39,3 +41,5 @@ class AssetCache: public System {
 	std::unordered_map<std::string, std::shared_ptr<Scene>> _scenes;
 	std::unordered_map<std::string, std::shared_ptr<Font>> _fonts;
 };
+
+}

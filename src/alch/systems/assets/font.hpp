@@ -4,6 +4,8 @@
 //
 #include <SFML/Graphics/Font.hpp>
 
+namespace al {
+
 class Font: public Asset {
   public:
 	explicit Font(std::string name): Asset(std::move(name)){};
@@ -15,3 +17,5 @@ class Font: public Asset {
   private:
 	sf::Font _font;
 };
+
+}

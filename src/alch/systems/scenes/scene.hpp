@@ -3,12 +3,15 @@
 #include "alch/engine/context.hpp"
 #include "alch/systems/broker/broker.hpp"
 
-class Context;
-class Entity;
 
 namespace sf {
 class Event;
 }
+
+namespace al {
+
+class Context;
+class Entity;
 
 class Scene: public Receiver {
   public:
@@ -29,3 +32,5 @@ class Scene: public Receiver {
   private:
 	Context& _context;
 };
+
+}

@@ -10,6 +10,8 @@
 //
 #include <SFML/Graphics.hpp>
 
+using namespace al;
+
 Window::Window(Context& context): Sender(context.systemRef<Broker>()), _context(context) {
 	auto& config = context.systemRef<Config>().staticConfig();
 	auto& engineConfig = context.engine.config();

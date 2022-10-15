@@ -12,6 +12,8 @@
 //
 #include <memory>
 
+namespace al {
+
 class CircleShape: public Drawable, public Receiver {
   public:
 	explicit CircleShape(Entity& entity);
@@ -27,3 +29,5 @@ class CircleShape: public Drawable, public Receiver {
   private:
 	sf::CircleShape _shape;
 };
+
+}

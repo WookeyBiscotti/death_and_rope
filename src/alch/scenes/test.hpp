@@ -18,6 +18,8 @@
 //
 #include <memory>
 
+namespace al {
+
 class TestScene: public Scene {
   public:
 	explicit TestScene(Context& context): Scene(context){};
@@ -65,3 +67,5 @@ class TestScene: public Scene {
 	std::unique_ptr<Entity> _head;
 	std::unique_ptr<Entity> _camera;
 };
+
+}

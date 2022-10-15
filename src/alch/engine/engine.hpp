@@ -6,6 +6,8 @@
 #include <functional>
 #include <string>
 
+namespace al {
+
 class Context;
 struct EngineConfig {
 	std::string windowName;
@@ -28,3 +30,5 @@ class Engine: public System {
   private:
 	EngineConfig _config;
 };
+
+}

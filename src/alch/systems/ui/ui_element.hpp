@@ -11,6 +11,8 @@
 #include <SFML/Graphics.hpp>
 #include <string>
 
+namespace al {
+
 class UISystem;
 class Context;
 
@@ -140,4 +142,6 @@ bool UIElement::eventInside(const E& e) {
 
 	return globalPos.x <= e.event.x && e.event.x <= globalPos.x + _size.x && globalPos.y <= e.event.y &&
 	       e.event.y <= globalPos.y + _size.y;
+}
+
 }

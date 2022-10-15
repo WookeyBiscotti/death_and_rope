@@ -81,6 +81,7 @@ inline void serialize(Archive& archive, const b2Vec2& m) {
 	archive(m.x, m.y);
 }
 
+
 namespace std {
 template<class T>
 struct hash<sf::Vector2<T>> {

@@ -5,6 +5,8 @@
 #include "alch/systems/assets/asset_cache.hpp"
 #include "alch/systems/scenes/scene_system.hpp"
 
+using namespace al;
+
 void DevMenu::onFrame() {
 	MIDDLE_WINDOW();
 	ImGui::Begin("Dev menu", nullptr, MENU_FLAGS);

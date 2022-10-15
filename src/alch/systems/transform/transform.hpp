@@ -5,6 +5,8 @@
 #include "alch/engine/component.hpp"
 //
 
+namespace al {
+
 class Transform: public Component {
   public:
 	explicit Transform(Entity& entity, const Vector2f& vec = {}): Component(entity), _position(vec){};
@@ -38,3 +40,5 @@ class Transform: public Component {
 	Vector2f _size{1, 1};
 	float _rotation{};
 };
+
+}

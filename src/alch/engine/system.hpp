@@ -1,5 +1,7 @@
 #pragma once
 
+namespace al {
+
 class Context;
 
 class System {
@@ -7,3 +9,5 @@ class System {
   virtual ~System() = default;
 	virtual void exportScriptFunctions(Context& context){};
 };
+
+}

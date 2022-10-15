@@ -5,6 +5,8 @@
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <memory>
 
+namespace al {
+
 class UIField: public UIElement {
   public:
 	UIField(UIElement* parent, Context& context);
@@ -27,3 +29,5 @@ class UIField: public UIElement {
   private:
 	UIElement* _root;
 };
+
+}

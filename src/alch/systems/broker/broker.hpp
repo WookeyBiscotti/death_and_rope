@@ -12,6 +12,8 @@
 #include <functional>
 #include <vector>
 
+namespace al {
+
 class Broker: public System {
   public:
 	template<class Event>
@@ -151,3 +153,5 @@ class Broker: public System {
 	    _personalEventsFn;
 	std::unordered_map<Receiver*, std::unordered_map<Sender*, std::unordered_set<type_id_t>>> _personalReceiversFns;
 };
+
+}

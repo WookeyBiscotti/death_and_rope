@@ -7,6 +7,8 @@
 #include "ui_element.hpp"
 #include "ui_events.hpp"
 
+using namespace al;
+
 class UnchangeableLayout: public UIElement {
   public:
 	UnchangeableLayout(UIElement* parent, Context& context): UIElement(parent, context) { _layout = UIElement::FREE; }

@@ -9,6 +9,8 @@
 #include <list>
 #include <string>
 
+namespace al {
+
 struct StaticConfig {
 	Path root;
 	std::string appName;
@@ -45,3 +47,5 @@ class Config: public Sender, public System {
 
 	std::list<std::future<void>> _asyncOps;
 };
+
+}

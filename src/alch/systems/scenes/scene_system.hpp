@@ -6,6 +6,8 @@
 #include <functional>
 #include <memory>
 
+namespace al {
+
 class SceneSystem: public System {
   public:
 	SceneSystem() = default;
@@ -60,3 +62,5 @@ class SceneSystem: public System {
 
 	std::unordered_map<std::string, SceneCreator> _creator;
 };
+
+}

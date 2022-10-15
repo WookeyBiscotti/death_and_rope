@@ -19,6 +19,9 @@
 #include <unordered_map>
 #include <vector>
 
+
+using namespace al;
+
 struct SerializerData {
 	std::string name;
 	std::vector<type_id_t> dependsOn{};

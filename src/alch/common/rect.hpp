@@ -4,6 +4,7 @@
 //
 #include <SFML/Graphics/Rect.hpp>
 
+
 template<class T>
 using Rect = sf::Rect<T>;
 
@@ -25,3 +26,4 @@ void move(Rect<T>& r, const sf::Vector2<T>& v) {
 	r.left += v.x;
 	r.top += v.y;
 }
+

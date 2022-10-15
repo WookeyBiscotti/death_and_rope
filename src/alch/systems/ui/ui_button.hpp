@@ -7,6 +7,8 @@
 #include <memory>
 #include <string>
 
+namespace al {
+
 class Context;
 
 struct UIButtonOnRelease {};
@@ -38,3 +40,5 @@ class UIButton: public UIElement{
 	sf::RectangleShape _bg;
 	sf::Text _text;
 };
+
+}

@@ -6,6 +6,8 @@
 
 #include <cstddef>
 
+using namespace al;
+
 Camera::~Camera() {
 	auto& r = entity().context().systemRef<Render>();
 	if (r.camera() == this) {

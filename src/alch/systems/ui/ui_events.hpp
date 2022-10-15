@@ -2,6 +2,8 @@
 
 #include <SFML/Window/Event.hpp>
 
+namespace al {
+
 struct UIHovered {
 	const sf::Event::MouseMoveEvent& event;
 };
@@ -37,3 +39,5 @@ struct UIMouseDragStop {
 struct UIMouseWheel {
 	const sf::Event::MouseWheelScrollEvent& event;
 };
+
+}

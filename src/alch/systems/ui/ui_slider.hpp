@@ -7,7 +7,11 @@
 #include <memory>
 #include <string>
 
+
+namespace al {
+
 class Context;
+
 
 struct UISliderOnRelease {};
 struct UISliderOnPress {};
@@ -53,3 +57,5 @@ class UISlider: public UIElement {
 	float _max;
 	bool _isVertical{};
 };
+
+}

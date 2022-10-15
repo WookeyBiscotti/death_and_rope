@@ -5,8 +5,11 @@
 #include "body.hpp"
 //
 
-class Entity;
 class b2Fixture;
+
+namespace al {
+
+class Entity;
 class Collider: public Component {
 	friend class Physics;
 
@@ -45,3 +48,5 @@ class Collider: public Component {
   private:
 	std::vector<b2Fixture*> _fixtures;
 };
+
+}

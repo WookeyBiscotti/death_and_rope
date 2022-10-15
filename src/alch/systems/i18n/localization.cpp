@@ -4,6 +4,8 @@
 #include "alch/engine/context.hpp"
 #include "alch/systems/filesystem/filesystem.hpp"
 
+using namespace al;
+
 Localization::Language strToLang(const std::string& l) {
 	std::pair<const std::string, Localization::Language> am[] = {
 	    {"RU", Localization::Language::RU}, {"EN", Localization::Language::EN}};

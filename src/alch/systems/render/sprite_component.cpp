@@ -9,6 +9,8 @@
 #include <SFML/Graphics.hpp>
 //
 
+using namespace al;
+
 Sprite::Sprite(Entity& entity): Drawable(entity), Receiver(entity.context().systemRef<Broker>()) {
 	subscribe<PositionUpdate>(&entity, [this](const PositionUpdate& p) { _sprite.setPosition(p.neW); });
 	subscribe<RotationUpdate>(

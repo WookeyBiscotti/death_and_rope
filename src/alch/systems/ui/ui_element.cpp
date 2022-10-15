@@ -6,6 +6,8 @@
 
 #include <vector>
 
+using namespace al;
+
 UIElement::UIElement(UIElement* parent, Context& context):
     Sender(context.systemRef<Broker>()), Receiver(context.systemRef<Broker>()), _parent(parent), _context(context) {
 }

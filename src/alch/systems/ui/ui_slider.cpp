@@ -4,6 +4,8 @@
 #include "alch/systems/broker/broker.hpp"
 #include "ui_system.hpp"
 
+using namespace al;
+
 UISlider::UISlider(UIElement* parent, Context& context, float curr, float min, float max):
     UIElement(parent, context), _current(curr), _min(min), _max(max) {
 	_slider.setFillColor(sf::Color(200, 200, 200));

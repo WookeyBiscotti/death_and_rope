@@ -1,6 +1,6 @@
 #include "builtin_font.hpp"
 
-std::pair<const unsigned char*, std::size_t> builtinFontMemory() {
+std::pair<const unsigned char*, std::size_t> al::builtinFontMemory() {
 	// array size is 16848
 	// array size is 167336
 static const unsigned char Roboto_Bold[]  = {

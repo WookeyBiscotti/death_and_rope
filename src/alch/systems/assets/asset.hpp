@@ -1,6 +1,9 @@
 #pragma once
 #include <string>
 
+
+namespace al {
+	
 class AssetCache;
 
 class Asset {
@@ -15,3 +18,5 @@ class Asset {
   private:
 	std::string _name;
 };
+
+}

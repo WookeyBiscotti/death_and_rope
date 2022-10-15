@@ -28,6 +28,8 @@
 //
 #include <memory>
 
+namespace al {
+
 class GuiExempleScene: public Scene {
   public:
 	explicit GuiExempleScene(Context& context): Scene(context){};
@@ -75,3 +77,5 @@ class GuiExempleScene: public Scene {
 		}
 	};
 };
+
+}

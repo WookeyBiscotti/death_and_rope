@@ -40,14 +40,16 @@
 
 // User data
 
+namespace al {
 class Entity;
+}
 
 /// You can define this to inject whatever data you want in b2Body
 struct B2_API b2BodyUserData {
 	b2BodyUserData() { entity = nullptr; }
 
 	/// For legacy compatibility
-	Entity* entity;
+	al::Entity* entity;
 };
 
 /// You can define this to inject whatever data you want in b2Fixture

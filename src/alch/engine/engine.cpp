@@ -46,6 +46,9 @@
 #include <memory>
 #include <thread>
 
+using namespace al;
+
+
 static void addStandardScenes(Context& context) {
 	auto& scenes = context.systemRef<SceneSystem>();
 	scenes.registerScene("default", [&context] { return std::make_shared<DefaultScene>(context); });

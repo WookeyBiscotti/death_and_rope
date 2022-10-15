@@ -17,6 +17,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+using namespace al;
+
 std::string getHomeDir() {
 	const char* homedir;
 

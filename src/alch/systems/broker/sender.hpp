@@ -2,6 +2,8 @@
 
 #include "alch/common/type_id.hpp"
 
+namespace al {
+
 class Broker;
 
 class Sender {
@@ -20,3 +22,5 @@ class Sender {
   private:
 	Broker& _broker;
 };
+
+}

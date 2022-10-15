@@ -5,6 +5,8 @@
 #include "alch/engine/context.hpp"
 #include "alch/engine/entity.hpp"
 
+using namespace al;
+
 Name::Name(Entity& entity, std::string name): Component(entity), _name(std::move(name)) {
 	entity.context().systemRef<NameSystem>().add(_name, &entity);
 }

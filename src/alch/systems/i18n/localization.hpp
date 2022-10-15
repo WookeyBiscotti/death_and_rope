@@ -11,6 +11,8 @@
 #include <string_view>
 #include <unordered_map>
 
+namespace al {
+
 class Context;
 
 class Localization: public System {
@@ -41,6 +43,8 @@ class Localization: public System {
 	std::unordered_map<std::string_view, std::array<std::string_view, LANGS_COUNT>> _langs;
 	std::unordered_map<const char*, std::string_view> _translate;
 };
+
+}
 
 #define ALTR(LANG, MSG) (Localization::LANG, Localization::global()->translate(MSG))
 #define cALTR(LANG, MSG) (Localization::LANG, Localization::global()->translate(MSG).data())
