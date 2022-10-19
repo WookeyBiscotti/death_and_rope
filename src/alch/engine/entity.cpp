@@ -25,7 +25,7 @@ using namespace al;
 struct SerializerData {
 	std::string name;
 	std::vector<type_id_t> dependsOn{};
-	std::unique_ptr<Component> (*creator)(Entity& ent){};
+	SharedPtr<Component> (*creator)(Entity& ent){};
 };
 
 static std::unordered_map<type_id_t, SerializerData> serializerData = {};
@@ -110,7 +110,7 @@ void Entity::deserialize(IArchive& ar) {
 	}
 }
 
-void Entity::registerComponent(type_id_t id, std::unique_ptr<Component> (*creator)(Entity& ent), std::string name,
+void Entity::registerComponent(type_id_t id, SharedPtr<Component> (*creator)(Entity& ent), std::string name,
     std::vector<type_id_t> dependsOn) {
 	if (auto found = serializerData.find(id); found != serializerData.end()) {
 		LCRIT("Abort registration: serializer with such id({}) already registered. Registered info: id: {}, name: {}. "

@@ -12,6 +12,6 @@ int main() {
   INLINE_TESTER_SharedPtr_BaseToDerived<int>(std::cout);
 
   std::cout << "All tests passed." << std::endl;
-  
+
   return 0;
 }

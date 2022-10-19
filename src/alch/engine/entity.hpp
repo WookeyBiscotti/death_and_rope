@@ -3,6 +3,7 @@
 #include "alch/common/archive.hpp"
 //
 #include "alch/common/prod_build_utils.hpp"
+#include "alch/common/smart_ptr.hpp"
 #include "alch/common/type_id.hpp"
 #include "alch/systems/broker/broker.hpp"
 #include "alch/systems/logging/logger.hpp"
@@ -44,7 +45,7 @@ class Entity final: public Sender {
 	auto& addChain(Args&&... args) {
 		static_assert(TypeId<C>() != TypeId<Transform>());
 
-		auto c = std::make_unique<C>(*this, std::forward<Args>(args)...);
+		auto c = SharedPtr<C>::make(*this, std::forward<Args>(args)...);
 		_components.emplace(TypeId<C>(), std::move(c));
 
 		return *this;
@@ -53,7 +54,7 @@ class Entity final: public Sender {
 	template<class C, class... Args>
 	C& add(Args&&... args) {
 		static_assert(TypeId<C>() != TypeId<Transform>());
-		auto c = std::make_unique<C>(*this, std::forward<Args>(args)...);
+		auto c = SharedPtr<C>::make(*this, std::forward<Args>(args)...);
 		auto& ret = *c;
 		_components.emplace(TypeId<C>(), std::move(c));
 
@@ -114,16 +115,16 @@ class Entity final: public Sender {
 		Entity ent(context);
 		auto c = C(ent);
 		registerComponent(
-		    TypeId<C>(), [](Entity& ent) -> std::unique_ptr<Component> { return std::make_unique<C>(ent); },
+		    TypeId<C>(), [](Entity& ent) -> SharedPtr<Component> { return SharedPtr<C>::make(ent); },
 		    std::string(c.cName()), c.dependsOn());
 	}
 
   private:
-	static void registerComponent(type_id_t id, std::unique_ptr<Component> (*creator)(Entity& ent), std::string name,
+	static void registerComponent(type_id_t id, SharedPtr<Component> (*creator)(Entity& ent), std::string name,
 	    std::vector<type_id_t> dependsOn);
 
 	// unsafe
-	auto& add(type_id_t id, std::unique_ptr<Component>&& component) {
+	auto& add(type_id_t id, SharedPtr<Component>&& component) {
 		_components.emplace(id, std::move(component));
 
 		return *this;
@@ -148,7 +149,7 @@ class Entity final: public Sender {
 	static constexpr size_t BuiltInCount = 1;
 	Transform _transform;
 
-	std::unordered_map<type_id_t, std::unique_ptr<Component>> _components;
+	std::unordered_map<type_id_t, SharedPtr<Component>> _components;
 };
 
-}
+} // namespace al

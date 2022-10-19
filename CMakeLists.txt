@@ -20,6 +20,7 @@ add_subdirectory(3rdparty/AABBTree)
 add_subdirectory(3rdparty/box2d)
 add_subdirectory(3rdparty/ChaiScript)
 add_subdirectory(3rdparty/SDL)
+add_subdirectory(3rdparty/abseil-cpp)
 
 target_compile_definitions(AlchemyEngineLib PUBLIC B2_USER_SETTINGS)
 
@@ -59,6 +60,7 @@ set(DEPS_LIBS
     box2d
     chaiscript
     bgfxRelease
+    absl::flat_hash_set
     # SDL2::SDL2-static
     ${CMAKE_DL_LIBS})
 

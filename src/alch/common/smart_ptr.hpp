@@ -7,13 +7,6 @@ namespace al {
 
 struct RefCountSharedData {
 	unsigned int shared;
-	char data;
-};
-
-template<class T>
-struct RefCountSharedDataT {
-	unsigned int shared;
-	char data[sizeof(T)];
 };
 
 template<class T>
@@ -25,9 +18,9 @@ class SharedPtr {
 	template<class... Args>
 	static SharedPtr make(Args&&... args) noexcept {
 		SharedPtr sp;
-		auto p = new RefCountSharedDataT<T>();
-		sp._pointer = new (p->data) T(std::forward<Args>(args)...);
-		sp._data = reinterpret_cast<RefCountSharedData*>(p);
+		auto p = reinterpret_cast<RefCountSharedData*>(new unsigned char[sizeof(RefCountSharedData) + sizeof(T)]);
+		sp._data = p;
+		sp._pointer = new (p + 1) T(std::forward<Args>(args)...);
 
 		p->shared = 1;
 
@@ -93,6 +86,7 @@ class SharedPtr {
 	T& operator*() { return *_pointer; }
 
 	T* operator->() { return _pointer; }
+	const T* operator->() const { return _pointer; }
 
 	T* get() { return _pointer; }
 
@@ -101,7 +95,7 @@ class SharedPtr {
   private:
 	void releaseData() {
 		_pointer->~T();
-		delete _data;
+		delete reinterpret_cast<unsigned char*>(_data);
 	}
 
   private:
