@@ -8,7 +8,7 @@
 
 using namespace al;
 
-Render::Render(Context& context): _context(context), _target(context.systemRef<Window>().window()) {
+Render::Render(Context& context): System(context), _target(context.systemRef<Window>().window()) {
 }
 
 void Render::render() {

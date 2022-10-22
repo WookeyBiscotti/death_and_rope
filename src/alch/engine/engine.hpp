@@ -21,6 +21,8 @@ struct EngineConfig {
 
 class Engine: public System {
   public:
+	Engine(Context& context);
+
 	void run(const char** argv, int argc, const EngineConfig& config);
 
 	const EngineConfig& config() const { return _config; }

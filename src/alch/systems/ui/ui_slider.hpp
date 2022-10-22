@@ -7,11 +7,9 @@
 #include <memory>
 #include <string>
 
-
 namespace al {
 
 class Context;
-
 
 struct UISliderOnRelease {};
 struct UISliderOnPress {};
@@ -58,4 +56,4 @@ class UISlider: public UIElement {
 	bool _isVertical{};
 };
 
-}
+} // namespace al

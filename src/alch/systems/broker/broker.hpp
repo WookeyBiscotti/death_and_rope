@@ -6,9 +6,14 @@
 #include "alch/common/map_utils.hpp"
 #include "alch/common/type_id.hpp"
 #include "alch/engine/system.hpp"
+#include "alch/systems/logging/logger.hpp"
 //
-#include <unordered_map>
-#include <unordered_set>
+#include <absl/container/flat_hash_map.h>
+#include <absl/container/flat_hash_set.h>
+#include <absl/container/inlined_vector.h>
+//
+// #include <unordered_map>
+// #include <unordered_set>
 #include <functional>
 #include <vector>
 
@@ -16,6 +21,8 @@ namespace al {
 
 class Broker: public System {
   public:
+	Broker(Context& context);
+
 	template<class Event>
 	void subscribe(Receiver* receiver, std::function<void(Sender* sender, const Event& event)> fn) {
 		_eventsFn[TypeId<Event>()] = {TypeId<Event>(),
@@ -73,9 +80,9 @@ class Broker: public System {
 	}
 
 	void send(Sender* sender, type_id_t typeId, const void* data) {
-		//TODO: use small vector
-		std::vector<std::function<void(Sender * sender, const void* data)>> allFnStack;
-		std::vector<std::function<void(const void* data)>> oneFnStack;
+		constexpr size_t INLINE_VECTOR_SIZE = 16;
+		absl::InlinedVector<std::function<void(Sender * sender, const void* data)>, INLINE_VECTOR_SIZE> allFnStack;
+		absl::InlinedVector<std::function<void(const void* data)>, INLINE_VECTOR_SIZE> oneFnStack;
 
 		if (auto receivers = findValue(_eventsFn, typeId); receivers) {
 			for (auto r : *receivers) {
@@ -92,6 +99,9 @@ class Broker: public System {
 				}
 			}
 		}
+
+		LWARN_IF(allFnStack.size() > INLINE_VECTOR_SIZE, "Vector starts using heap size = {}", allFnStack.size());
+		LWARN_IF(oneFnStack.size() > INLINE_VECTOR_SIZE, "Vector starts using heap size = {}", oneFnStack.size());
 
 		while (!allFnStack.empty()) {
 			auto fn = std::move(allFnStack.back());
@@ -146,12 +156,12 @@ class Broker: public System {
 		std::function<void(const void* data)> fn;
 	};
 
-	std::unordered_map<type_id_t, std::unordered_map<Receiver*, EventFromAllListner>> _eventsFn;
-	std::unordered_map<Receiver*, std::unordered_set<type_id_t>> _receiversFns;
+	absl::flat_hash_map<type_id_t, absl::flat_hash_map<Receiver*, EventFromAllListner>> _eventsFn;
+	absl::flat_hash_map<Receiver*, absl::flat_hash_set<type_id_t>> _receiversFns;
 
-	std::unordered_map<Sender*, std::unordered_map<type_id_t, std::unordered_map<Receiver*, EventFromOneListner>>>
+	absl::flat_hash_map<Sender*, absl::flat_hash_map<type_id_t, absl::flat_hash_map<Receiver*, EventFromOneListner>>>
 	    _personalEventsFn;
-	std::unordered_map<Receiver*, std::unordered_map<Sender*, std::unordered_set<type_id_t>>> _personalReceiversFns;
+	absl::flat_hash_map<Receiver*, absl::flat_hash_map<Sender*, absl::flat_hash_set<type_id_t>>> _personalReceiversFns;
 };
 
-}
+} // namespace al

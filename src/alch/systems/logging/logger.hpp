@@ -2,10 +2,10 @@
 
 #include "alch/engine/system.hpp"
 //
+#include <cassert>
 #include <deque>
 #include <memory>
 #include <string>
-#include <cassert>
 
 namespace spdlog::sinks {
 class sink;
@@ -21,7 +21,7 @@ class Context;
 
 class Logger: public System {
   public:
-	Logger();
+	Logger(Context& context);
 	~Logger();
 
 	const std::deque<std::string>& logs() const;
@@ -32,17 +32,23 @@ class Logger: public System {
 	std::shared_ptr<SinkImp> _sink;
 };
 
-}
+} // namespace al
 
 #if !defined(PROD_BUILD)
 
 #include <spdlog/spdlog.h>
 
-#define LINFO(...)  spdlog::info(__VA_ARGS__)
-#define LERR(...)   spdlog::error(__VA_ARGS__)
-#define LDEBUG(...) spdlog::debug(__VA_ARGS__)
-#define LCRIT(...) spdlog::critical(__VA_ARGS__)
+#define LINFO(...)   spdlog::info(__VA_ARGS__)
+#define LWARN(...)   spdlog::warn(__VA_ARGS__)
+#define LERR(...)    spdlog::error(__VA_ARGS__)
+#define LDEBUG(...)  spdlog::debug(__VA_ARGS__)
+#define LCRIT(...)   spdlog::critical(__VA_ARGS__)
 #define LASSERT(...) assert(__VA_ARGS__);
+
+#define LWARN_IF(COND, ...)           \
+	if (COND) {                       \
+		spdlog::warn(__VA_ARGS__); \
+	}
 
 #define LERR_IF(COND, ...)          \
 	if (COND) {                     \
@@ -52,12 +58,16 @@ class Logger: public System {
 #else
 
 #define LINFO(...)
+#define LWARN(...)
 #define LERR(...)
 #define LDEBUG(...)
 #define LCRIT(...)
 
 // condition must executed
 #define LERR_IF(COND, ...) \
+	{ COND; }
+
+#define LWARN_IF(COND, ...) \
 	{ COND; }
 
 #endif

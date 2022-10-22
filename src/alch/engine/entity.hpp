@@ -11,18 +11,20 @@
 #include "component.hpp"
 #include "context.hpp"
 //
+#include <absl/container/flat_hash_map.h>
+//
 #include <cassert>
 #include <memory>
-#include <unordered_map>
+// #include <unordered_map>
 #include <utility>
 
 namespace al {
 
 class Context;
 
-struct EntityWantsDelete {};
-
 class Entity final: public Sender {
+	friend class Context;
+
   public:
 	explicit Entity(Context& context): Sender(context.systemRef<Broker>()), _context(context), _transform(*this) {}
 
@@ -102,8 +104,6 @@ class Entity final: public Sender {
 		return _transform;
 	}
 
-	void requestDelete();
-
 	auto& transform() { return _transform; }
 	auto& tr() { return transform(); }
 
@@ -146,10 +146,12 @@ class Entity final: public Sender {
   private:
 	Context& _context;
 
+	SharedPtr<Entity> _nextForDelete;
+
 	static constexpr size_t BuiltInCount = 1;
 	Transform _transform;
 
-	std::unordered_map<type_id_t, SharedPtr<Component>> _components;
+	absl::flat_hash_map<type_id_t, SharedPtr<Component>> _components;
 };
 
 } // namespace al

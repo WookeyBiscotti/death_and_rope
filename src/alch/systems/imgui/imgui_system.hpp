@@ -9,7 +9,7 @@ namespace al {
 
 class Context;
 
-class ImGuiSystem: public Receiver, public System {
+class ImGuiSystem: public System {
   public:
 	explicit ImGuiSystem(Context& context);
 
@@ -17,9 +17,7 @@ class ImGuiSystem: public Receiver, public System {
 	bool wantCaptureMouse() const;
 
   private:
-	Context& _context;
-
 	sf::Clock _deltaClock;
 };
 
-}
+} // namespace al

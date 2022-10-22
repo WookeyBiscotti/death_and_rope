@@ -22,7 +22,7 @@ struct CastRayResult {
 	Entity* entity;
 };
 
-class Physics: public Receiver, public System {
+class Physics: public System {
 	friend class Body;
 	friend class Collider;
 	friend class ContactListener;
@@ -38,11 +38,9 @@ class Physics: public Receiver, public System {
 	void castRay(Vector2f start, Vector2f end, const std::function<bool(const CastRayResult& result)>& callback);
 
   private:
-	Context& _contex;
-
 	b2World _world;
 
 	std::unique_ptr<ContactListener> _contactListner;
 };
 
-}
+} // namespace al

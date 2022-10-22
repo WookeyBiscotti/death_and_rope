@@ -33,8 +33,6 @@ class AssetCache: public System {
 	std::vector<std::string> worlds() const;
 
   private:
-	Context& _context;
-
 	const std::string _root;
 
 	std::unordered_map<std::string, std::shared_ptr<Texture>> _textures;

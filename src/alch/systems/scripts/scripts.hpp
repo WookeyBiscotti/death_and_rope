@@ -13,7 +13,7 @@ namespace al {
 
 class Scripts: public System {
   public:
-	Scripts();
+	Scripts(Context& context);
 	~Scripts();
 	void eval(const std::string& command);
 

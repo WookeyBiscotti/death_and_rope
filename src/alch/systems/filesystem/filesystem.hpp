@@ -23,9 +23,6 @@ class FileSystem: public System {
 
 	std::pair<std::unique_ptr<OArchive>, std::unique_ptr<std::ofstream>> oArchive(const Path& path);
 	std::pair<std::unique_ptr<IArchive>, std::unique_ptr<std::ifstream>> iArchive(const Path& path);
-
-  private:
-	Context& _context;
 };
 
 }

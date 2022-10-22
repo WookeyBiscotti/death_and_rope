@@ -36,7 +36,7 @@ UIElement* UISystem::getElementUnderPoint(UIElement* el, Vector2f p) {
 	return el->eventable() ? el : nullptr;
 }
 
-UISystem::UISystem(Context& context): Receiver(context.systemRef<Broker>()), _context(context) {
+UISystem::UISystem(Context& context): System(context) {
 	_root = std::make_unique<UIElement>(nullptr, _context);
 	_userRoot = _root->create<UIElement>();
 	_freeLayout = _root->create<UnchangeableLayout>();

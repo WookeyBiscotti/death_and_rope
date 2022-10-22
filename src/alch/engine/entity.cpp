@@ -74,10 +74,6 @@ void Entity::serialize(OArchive& ar) const {
 	}
 }
 
-void Entity::requestDelete() {
-	send<EntityWantsDelete>({});
-}
-
 void Entity::deserialize(IArchive& ar) {
 	if (!_components.empty()) {
 		_components.clear();

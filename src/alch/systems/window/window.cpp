@@ -12,9 +12,9 @@
 
 using namespace al;
 
-Window::Window(Context& context): Sender(context.systemRef<Broker>()), _context(context) {
+Window::Window(Context& context): System(context) {
 	auto& config = context.systemRef<Config>().staticConfig();
-	auto& engineConfig = context.engine.config();
+	auto& engineConfig = context.systemRef<Engine>().config();
 	sf::Uint32 flags{};
 	if (!config.window.borderless) {
 		flags |= sf::Style::Close | sf::Style::Titlebar;

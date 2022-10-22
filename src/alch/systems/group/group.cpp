@@ -34,16 +34,6 @@ Entity& Group::create() {
 
 void Group::add(std::unique_ptr<Entity> entity) {
 	auto ptr = entity.get();
-	subscribe<EntityWantsDelete>(ptr, [this, entity = ptr](const EntityWantsDelete&) {
-		subscribe<EngineOnFrameEnd>([this](const EngineOnFrameEnd&) {
-			for (const auto d : this->_requestDelete) {
-				remove(d);
-			}
-			_requestDelete.clear();
-		});
-
-		_requestDelete.push_back(entity);
-	});
 	_childs.emplace(ptr, std::move(entity));
 }
 

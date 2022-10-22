@@ -14,6 +14,8 @@ class NameSystem: public System {
 	friend class Name;
 
   public:
+	NameSystem(Context& context);
+
 	Entity* find(const std::string& name) {
 		if (auto found = _names.find(name); found != _names.end()) {
 			return found->second.back();
@@ -54,4 +56,4 @@ class NameSystem: public System {
 	std::unordered_map<std::string, std::deque<Entity*>> _names;
 };
 
-}
+} // namespace al

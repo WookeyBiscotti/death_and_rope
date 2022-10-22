@@ -12,7 +12,7 @@ namespace al {
 class Context;
 class UIElement;
 
-class UISystem final: public Receiver, public System {
+class UISystem final: public System {
   public:
 	explicit UISystem(Context& context);
 	~UISystem();
@@ -52,7 +52,6 @@ class UISystem final: public Receiver, public System {
 	std::unique_ptr<UIElement> _root;
 	UIElement* _freeLayout;
 	UIElement* _userRoot;
-	Context& _context;
 
 	UIElement* _lastHovered{};
 	std::unordered_map<sf::Mouse::Button, UIElement*> _lastDraged;

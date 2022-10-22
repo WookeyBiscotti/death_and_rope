@@ -94,7 +94,7 @@ void DebugSystem::loadHistoryFromFilesystem() {
 	} catch (...) {}
 }
 
-DebugSystem::DebugSystem(Context& context): Receiver(context.systemRef<Broker>()), _context(context) {
+DebugSystem::DebugSystem(Context& context): System(context) {
 	loadHistoryFromFilesystem();
 
 	_font = context.systemRef<AssetCache>().font();

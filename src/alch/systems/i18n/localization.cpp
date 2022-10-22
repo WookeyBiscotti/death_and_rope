@@ -21,7 +21,7 @@ Localization::Language strToLang(const std::string& l) {
 	}
 }
 
-Localization::Localization(Context& context, Path localisationFile): _context(context) {
+Localization::Localization(Context& context, Path localisationFile): System(context) {
 	setAsGlobal();
 
 	auto str = context.systemRef<FileSystem>().load(localisationFile);

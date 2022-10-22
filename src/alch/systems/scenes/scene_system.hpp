@@ -10,8 +10,7 @@ namespace al {
 
 class SceneSystem: public System {
   public:
-	SceneSystem() = default;
-	SceneSystem(const SceneSystem&) = delete;
+	SceneSystem(Context& context);
 
 	const std::shared_ptr<Scene>& current() { return _current; }
 

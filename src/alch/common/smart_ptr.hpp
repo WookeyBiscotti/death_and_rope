@@ -92,6 +92,8 @@ class SharedPtr {
 
 	unsigned int useCount() const { return _data ? _data->shared : 0; }
 
+	bool unique() const { return useCount() <= 1; }
+
   private:
 	void releaseData() {
 		_pointer->~T();
@@ -173,9 +175,11 @@ INLINE_TESTER(SharedPtr, BaseToDerived, {
 INLINE_TESTER(SharedPtr, useCount, {
 	al::SharedPtr<int> sp;
 	IT_IS_TRUE(sp.useCount() == 0);
+	IT_IS_TRUE(sp.unique());
 
 	sp = al::SharedPtr<int>::make();
 	IT_IS_TRUE(sp.useCount() == 1);
+	IT_IS_TRUE(sp.unique());
 
 	{
 		al::SharedPtr<int> spArr[10];
@@ -184,6 +188,7 @@ INLINE_TESTER(SharedPtr, useCount, {
 			s = sp;
 		}
 
+		IT_IS_FALSE(sp.unique());
 		IT_IS_TRUE(sp.useCount() == 11);
 	}
 

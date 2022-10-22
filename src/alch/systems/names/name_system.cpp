@@ -1,14 +1,16 @@
 #include "name_system.hpp"
 
-#include "name.hpp"
-
 #include "alch/engine/context.hpp"
 #include "alch/engine/entity.hpp"
 #include "alch/systems/scripts/scripts.hpp"
+#include "name.hpp"
 //
 #include <chaiscript/chaiscript.hpp>
 
 using namespace al;
+
+NameSystem::NameSystem(Context& context): System(context) {
+}
 
 void NameSystem::exportScriptFunctions(Context& context) {
 	using namespace chaiscript;

@@ -8,7 +8,7 @@
 
 using namespace al;
 
-FileSystem::FileSystem(Context& context): _context(context){};
+FileSystem::FileSystem(Context& context): System(context){};
 
 void FileSystem::save(const Path& path, const std::string& data) {
 	const auto& root = _context.systemRef<Config>().staticConfig().root;

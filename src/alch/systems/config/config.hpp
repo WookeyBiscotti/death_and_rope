@@ -31,7 +31,7 @@ struct StaticConfig {
 };
 
 class Context;
-class Config: public Sender, public System {
+class Config: public System {
   public:
 	Config(Context& context, const char** argv, int argc);
 

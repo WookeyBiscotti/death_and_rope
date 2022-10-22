@@ -48,6 +48,8 @@
 
 using namespace al;
 
+Engine::Engine(Context& context): System(context) {
+}
 
 static void addStandardScenes(Context& context) {
 	auto& scenes = context.systemRef<SceneSystem>();
@@ -62,46 +64,44 @@ static void addStandardScenes(Context& context) {
 void Engine::run(const char** argv, int argc, const EngineConfig& engineConfig) {
 	_config = engineConfig;
 
-	Context context(*this);
+	IF_NOT_PROD_BUILD(context().createSystem<Logger>());
+	auto& broker = context().systemRef<Broker>();
+	context().createSystem<Config>(argv, argc);
+	context().createSystem<FileSystem>();
+	context().createSystem<Localization>(_config.localizationFile);
+	context().createSystem<Scripts>();
+	auto& window = context().createSystem<Window>();
+	IF_NOT_PROD_BUILD(context().createSystem<ImGuiSystem>());
+	auto& render = context().createSystem<Render>();
+	auto& ui = context().createSystem<UISystem>();
+	context().createSystem<AssetCache>();
+	auto& scenes = context().createSystem<SceneSystem>();
+	context().createSystem<Physics>();
+	context().createSystem<NameSystem>();
+	IF_NOT_PROD_BUILD(context().createSystem<DebugSystem>());
 
-	IF_NOT_PROD_BUILD(context.createSystem<Logger>());
-	auto& broker = context.createSystem<Broker>();
-	context.createSystem<Config>(context, argv, argc);
-	context.createSystem<FileSystem>(context);
-	context.createSystem<Localization>(context, _config.localizationFile);
-	context.createSystem<Scripts>();
-	auto& window = context.createSystem<Window>(context);
-	IF_NOT_PROD_BUILD(context.createSystem<ImGuiSystem>(context));
-	auto& render = context.createSystem<Render>(context);
-	auto& ui = context.createSystem<UISystem>(context);
-	context.createSystem<AssetCache>(context);
-	auto& scenes = context.createSystem<SceneSystem>();
-	context.createSystem<Physics>(context);
-	context.createSystem<NameSystem>();
-	IF_NOT_PROD_BUILD(context.createSystem<DebugSystem>(context));
+	Entity::registerComponent<Transform>(context());
+	Entity::registerComponent<Group>(context());
+	Entity::registerComponent<Name>(context());
 
-	Entity::registerComponent<Transform>(context);
-	Entity::registerComponent<Group>(context);
-	Entity::registerComponent<Name>(context);
+	Entity::registerComponent<Camera>(context());
+	Entity::registerComponent<Sprite>(context());
+	Entity::registerComponent<CircleShape>(context());
+	Entity::registerComponent<RectShape>(context());
 
-	Entity::registerComponent<Camera>(context);
-	Entity::registerComponent<Sprite>(context);
-	Entity::registerComponent<CircleShape>(context);
-	Entity::registerComponent<RectShape>(context);
-
-	Entity::registerComponent<Body>(context);
-	Entity::registerComponent<Collider>(context);
+	Entity::registerComponent<Body>(context());
+	Entity::registerComponent<Collider>(context());
 
 	if (engineConfig.enableDefaultScenes) {
-		addStandardScenes(context);
+		addStandardScenes(context());
 	}
 
 	if (_config.preBegin) {
-		_config.preBegin(context);
+		_config.preBegin(context());
 	}
 
-	for (auto s : context.systems()) {
-		s->exportScriptFunctions(context);
+	for (auto s : context().systems()) {
+		s->exportScriptFunctions(context());
 	}
 
 	scenes.findNext(_config.startScene);
@@ -148,7 +148,7 @@ void Engine::run(const char** argv, int argc, const EngineConfig& engineConfig) 
 	}
 
 	if (_config.preEnd) {
-		_config.preEnd(context);
+		_config.preEnd(context());
 	}
 }
 

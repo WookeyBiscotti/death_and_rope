@@ -15,7 +15,7 @@ namespace al {
 class Context;
 class Box2dDebugDraw;
 
-class DebugSystem: private Receiver, public System {
+class DebugSystem: public System {
   public:
 	explicit DebugSystem(Context& context);
 
@@ -24,8 +24,6 @@ class DebugSystem: private Receiver, public System {
 	void loadHistoryFromFilesystem();
 
   private:
-	Context& _context;
-
 	std::shared_ptr<Font> _font;
 
 	sf::Text _text;

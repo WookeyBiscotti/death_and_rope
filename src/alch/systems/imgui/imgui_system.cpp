@@ -12,7 +12,7 @@
 
 using namespace al;
 
-ImGuiSystem::ImGuiSystem(Context& context): Receiver(context.systemRef<Broker>()), _context(context) {
+ImGuiSystem::ImGuiSystem(Context& context): System(context) {
 	ImGui::SFML::Init(context.systemRef<Window>().window());
 
 	subscribe<WindowEvent>([this](const WindowEvent& e) { ImGui::SFML::ProcessEvent(e.event); });

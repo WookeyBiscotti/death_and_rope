@@ -38,7 +38,7 @@ Path AssetCache::texturesPath() const {
 	return fs::path(_root) / TEXTURES_PATH;
 }
 
-AssetCache::AssetCache(Context& context): _context(context), _root(context.engine.config().root) {
+AssetCache::AssetCache(Context& context): System(context), _root(context.systemRef<Engine>().config().root) {
 	LINFO("Asset cache root: {}", _root);
 };
 

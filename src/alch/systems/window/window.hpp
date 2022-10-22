@@ -15,7 +15,7 @@ class Context;
 
 using RenderWindow = sf::RenderWindow;
 
-class Window: private Sender, public System {
+class Window: public System {
   public:
 	explicit Window(Context& context);
 	~Window();
@@ -25,8 +25,6 @@ class Window: private Sender, public System {
 	void pullEvents();
 
   private:
-	Context& _context;
-
 	std::shared_ptr<RenderWindow> _window;
 };
 

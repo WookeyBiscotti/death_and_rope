@@ -7,7 +7,7 @@
 
 using namespace al;
 
-Scripts::Scripts() {
+Scripts::Scripts(Context& context): System(context) {
 	using namespace chaiscript;
 
 	_state = std::make_unique<chaiscript::ChaiScript>();

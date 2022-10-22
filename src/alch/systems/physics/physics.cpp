@@ -44,7 +44,7 @@ class al::ContactListener: public b2ContactListener {
 	// }
 };
 
-Physics::Physics(Context& context): Receiver(context.systemRef<Broker>()), _contex(context), _world({0, 0}) {
+Physics::Physics(Context& context): System(context), _world({0, 0}) {
 	_contactListner = std::make_unique<ContactListener>(*this);
 	_world.SetContactListener(_contactListner.get());
 	subscribe<EngineOnFrameStart>([this](const EngineOnFrameStart&) {

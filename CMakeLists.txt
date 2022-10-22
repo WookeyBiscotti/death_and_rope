@@ -61,6 +61,7 @@ set(DEPS_LIBS
     chaiscript
     bgfxRelease
     absl::flat_hash_set
+    absl::inlined_vector
     # SDL2::SDL2-static
     ${CMAKE_DL_LIBS})
 

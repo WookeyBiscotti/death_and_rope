@@ -40,7 +40,7 @@ class Sink: public spdlog::sinks::base_sink<Mutex> {
 using MtSink = Sink<std::mutex>;
 using StSink = Sink<spdlog::details::null_mutex>;
 
-Logger::Logger() {
+Logger::Logger(Context& context): System(context) {
 	_sink = std::make_shared<StSink>();
 	spdlog::default_logger()->sinks().push_back(_sink);
 	spdlog::set_pattern("[%T]%^[%l]%$: %v");

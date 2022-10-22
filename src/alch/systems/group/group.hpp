@@ -45,9 +45,7 @@ class Group: public Component, public Receiver {
   private:
 	bool _moveChilds{};
 
-	std::vector<Entity*> _requestDelete;
-
 	std::unordered_map<Entity*, std::unique_ptr<Entity>> _childs;
 };
 
-}
+} // namespace al

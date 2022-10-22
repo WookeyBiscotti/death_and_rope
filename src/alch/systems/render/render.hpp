@@ -26,8 +26,6 @@ class Render: public System {
 	RenderTarget& target() { return _target; };
 
   private:
-	Context& _context;
-
 	Camera* _camera{};
 
 	std::unordered_set<Drawable*> _drawables;

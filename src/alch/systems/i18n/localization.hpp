@@ -35,8 +35,6 @@ class Localization: public System {
   private:
 	inline static Localization* _global = nullptr;
 
-	Context& _context;
-
 	Language _currentLanguage = EN;
 
 	std::array<std::vector<char>, LANGS_COUNT> _textBlob;

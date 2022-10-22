@@ -29,7 +29,7 @@ std::string getHomeDir() {
 	return homedir;
 }
 #else
-	static_assert(false, "define for other platforms");
+static_assert(false, "define for other platforms");
 #endif
 
 using namespace std::literals::string_literals;
@@ -90,7 +90,7 @@ bool StaticConfig::fromString(const std::string& str) {
 	return ok;
 }
 
-Config::Config(Context& context, const char** argv, int argc): Sender(context.systemRef<Broker>()) {
+Config::Config(Context& context, const char** argv, int argc): System(context) {
 	const auto appPath = fs::path(argv[0]);
 	const auto appName = appPath.filename().replace_extension();
 

@@ -8,6 +8,9 @@
 
 using namespace al;
 
+SceneSystem::SceneSystem(Context& context): System(context) {
+}
+
 void SceneSystem::registerScene(const std::string& name, std::function<std::shared_ptr<Scene>()> creator) {
 	_creator[name] = {std::move(creator), nullptr};
 }
