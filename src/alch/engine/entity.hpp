@@ -4,14 +4,13 @@
 //
 #include "alch/common/prod_build_utils.hpp"
 #include "alch/common/smart_ptr.hpp"
+#include "alch/common/containers/hash_map.hpp"
 #include "alch/common/type_id.hpp"
 #include "alch/systems/broker/broker.hpp"
 #include "alch/systems/logging/logger.hpp"
 #include "alch/systems/transform/transform.hpp"
 #include "component.hpp"
 #include "context.hpp"
-//
-#include <absl/container/flat_hash_map.h>
 //
 #include <cassert>
 #include <memory>
@@ -151,7 +150,7 @@ class Entity: public Sender {
 	static constexpr size_t BuiltInCount = 1;
 	Transform _transform;
 
-	absl::flat_hash_map<type_id_t, SharedPtr<Component>> _components;
+	HashMap<type_id_t, SharedPtr<Component>> _components;
 };
 
 } // namespace al

@@ -36,11 +36,11 @@ class TestPhysicsScene: public Scene {
 		_root = std::make_unique<Entity>(context());
 		_root->addChain<Group>().addChain<Name>("root");
 
-		auto& objs = _root->ref<Group>().create().addChain<Group>(Group::SyncMove);
+		auto& objs = _root->ref<Group>().create()->addChain<Group>(Group::SyncMove);
 		auto tex = context().systemRef<AssetCache>().texture("head.png");
 		for (int i = 0; i != 100; ++i) {
-			auto& head = objs.ref<Group>().create();
-			head.addChain<Sprite>(tex)
+			auto head = objs.ref<Group>().create();
+			head->addChain<Sprite>(tex)
 			    .addChain<Body>(Body::DYNAMIC)
 			    .addChain<Collider>(Collider::Box, Vector2f(30, 30))
 			    .ref<Body>()
@@ -49,24 +49,24 @@ class TestPhysicsScene: public Scene {
 
 		objs.ref<Group>()
 		    .create()
-		    .addChain<Body>(Body::STATIC)
+		    ->addChain<Body>(Body::STATIC)
 		    .addChain<Collider>(Collider::Box, Vector2f(500, 10))
 		    .ref<Body>()
 		    .position(Vector2f{0, 510});
 		objs.ref<Group>()
 		    .create()
-		    .addChain<Body>(Body::STATIC)
+		    ->addChain<Body>(Body::STATIC)
 		    .addChain<Collider>(Collider::Box, Vector2f(10, 500))
 		    .ref<Body>()
 		    .position(Vector2f{0, 0});
 		objs.ref<Group>()
 		    .create()
-		    .addChain<Body>(Body::STATIC)
+		    ->addChain<Body>(Body::STATIC)
 		    .addChain<Collider>(Collider::Box, Vector2f(10, 500))
 		    .ref<Body>()
 		    .position(Vector2f{510, 0});
 
-		auto& camera = _root->ref<Group>().create().addChain<Name>("camera");
+		auto& camera = _root->ref<Group>().create()->addChain<Name>("camera");
 
 		camera.add<Camera>();
 		camera.ref<Camera>().size((Vector2f)context().systemRef<Window>().window().getSize());
@@ -100,4 +100,4 @@ class TestPhysicsScene: public Scene {
 	std::unique_ptr<Entity> _root;
 };
 
-}
+} // namespace al

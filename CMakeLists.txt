@@ -11,6 +11,7 @@ add_library(AlchemyEngineLib)
 
 set(SDL_STATIC TRUE)
 set(SKIP_PERFORMANCE_COMPARISON TRUE)
+set(ABSL_ENABLE_INSTALL TRUE)
 
 add_subdirectory(3rdparty/SFML)
 add_subdirectory(3rdparty/json)
@@ -61,7 +62,9 @@ set(DEPS_LIBS
     box2d
     chaiscript
     # bgfxRelease
+    absl::base
     absl::flat_hash_set
+    absl::flat_hash_map
     absl::inlined_vector
     # SDL2::SDL2-static
     ${CMAKE_DL_LIBS})

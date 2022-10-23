@@ -4,12 +4,12 @@
 #include "sender.hpp"
 //
 #include "alch/common/map_utils.hpp"
+#include "alch/common/containers/hash_map.hpp"
+#include "alch/common/containers/hash_set.hpp"
 #include "alch/common/type_id.hpp"
 #include "alch/engine/system.hpp"
 #include "alch/systems/logging/logger.hpp"
 //
-#include <absl/container/flat_hash_map.h>
-#include <absl/container/flat_hash_set.h>
 #include <absl/container/inlined_vector.h>
 //
 // #include <unordered_map>
@@ -156,12 +156,12 @@ class Broker: public System {
 		std::function<void(const void* data)> fn;
 	};
 
-	absl::flat_hash_map<type_id_t, absl::flat_hash_map<Receiver*, EventFromAllListner>> _eventsFn;
-	absl::flat_hash_map<Receiver*, absl::flat_hash_set<type_id_t>> _receiversFns;
+	HashMap<type_id_t,HashMap<Receiver*, EventFromAllListner>> _eventsFn;
+	HashMap<Receiver*, HashSet<type_id_t>> _receiversFns;
 
-	absl::flat_hash_map<Sender*, absl::flat_hash_map<type_id_t, absl::flat_hash_map<Receiver*, EventFromOneListner>>>
+	HashMap<Sender*, HashMap<type_id_t, HashMap<Receiver*, EventFromOneListner>>>
 	    _personalEventsFn;
-	absl::flat_hash_map<Receiver*, absl::flat_hash_map<Sender*, absl::flat_hash_set<type_id_t>>> _personalReceiversFns;
+	HashMap<Receiver*, HashMap<Sender*, HashSet<type_id_t>>> _personalReceiversFns;
 };
 
 } // namespace al

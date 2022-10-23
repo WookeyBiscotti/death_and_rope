@@ -24,15 +24,14 @@ Group::Group(Entity& entity, SyncMove_t):
 	});
 }
 
-Entity& Group::create() {
-	auto e = std::make_unique<Entity>(entity().context());
-	auto& ret = *e;
-	add(std::move(e));
+SharedPtr<Entity> Group::create() {
+	auto e = SharedPtr<Entity>::make(entity().context());
+	add(e);
 
-	return ret;
+	return e;
 }
 
-void Group::add(std::unique_ptr<Entity> entity) {
+void Group::add(SharedPtr<Entity> entity) {
 	auto ptr = entity.get();
 	_childs.emplace(ptr, std::move(entity));
 }
@@ -46,7 +45,7 @@ void Group::deserialize(IArchive& ar) {
 	int count;
 	ar(count);
 	while (count-- != 0) {
-		create().deserialize(ar);
+		create()->deserialize(ar);
 	}
 }
 

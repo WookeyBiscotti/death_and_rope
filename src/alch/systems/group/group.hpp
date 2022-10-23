@@ -1,5 +1,7 @@
 #pragma once
 
+#include "alch/common/containers/hash_map.hpp"
+#include "alch/common/smart_ptr.hpp"
 #include "alch/engine/component.hpp"
 #include "alch/systems/broker/receiver.hpp"
 //
@@ -19,9 +21,9 @@ class Group: public Component, public Receiver {
 	explicit Group(Entity& entity);
 	Group(Entity& entity, SyncMove_t);
 
-	Entity& create();
+	SharedPtr<Entity> create();
 
-	void add(std::unique_ptr<Entity> entity);
+	void add(SharedPtr<Entity> entity);
 	void remove(Entity* entity);
 
 	bool moveChilds() const { return _moveChilds; }
@@ -45,7 +47,7 @@ class Group: public Component, public Receiver {
   private:
 	bool _moveChilds{};
 
-	std::unordered_map<Entity*, std::unique_ptr<Entity>> _childs;
+	HashMap<Entity*, SharedPtr<Entity>> _childs;
 };
 
 } // namespace al

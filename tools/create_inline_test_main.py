@@ -5,14 +5,16 @@ nm = subprocess.run(['nm', '-C', sys.argv[1]], check=True, capture_output=True)
 grep = subprocess.run(['grep', " INLINE_TESTER"],
                       input=nm.stdout, capture_output=True)
 
-raw_fns = grep.stdout.decode('utf-8').strip().split()
+raw_out = grep.stdout.decode('utf-8').strip().split('\n')
 
-# print(raw_fns)
+print(raw_out)
 
-raw_fns = [rf for idx, rf in enumerate(raw_fns) if idx % 4 == 3]
+raw_fns = [f.split()[-1] for f in raw_out]
 
 for idx, f in enumerate(raw_fns):
     raw_fns[idx] = f[0:f.find('<')]
+
+raw_fns = set(raw_fns)
 
 print(raw_fns)
 

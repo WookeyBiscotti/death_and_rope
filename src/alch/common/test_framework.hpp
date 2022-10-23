@@ -17,7 +17,7 @@
 
 #define IT_IS_FALSE(F)                                                                                     \
 	if ((F)) {                                                                                             \
-		INLINE_TESTER_OUT << "Expected true: " << #F << "; file: " << __FILE__ << ":" << __LINE__ << "\n"; \
+		INLINE_TESTER_OUT << "Expected false: " << #F << "; file: " << __FILE__ << ":" << __LINE__ << "\n"; \
 		exit(1);                                                                                           \
 	}
 
