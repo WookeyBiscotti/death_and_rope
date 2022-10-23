@@ -10,6 +10,7 @@ set(CMAKE_CXX_STANDARD 20)
 add_library(AlchemyEngineLib)
 
 set(SDL_STATIC TRUE)
+set(SKIP_PERFORMANCE_COMPARISON TRUE)
 
 add_subdirectory(3rdparty/SFML)
 add_subdirectory(3rdparty/json)
@@ -59,7 +60,7 @@ set(DEPS_LIBS
     aabb_tree
     box2d
     chaiscript
-    bgfxRelease
+    # bgfxRelease
     absl::flat_hash_set
     absl::inlined_vector
     # SDL2::SDL2-static

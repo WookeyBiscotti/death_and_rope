@@ -69,15 +69,9 @@ class Context final {
 		return systems;
 	}
 
-	void pushToDeleteList(SharedPtr<Entity> e);
-
-	void releaseDeleteList();
-
   private:
 	std::unordered_map<type_id_t, System*> _systems;
 	std::vector<std::unique_ptr<System>> _store;
-
-	SharedPtr<Entity> _waitForDelete;
 };
 
 } // namespace al

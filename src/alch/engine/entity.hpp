@@ -22,8 +22,8 @@ namespace al {
 
 class Context;
 
-class Entity final: public Sender {
-	friend class Context;
+class Entity: public Sender {
+	friend class RootEntity;
 
   public:
 	explicit Entity(Context& context): Sender(context.systemRef<Broker>()), _context(context), _transform(*this) {}
@@ -120,8 +120,8 @@ class Entity final: public Sender {
 	}
 
   private:
-	static void registerComponent(type_id_t id, SharedPtr<Component> (*creator)(Entity& ent), std::string name,
-	    std::vector<type_id_t> dependsOn);
+	static void registerComponent(
+	    type_id_t id, SharedPtr<Component> (*creator)(Entity& ent), std::string name, std::vector<type_id_t> dependsOn);
 
 	// unsafe
 	auto& add(type_id_t id, SharedPtr<Component>&& component) {
