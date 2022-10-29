@@ -2,9 +2,10 @@
 
 #include "alch/common/archive.hpp"
 //
+#include "alch/common/chain_delete.hpp"
+#include "alch/common/containers/hash_map.hpp"
 #include "alch/common/prod_build_utils.hpp"
 #include "alch/common/smart_ptr.hpp"
-#include "alch/common/containers/hash_map.hpp"
 #include "alch/common/type_id.hpp"
 #include "alch/systems/broker/broker.hpp"
 #include "alch/systems/logging/logger.hpp"
@@ -20,8 +21,9 @@
 namespace al {
 
 class Context;
+class RootEntity;
 
-class Entity: public Sender {
+class Entity: public Sender, public DeleteChain<Entity>, public EnableSharedFromThis<Entity> {
 	friend class RootEntity;
 
   public:
@@ -119,8 +121,8 @@ class Entity: public Sender {
 	}
 
   private:
-	static void registerComponent(
-	    type_id_t id, SharedPtr<Component> (*creator)(Entity& ent), std::string name, std::vector<type_id_t> dependsOn);
+	static void registerComponent(type_id_t id, SharedPtr<Component> (*creator)(Entity& ent), std::string name,
+	    std::vector<type_id_t> dependsOn);
 
 	// unsafe
 	auto& add(type_id_t id, SharedPtr<Component>&& component) {
@@ -144,8 +146,6 @@ class Entity: public Sender {
 
   private:
 	Context& _context;
-
-	SharedPtr<Entity> _nextForDelete;
 
 	static constexpr size_t BuiltInCount = 1;
 	Transform _transform;

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "alch/common/chain_delete.hpp"
 #include "alch/common/prod_build_utils.hpp"
 #include "alch/common/smart_ptr.hpp"
 #include "alch/common/type_id.hpp"
@@ -19,7 +20,7 @@ namespace al {
 class Entity;
 class Engine;
 
-class Context final {
+class Context final: public ChainDeleter {
   public:
 	Context();
 

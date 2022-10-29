@@ -43,6 +43,9 @@ void releaseMemoty(PtrData<T>& pd) {
 
 } // namespace
 
+template<class TT>
+class EnableSharedFromThis;
+
 template<class T>
 class SharedPtr {
 	template<class TT>
@@ -50,6 +53,9 @@ class SharedPtr {
 
 	template<class TT>
 	friend class WeakPtr;
+
+	template<class TT>
+	friend class EnableSharedFromThis;
 
   public:
 	template<class... Args>
@@ -61,8 +67,24 @@ class SharedPtr {
 
 		p->shared = 1;
 		p->weak = 0;
+		if constexpr (std::is_base_of_v<EnableSharedFromThis<T>, T>) {
+			auto esft = static_cast<EnableSharedFromThis<T>*>(sp._pd.p);
+			esft->_pd = sp._pd;
+		}
 
 		return sp;
+	}
+
+	template<class TT>
+	SharedPtr<TT> cast() const {
+		auto ptr = SharedPtr<TT>();
+		ptr._pd.d = _pd.d;
+		ptr._pd.p = static_cast<TT*>(_pd.p);
+		if (_pd.d && _pd.d->shared != 0) {
+			_pd.d->shared++;
+		}
+
+		return ptr;
 	}
 
 	SharedPtr(): _pd{} {}
@@ -70,7 +92,8 @@ class SharedPtr {
 
 	template<class TT>
 	SharedPtr(const SharedPtr<TT>& other) noexcept: _pd(other._pd) {
-		if (_pd.d) {
+		static_assert(std::is_same_v<T, TT> || std::is_base_of_v<T, TT>);
+		if (_pd.d && _pd.d->shared != 0) {
 			_pd.d->shared++;
 		}
 	}
@@ -81,18 +104,15 @@ class SharedPtr {
 		other._pd = {};
 	}
 
-	auto& operator=(const SharedPtr& other) noexcept {
+	template<class TT>
+	auto& operator=(const SharedPtr<TT>& other) noexcept {
+		static_assert(std::is_same_v<T, TT> || std::is_base_of_v<T, TT>);
+
 		if (this->_pd.d == other._pd.d) {
 			return *this;
 		}
 
-		if (_pd.d && --_pd.d->shared == 0) {
-			if (_pd.d->weak == 0) {
-				releaseData(_pd);
-			} else {
-				_pd.p->~T();
-			}
-		}
+		reset();
 
 		_pd = other._pd;
 
@@ -111,13 +131,7 @@ class SharedPtr {
 			return *this;
 		}
 
-		if (_pd.d && --_pd.d->shared == 0) {
-			if (_pd.d->weak == 0) {
-				releaseData(_pd);
-			} else {
-				_pd.p->~T();
-			}
-		}
+		reset();
 
 		_pd = other._pd;
 		other._pd = {};
@@ -125,7 +139,8 @@ class SharedPtr {
 		return *this;
 	}
 
-	~SharedPtr() {
+	void reset() {
+		assert(!_pd.d || _pd.d->shared > 0);
 		if (_pd.d && --_pd.d->shared == 0) {
 			if (_pd.d->weak == 0) {
 				releaseData(_pd);
@@ -133,20 +148,33 @@ class SharedPtr {
 				_pd.p->~T();
 			}
 		}
+		_pd = {};
 	}
+
+	~SharedPtr() { reset(); }
 
 	operator bool() const { return _pd.d; }
 
 	T& operator*() { return *_pd.p; }
 
-	T* operator->() { return _pd.p; }
-	const T* operator->() const { return _pd.p; }
+	// T* operator->() { return _pd.p; }
+	T* operator->() const { return _pd.p; }
 
 	T* get() { return _pd.p; }
 
 	unsigned int useCount() const { return _pd.d ? _pd.d->shared : 0; }
 
 	bool unique() const { return useCount() <= 1; }
+
+	auto& operator=(const SharedPtr& other) { return operator=<T>(other); };
+	auto& operator=(SharedPtr&& other) { return operator=<T>(std::move(other)); };
+
+	SharedPtr(const SharedPtr& other) noexcept: _pd(other._pd) {
+		if (_pd.d && _pd.d->shared != 0) {
+			_pd.d->shared++;
+		}
+	}
+	SharedPtr(SharedPtr&& other) noexcept: _pd(other._pd) { other._pd = {}; }
 
   private:
 	PtrData<T> _pd;
@@ -233,11 +261,29 @@ class WeakPtr {
 	PtrData<T> _pd;
 };
 
+template<class T>
+class EnableSharedFromThis {
+	template<class TT>
+	friend class SharedPtr;
+
+  public:
+	SharedPtr<T> sharedFromThis() const {
+		SharedPtr<T> ptr;
+		ptr._pd = _pd;
+		_pd.d->shared++;
+
+		return ptr;
+	}
+
+  private:
+	PtrData<T> _pd;
+};
+
 } // namespace al
 
 #include "alch/common/test_framework.hpp"
 
-INLINE_TESTER(SharedPtr, Constructors, {
+INLINE_TESTER(SharedPtr, Constructors) {
 	IT_IS_FALSE(al::SharedPtr<int>());
 	IT_IS_TRUE(al::SharedPtr<int>::make());
 
@@ -276,9 +322,9 @@ INLINE_TESTER(SharedPtr, Constructors, {
 		IT_IS_TRUE(sp2);
 		IT_IS_FALSE(sp1);
 	}
-});
+}
 
-INLINE_TESTER(SharedPtr, BaseToDerived, {
+INLINE_TESTER(SharedPtr, BaseToDerived) {
 	struct Base {
 		int i;
 	};
@@ -298,9 +344,9 @@ INLINE_TESTER(SharedPtr, BaseToDerived, {
 	IT_IS_TRUE(spd->i == 666);
 
 	IT_IS_TRUE(spd->f == 321);
-});
+}
 
-INLINE_TESTER(SharedPtr, useCount, {
+INLINE_TESTER(SharedPtr, useCount) {
 	al::SharedPtr<int> sp;
 	IT_IS_TRUE(sp.useCount() == 0);
 	IT_IS_TRUE(sp.unique());
@@ -321,9 +367,9 @@ INLINE_TESTER(SharedPtr, useCount, {
 	}
 
 	IT_IS_TRUE(sp.useCount() == 1);
-});
+}
 
-INLINE_TESTER(SharedPtr, Destructor, {
+INLINE_TESTER(SharedPtr, Destructor) {
 	struct DD {
 		DD(int& i): i(i) {}
 		int& i;
@@ -343,9 +389,9 @@ INLINE_TESTER(SharedPtr, Destructor, {
 	}
 
 	IT_IS_TRUE(i == 0);
-});
+}
 
-INLINE_TESTER(SharedPtr, Weak, {
+INLINE_TESTER(SharedPtr, Weak) {
 	auto sp = al::SharedPtr<int>::make();
 	al::WeakPtr<int> wp(sp);
 	{
@@ -358,4 +404,4 @@ INLINE_TESTER(SharedPtr, Weak, {
 	auto sp2 = wp.lock();
 
 	IT_IS_TRUE(sp2.useCount() == 2);
-});
+}
