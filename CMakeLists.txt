@@ -23,7 +23,7 @@ add_subdirectory(3rdparty/box2d)
 add_subdirectory(3rdparty/ChaiScript)
 add_subdirectory(3rdparty/SDL)
 add_subdirectory(3rdparty/abseil-cpp)
-add_subdirectory(3rdparty/tabulate)
+add_subdirectory(3rdparty/cpp-terminal)
 
 target_compile_definitions(AlchemyEngineLib PUBLIC B2_USER_SETTINGS)
 
@@ -67,8 +67,8 @@ set(DEPS_LIBS
     absl::flat_hash_set
     absl::flat_hash_map
     absl::inlined_vector
-    tabulate::tabulate
     # SDL2::SDL2-static
+    cpp-terminal::cpp-terminal
     ${CMAKE_DL_LIBS})
 
 set(ALCH_DEPS_LIBS_PATH "")

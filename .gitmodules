@@ -46,3 +46,6 @@
 [submodule "3rdparty/SDL"]
 	path = 3rdparty/SDL
 	url = https://github.com/libsdl-org/SDL.git
+[submodule "3rdparty/cpp-terminal"]
+	path = 3rdparty/cpp-terminal
+	url = https://github.com/jupyter-xeus/cpp-terminal.git

@@ -4,8 +4,7 @@
 #include "alch/common/containers/hash_set.hpp"
 
 #include <absl/hash/hash.h>
-#include <tabulate/table.hpp>
-#include <tabulate/tabulate.hpp>
+#include <cpp-terminal/window.hpp>
 
 namespace {
 using Registry = al::HashMap<std::string_view /*file*/, al::HashSet<al::TestCaseArgs>>;
@@ -29,48 +28,24 @@ int al::registerTestCase(const TestCaseArgs& arg) {
 	return 0;
 }
 
-// TODO: make PR to tabulate repo with size method
-std::size_t rows(tabulate::Table& t) {
-	std::size_t s = 0;
-	auto it = t.begin();
-	while (it != t.end()) {
-		++it;
-		++s;
-	}
-	return s;
-}
-
 void al::runTests() {
-	using namespace tabulate;
-	Table result;
+	namespace tr = Term;
 
-	result.add_row({"Builtin tests"});
 
 	const auto& reg = testRegisterGet();
 
 	al::TestContext ctx{std::cout};
+
+	ctx.out << tr::style(tr::Style::BOLD) << tr::color_fg(tr::Color4::BLUE) << "Start test\n";
+
 	for (const auto& tc : reg) {
-		result.add_row({tc.first});
-		result[rows(result) - 1].format().font_color(Color::grey).font_style({FontStyle::italic});
-		Table tests;
+		ctx.out << tr::style(tr::Style::RESET) << tr::style(tr::Style::ITALIC) << tr::color_fg(tr::Color4::GRAY)
+		        << tc.first << tr::style(tr::Style::RESET) << std::endl;
 		for (const auto& t : tc.second) {
+			ctx.out << tr::style(tr::Style::BOLD) << tr::color_fg(tr::Color4::WHITE) << t.msg;
 			t.fn(ctx);
-			tests.add_row({t.msg, "Pass"});
+			ctx.out << tr::color_fg(tr::Color4::GREEN) << " Pass \n";
 		}
-		tests[0].format().font_color(Color::green);
-		result.add_row({tests});
 	}
-
-	result.add_row({"All tests passed"}).format().font_style({FontStyle::bold}).font_align(FontAlign::center);
-
-	result.format().font_align(FontAlign::center);
-
-	result[0].format().font_style({FontStyle::bold}).font_align(FontAlign::center).font_color(Color::blue);
-	result[rows(result) - 1]
-	    .format()
-	    .font_style({FontStyle::bold})
-	    .font_align(FontAlign::center)
-	    .font_color(Color::green);
-
-	result.print(ctx.out);
+	ctx.out << tr::style(tr::Style::BOLD) << tr::color_fg(tr::Color4::GREEN) << "All tests passed!\n";
 }
