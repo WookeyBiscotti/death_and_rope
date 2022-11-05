@@ -23,6 +23,7 @@ add_subdirectory(3rdparty/box2d)
 add_subdirectory(3rdparty/ChaiScript)
 add_subdirectory(3rdparty/SDL)
 add_subdirectory(3rdparty/abseil-cpp)
+add_subdirectory(3rdparty/tabulate)
 
 target_compile_definitions(AlchemyEngineLib PUBLIC B2_USER_SETTINGS)
 
@@ -66,6 +67,7 @@ set(DEPS_LIBS
     absl::flat_hash_set
     absl::flat_hash_map
     absl::inlined_vector
+    tabulate::tabulate
     # SDL2::SDL2-static
     ${CMAKE_DL_LIBS})
 
@@ -107,9 +109,5 @@ file(
   COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/alch/systems/physics/box2d_settings/b2_user_settings.h
   DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/box2d/include/box2d)
 
-add_custom_command(TARGET AlchemyEngineLib POST_BUILD
-  COMMAND python3 "${CMAKE_CURRENT_LIST_DIR}/tools/create_inline_test_main.py" $<TARGET_FILE:AlchemyEngineLib> "${CMAKE_CURRENT_LIST_DIR}/tests/inline_tests.cpp"
-)
-
-add_executable(AlchemyEngineLibInlineTests "${CMAKE_CURRENT_LIST_DIR}/tests/inline_tests.cpp")
-target_link_libraries(AlchemyEngineLibInlineTests PUBLIC AlchemyEngineLib)
+add_executable(AlchemyEngineLibBuiltinTests "${CMAKE_CURRENT_LIST_DIR}/tests/builtin_tests.cpp")
+target_link_libraries(AlchemyEngineLibBuiltinTests PUBLIC AlchemyEngineLib)

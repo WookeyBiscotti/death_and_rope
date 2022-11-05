@@ -283,7 +283,7 @@ class EnableSharedFromThis {
 
 #include "alch/common/test_framework.hpp"
 
-INLINE_TESTER(SharedPtr, Constructors) {
+ALCH_TEST("SharedPtr Constructors") {
 	IT_IS_FALSE(al::SharedPtr<int>());
 	IT_IS_TRUE(al::SharedPtr<int>::make());
 
@@ -324,7 +324,7 @@ INLINE_TESTER(SharedPtr, Constructors) {
 	}
 }
 
-INLINE_TESTER(SharedPtr, BaseToDerived) {
+ALCH_TEST("SharedPtr, BaseToDerived") {
 	struct Base {
 		int i;
 	};
@@ -346,7 +346,7 @@ INLINE_TESTER(SharedPtr, BaseToDerived) {
 	IT_IS_TRUE(spd->f == 321);
 }
 
-INLINE_TESTER(SharedPtr, useCount) {
+ALCH_TEST("SharedPtr, useCount") {
 	al::SharedPtr<int> sp;
 	IT_IS_TRUE(sp.useCount() == 0);
 	IT_IS_TRUE(sp.unique());
@@ -369,7 +369,7 @@ INLINE_TESTER(SharedPtr, useCount) {
 	IT_IS_TRUE(sp.useCount() == 1);
 }
 
-INLINE_TESTER(SharedPtr, Destructor) {
+ALCH_TEST("SharedPtr, Destructor") {
 	struct DD {
 		DD(int& i): i(i) {}
 		int& i;
@@ -391,7 +391,7 @@ INLINE_TESTER(SharedPtr, Destructor) {
 	IT_IS_TRUE(i == 0);
 }
 
-INLINE_TESTER(SharedPtr, Weak) {
+ALCH_TEST("SharedPtr, Weak") {
 	auto sp = al::SharedPtr<int>::make();
 	al::WeakPtr<int> wp(sp);
 	{

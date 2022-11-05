@@ -82,7 +82,7 @@ class ChainDeleter {
 
 } // namespace al
 
-INLINE_TESTER(DeleteChain, Test) {
+ALCH_TEST("DeleteChain, Test") {
 	using namespace al;
 	class DD: public DeleteChain<DD> {
 	  public:
