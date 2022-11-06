@@ -23,16 +23,18 @@ namespace al {
 class Context;
 class RootEntity;
 
-class Entity: public Sender, public DeleteChain<Entity>, public EnableSharedFromThis<Entity> {
+class Entity: public Transmitter, public DeleteChain<Entity>, public EnableSharedFromThis<Entity> {
 	friend class RootEntity;
 
   public:
-	explicit Entity(Context& context): Sender(context.systemRef<Broker>()), _context(context), _transform(*this) {}
+	explicit Entity(Context& context): Transmitter(context.systemRef<Broker>()), _context(context), _transform(*this) {}
 
 	Entity(const Entity&) = delete;
 	Entity(Entity&&) = delete;
 	Entity& operator=(const Entity&) = delete;
 	Entity& operator=(const Entity&&) = delete;
+
+	~Entity() {}
 
 	Context& context() { return _context; }
 

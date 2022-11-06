@@ -8,11 +8,11 @@
 
 using namespace al;
 
-Group::Group(Entity& entity): Component(entity), Receiver(entity.context().systemRef<Broker>()) {
+Group::Group(Entity& entity): Component(entity), Transmitter(entity.context().systemRef<Broker>()) {
 }
 
 Group::Group(Entity& entity, SyncMove_t):
-    Component(entity), _moveChilds(true), Receiver(entity.context().systemRef<Broker>()) {
+    Component(entity), _moveChilds(true), Transmitter(entity.context().systemRef<Broker>()) {
 	subscribe<PositionUpdate>(&entity, [this](const PositionUpdate& p) {
 		// TODO: use subscription
 		if (!_moveChilds) {

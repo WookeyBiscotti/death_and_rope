@@ -11,7 +11,7 @@
 
 using namespace al;
 
-Sprite::Sprite(Entity& entity): Drawable(entity), Receiver(entity.context().systemRef<Broker>()) {
+Sprite::Sprite(Entity& entity): Drawable(entity), Transmitter(entity.context().systemRef<Broker>()) {
 	subscribe<PositionUpdate>(&entity, [this](const PositionUpdate& p) { _sprite.setPosition(p.neW); });
 	subscribe<RotationUpdate>(
 	    &entity, [this](const RotationUpdate& r) { _sprite.setRotation(180 * r.neW / kPIf); });

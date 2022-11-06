@@ -3,7 +3,8 @@
 #include "alch/common/containers/hash_map.hpp"
 #include "alch/common/smart_ptr.hpp"
 #include "alch/engine/component.hpp"
-#include "alch/systems/broker/receiver.hpp"
+#include "alch/systems/broker/transmitter.hpp"
+
 //
 #include <memory>
 #include <string_view>
@@ -13,7 +14,7 @@ namespace al {
 
 class Entity;
 
-class Group: public Component, public Receiver {
+class Group: public Component, public Transmitter {
   public:
 	struct SyncMove_t {};
 	inline static const SyncMove_t SyncMove;

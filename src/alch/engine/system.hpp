@@ -1,13 +1,12 @@
 #pragma once
 
-#include "alch/systems/broker/receiver.hpp"
-#include "alch/systems/broker/sender.hpp"
+#include "alch/systems/broker/transmitter.hpp"
 
 namespace al {
 
 class Context;
 
-class System: public Receiver, public Sender {
+class System: public Transmitter {
   public:
 	System(Context& context);
 

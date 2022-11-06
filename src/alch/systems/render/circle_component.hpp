@@ -4,7 +4,7 @@
 #include "alch/common/rect.hpp"
 #include "alch/common/vector2.hpp"
 #include "alch/systems/assets/texture.hpp"
-#include "alch/systems/broker/receiver.hpp"
+#include "alch/systems/broker/transmitter.hpp"
 #include "drawable.hpp"
 
 #include <SFML/Graphics/CircleShape.hpp>
@@ -14,7 +14,7 @@
 
 namespace al {
 
-class CircleShape: public Drawable, public Receiver {
+class CircleShape: public Drawable, public Transmitter {
   public:
 	explicit CircleShape(Entity& entity);
 	CircleShape(Entity& entity, float r, sf::Color color);
@@ -30,4 +30,4 @@ class CircleShape: public Drawable, public Receiver {
 	sf::CircleShape _shape;
 };
 
-}
+} // namespace al

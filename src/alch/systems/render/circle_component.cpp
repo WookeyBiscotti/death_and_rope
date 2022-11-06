@@ -10,7 +10,7 @@
 
 using namespace al;
 
-CircleShape::CircleShape(Entity& entity): Drawable(entity), Receiver(entity.context().systemRef<Broker>()) {
+CircleShape::CircleShape(Entity& entity): Drawable(entity), Transmitter(entity.context().systemRef<Broker>()) {
 	subscribe<PositionUpdate>(&entity, [this](const PositionUpdate& p) { _shape.setPosition(p.neW); });
 	_shape.setPosition(entity.tr().p());
 }

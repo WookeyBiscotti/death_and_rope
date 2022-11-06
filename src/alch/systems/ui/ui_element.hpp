@@ -2,10 +2,10 @@
 
 #include "alch/common/archive.hpp"
 #include "alch/common/rect.hpp"
+#include "alch/common/smart_ptr.hpp"
 #include "alch/common/vector2.hpp"
 #include "alch/engine/component.hpp"
-#include "alch/systems/broker/sender.hpp"
-#include "alch/systems/broker/receiver.hpp"
+#include "alch/systems/broker/transmitter.hpp"
 #include "ui_events.hpp"
 //
 #include <SFML/Graphics.hpp>
@@ -16,7 +16,7 @@ namespace al {
 class UISystem;
 class Context;
 
-class UIElement: public Sender, public Receiver {
+class UIElement: public Transmitter {
 	friend class UISystem;
 
   public:
@@ -144,4 +144,4 @@ bool UIElement::eventInside(const E& e) {
 	       e.event.y <= globalPos.y + _size.y;
 }
 
-}
+} // namespace al

@@ -13,11 +13,11 @@ namespace al {
 class Context;
 class Entity;
 
-class Scene: public Receiver {
+class Scene: public Transmitter {
   public:
 	virtual ~Scene() = default;
 
-	explicit Scene(Context& context): Receiver(context.systemRef<Broker>()), _context(context) {}
+	explicit Scene(Context& context): Transmitter(context.systemRef<Broker>()), _context(context) {}
 
 	virtual void onFrame(){};
 	virtual void onEvent(const sf::Event& e){};
