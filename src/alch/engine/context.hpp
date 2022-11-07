@@ -1,6 +1,8 @@
 #pragma once
 
 #include "alch/common/chain_delete.hpp"
+#include "alch/common/containers/hash_map.hpp"
+#include "alch/common/containers/inline_vector.hpp"
 #include "alch/common/prod_build_utils.hpp"
 #include "alch/common/smart_ptr.hpp"
 #include "alch/common/type_id.hpp"
@@ -9,7 +11,6 @@
 //
 #include <functional>
 #include <memory>
-#include <unordered_map>
 
 namespace sf {
 class RenderTarget;
@@ -20,7 +21,7 @@ namespace al {
 class Entity;
 class Engine;
 
-class Context final: public ChainDeleter {
+class Context final {
   public:
 	Context();
 
@@ -71,8 +72,8 @@ class Context final: public ChainDeleter {
 	}
 
   private:
-	std::unordered_map<type_id_t, System*> _systems;
-	std::vector<std::unique_ptr<System>> _store;
+	HashMap<type_id_t, System*> _systems;
+	InlinedVector<std::unique_ptr<System>, 16> _store;
 };
 
 } // namespace al

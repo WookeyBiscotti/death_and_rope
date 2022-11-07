@@ -48,7 +48,6 @@ class Group: public Component, public Transmitter {
   private:
 	bool _moveChilds{};
 
-	WeakPtr<Entity> _parent;
 	HashMap<Entity*, SharedPtr<Entity>> _childs;
 };
 

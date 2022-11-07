@@ -45,7 +45,9 @@ void Group::deserialize(IArchive& ar) {
 	int count;
 	ar(count);
 	while (count-- != 0) {
-		create()->deserialize(ar);
+		auto c = create();
+		c->deserialize(ar);
+		c->parent(entity().sharedFromThis());
 	}
 }
 

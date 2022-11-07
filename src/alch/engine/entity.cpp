@@ -44,9 +44,15 @@ void Entity::serialize(OArchive& ar) const {
 	std::unordered_set<type_id_t> componentInOrder;
 
 	ar(_components.size() + BuiltInCount);
+
 	ar(SD(TypeId<Transform>()).name);
 	_transform.serialize(ar);
 	componentInOrder.insert(TypeId<Transform>());
+
+	ar(SD(TypeId<Parent>()).name);
+	_parent.serialize(ar);
+
+	componentInOrder.insert(TypeId<Parent>());
 
 	while (componentInOrder.size() != _components.size() + BuiltInCount) {
 		const auto orderSize = componentInOrder.size();

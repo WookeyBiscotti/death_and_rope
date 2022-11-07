@@ -8,6 +8,7 @@
 #include "alch/common/smart_ptr.hpp"
 #include "alch/common/type_id.hpp"
 #include "alch/systems/broker/broker.hpp"
+#include "alch/systems/group/parent.hpp"
 #include "alch/systems/logging/logger.hpp"
 #include "alch/systems/transform/transform.hpp"
 #include "component.hpp"
@@ -15,7 +16,6 @@
 //
 #include <cassert>
 #include <memory>
-// #include <unordered_map>
 #include <utility>
 
 namespace al {
@@ -23,11 +23,12 @@ namespace al {
 class Context;
 class RootEntity;
 
-class Entity: public Transmitter, public DeleteChain<Entity>, public EnableSharedFromThis<Entity> {
+class Entity: public Transmitter, public EnableSharedFromThis<Entity> {
 	friend class RootEntity;
 
   public:
-	explicit Entity(Context& context): Transmitter(context.systemRef<Broker>()), _context(context), _transform(*this) {}
+	explicit Entity(Context& context):
+	    Transmitter(context.systemRef<Broker>()), _context(context), _transform(*this), _parent(*this) {}
 
 	Entity(const Entity&) = delete;
 	Entity(Entity&&) = delete;
@@ -89,6 +90,10 @@ class Entity: public Transmitter, public DeleteChain<Entity>, public EnableShare
 	Transform* get<Transform>() {
 		return &_transform;
 	}
+	template<>
+	Parent* get<Parent>() {
+		return &_parent;
+	}
 
 	template<class C>
 	C& ref() {
@@ -106,9 +111,16 @@ class Entity: public Transmitter, public DeleteChain<Entity>, public EnableShare
 	Transform& ref<Transform>() {
 		return _transform;
 	}
+	template<>
+	Parent& ref<Parent>() {
+		return _parent;
+	}
 
 	auto& transform() { return _transform; }
 	auto& tr() { return transform(); }
+
+	auto& parent() { return _parent; }
+	void parent(WeakPtr<Entity> parent) { return _parent.parent(parent); }
 
 	void serialize(OArchive& ar) const;
 	void deserialize(IArchive& ar);
@@ -149,8 +161,9 @@ class Entity: public Transmitter, public DeleteChain<Entity>, public EnableShare
   private:
 	Context& _context;
 
-	static constexpr size_t BuiltInCount = 1;
+	static constexpr size_t BuiltInCount = 2;
 	Transform _transform;
+	Parent _parent;
 
 	HashMap<type_id_t, SharedPtr<Component>> _components;
 };
