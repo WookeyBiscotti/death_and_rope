@@ -17,12 +17,12 @@ Sprite::Sprite(Entity& entity): Drawable(entity), Transmitter(entity.context().s
 	    &entity, [this](const RotationUpdate& r) { _sprite.setRotation(180 * r.neW / kPIf); });
 }
 
-Sprite::Sprite(Entity& entity, const std::shared_ptr<Texture>& tex): Sprite(entity) {
+Sprite::Sprite(Entity& entity, const SharedPtr<Texture>& tex): Sprite(entity) {
 	_texture = tex;
 	_sprite.setTexture(tex->sf());
 }
 
-Sprite::Sprite(Entity& entity, const std::shared_ptr<Texture>& tex, const Recti& rect): Sprite(entity) {
+Sprite::Sprite(Entity& entity, const SharedPtr<Texture>& tex, const Recti& rect): Sprite(entity) {
 	_texture = tex;
 	_sprite.setTexture(tex->sf());
 	_sprite.setTextureRect(rect);

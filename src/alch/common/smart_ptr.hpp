@@ -88,6 +88,7 @@ class SharedPtr {
 	}
 
 	SharedPtr(): _pd{} {}
+	SharedPtr(std::nullptr_t): _pd{} {}
 	SharedPtr(PtrData<T> o): _pd(o) {}
 
 	template<class TT>

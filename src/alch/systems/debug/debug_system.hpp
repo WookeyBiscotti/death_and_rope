@@ -1,5 +1,6 @@
 #pragma once
 
+#include "alch/common/smart_ptr.hpp"
 #include "alch/engine/system.hpp"
 #include "alch/systems/assets/font.hpp"
 
@@ -24,7 +25,7 @@ class DebugSystem: public System {
 	void loadHistoryFromFilesystem();
 
   private:
-	std::shared_ptr<Font> _font;
+	SharedPtr<Font> _font;
 
 	sf::Text _text;
 	std::size_t _frameCounter = 60;
@@ -38,4 +39,4 @@ class DebugSystem: public System {
 	std::array<char, 2048> _buffer;
 };
 
-}
+} // namespace al

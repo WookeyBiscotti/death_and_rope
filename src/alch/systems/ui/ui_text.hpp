@@ -14,7 +14,7 @@ class Context;
 
 class UIText: public UIElement {
   public:
-	UIText(UIElement* parent, Context& context, std::string content, std::shared_ptr<Font> font = nullptr);
+	UIText(UIElement* parent, Context& context, std::string content, SharedPtr<Font> font = nullptr);
 
 	void draw(sf::RenderTarget& target) override;
 
@@ -28,7 +28,7 @@ class UIText: public UIElement {
 
   protected:
 	std::string _content;
-	std::shared_ptr<Font> _font;
+	SharedPtr<Font> _font;
 	sf::RectangleShape _bg;
 	sf::Text _text;
 };

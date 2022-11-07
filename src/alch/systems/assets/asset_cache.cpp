@@ -42,14 +42,14 @@ AssetCache::AssetCache(Context& context): System(context), _root(context.systemR
 	LINFO("Asset cache root: {}", _root);
 };
 
-std::shared_ptr<Texture> AssetCache::texture(const std::string& name) {
+SharedPtr<Texture> AssetCache::texture(const std::string& name) {
 	LDEBUG("Try to load: {} texture", name);
 	if (auto found = _textures.find(name); found != _textures.end()) {
 		LDEBUG("Texture {} found in  cache", name);
 		return found->second;
 	}
 
-	auto texture = std::make_shared<Texture>(name);
+	auto texture = SharedPtr<Texture>::make(name);
 	if (texture->loadFromFile(texturesPath() / name)) {
 		LDEBUG("Texture {} loaded from disc", name);
 		_textures.emplace(name, texture);
@@ -87,7 +87,7 @@ std::vector<uint8_t> AssetCache::readBinaryFile(const std::string& filePath) {
 	return data;
 }
 
-std::shared_ptr<Font> AssetCache::font(const std::string& name) {
+SharedPtr<Font> AssetCache::font(const std::string& name) {
 	if (name == "") {
 		return font(DEFAULT_FONT);
 	}
@@ -97,7 +97,7 @@ std::shared_ptr<Font> AssetCache::font(const std::string& name) {
 		return found->second;
 	}
 
-	auto font = std::make_shared<Font>(name);
+	auto font = SharedPtr<Font>::make(name);
 	if (font->loadFromFile(fontsPath() / name)) {
 		LINFO("Load font to cache: {}", name);
 		_fonts.emplace(name, font);
@@ -109,7 +109,7 @@ std::shared_ptr<Font> AssetCache::font(const std::string& name) {
 
 	if (auto found = _fonts.find(DEFAULT_FONT); found == _fonts.end()) {
 		auto [data, size] = builtinFontMemory();
-		auto font = std::make_shared<Font>(DEFAULT_FONT);
+		auto font = SharedPtr<Font>::make(DEFAULT_FONT);
 		font->sf().loadFromMemory(data, size);
 		_fonts.emplace(DEFAULT_FONT, std::move(font));
 	}

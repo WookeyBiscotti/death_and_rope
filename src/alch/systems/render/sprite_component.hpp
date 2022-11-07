@@ -2,6 +2,7 @@
 
 #include "alch/common/macros.hpp"
 #include "alch/common/rect.hpp"
+#include "alch/common/smart_ptr.hpp"
 #include "alch/common/vector2.hpp"
 #include "alch/systems/assets/texture.hpp"
 #include "alch/systems/broker/transmitter.hpp"
@@ -16,14 +17,14 @@ namespace al {
 class Sprite: public Drawable, public Transmitter {
   public:
 	explicit Sprite(Entity& entity);
-	Sprite(Entity& entity, const std::shared_ptr<Texture>& tex);
-	Sprite(Entity& entity, const std::shared_ptr<Texture>& tex, const Recti& rect);
+	Sprite(Entity& entity, const SharedPtr<Texture>& tex);
+	Sprite(Entity& entity, const SharedPtr<Texture>& tex, const Recti& rect);
 
-	void texture(const std::shared_ptr<Texture>& texture) {
+	void texture(const SharedPtr<Texture>& texture) {
 		_texture = texture;
 		_sprite.setTexture(texture->sf());
 	}
-	const std::shared_ptr<Texture>& texture() const { return _texture; }
+	const SharedPtr<Texture>& texture() const { return _texture; }
 
 	void rect(const Recti& rect) { _sprite.setTextureRect(rect); }
 	Recti rect() { return _sprite.getTextureRect(); }
@@ -36,7 +37,7 @@ class Sprite: public Drawable, public Transmitter {
 	ALCH_COMPONENT_NAME(Sprite);
 
   private:
-	std::shared_ptr<Texture> _texture;
+	SharedPtr<Texture> _texture;
 	sf::Sprite _sprite;
 };
 

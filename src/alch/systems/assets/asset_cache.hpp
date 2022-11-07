@@ -1,5 +1,7 @@
 #pragma once
 
+#include "alch/common/containers/hash_map.hpp"
+#include "alch/common/smart_ptr.hpp"
 #include "alch/common/types.hpp"
 #include "alch/engine/system.hpp"
 #include "alch/systems/scenes/scene.hpp"
@@ -10,7 +12,6 @@
 //
 #include <fstream>
 #include <memory>
-#include <unordered_map>
 
 namespace al {
 
@@ -24,8 +25,8 @@ class AssetCache: public System {
 	Path fontsPath() const;
 	Path entityPath() const;
 
-	std::shared_ptr<Texture> texture(const std::string& name);
-	std::shared_ptr<Font> font(const std::string& name = "");
+	SharedPtr<Texture> texture(const std::string& name);
+	SharedPtr<Font> font(const std::string& name = "");
 
 	std::string readFile(const std::string& filePath);
 	std::vector<uint8_t> readBinaryFile(const std::string& filePath);
@@ -35,9 +36,9 @@ class AssetCache: public System {
   private:
 	const std::string _root;
 
-	std::unordered_map<std::string, std::shared_ptr<Texture>> _textures;
-	std::unordered_map<std::string, std::shared_ptr<Scene>> _scenes;
-	std::unordered_map<std::string, std::shared_ptr<Font>> _fonts;
+	HashMap<std::string, SharedPtr<Texture>> _textures;
+	HashMap<std::string, SharedPtr<Scene>> _scenes;
+	HashMap<std::string, SharedPtr<Font>> _fonts;
 };
 
-}
+} // namespace al
