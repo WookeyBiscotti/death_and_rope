@@ -1,6 +1,8 @@
 #pragma once
 
+#include <algorithm>
 #include <cassert>
+#include <cstdlib>
 #include <utility>
 
 namespace al {
@@ -26,9 +28,9 @@ struct PtrData {
 };
 
 template<class T>
-void releaseData(PtrData<T>& pd) {
+void destroyAndReleaseMemory(PtrData<T>& pd) {
 	pd.p->~T();
-	delete reinterpret_cast<unsigned char*>(pd.d);
+	std::free(pd.d);
 }
 
 template<class T>
@@ -38,8 +40,14 @@ void callDestructor(PtrData<T>& pd) {
 
 template<class T>
 void releaseMemoty(PtrData<T>& pd) {
-	delete reinterpret_cast<unsigned char*>(pd.d);
+	std::free(pd.d);
 }
+
+template<class T>
+struct RefCountSharedDataAnd {
+	RefCountSharedData contersBlock;
+	T objStorage;
+};
 
 } // namespace
 
@@ -61,12 +69,14 @@ class SharedPtr {
 	template<class... Args>
 	static SharedPtr make(Args&&... args) noexcept {
 		SharedPtr sp;
-		auto p = reinterpret_cast<RefCountSharedData*>(new unsigned char[sizeof(RefCountSharedData) + sizeof(T)]);
-		sp._pd.d = p;
-		sp._pd.p = new (p + 1) T(std::forward<Args>(args)...);
+		// auto p = reinterpret_cast<RefCountSharedData*>(new unsigned char[sizeof(RefCountSharedData) + sizeof(T)]);
+		auto p = std::launder<RefCountSharedDataAnd<T>>(reinterpret_cast<RefCountSharedDataAnd<T>*>(
+		    std::aligned_alloc(alignof(RefCountSharedDataAnd<T>), sizeof(RefCountSharedDataAnd<T>))));
+		sp._pd.d = &p->contersBlock;
+		sp._pd.p = new (&p->objStorage) T(std::forward<Args>(args)...);
 
-		p->shared = 1;
-		p->weak = 0;
+		sp._pd.d->shared = 1;
+		sp._pd.d->weak = 0;
 		if constexpr (std::is_base_of_v<EnableSharedFromThis<T>, T>) {
 			auto esft = static_cast<EnableSharedFromThis<T>*>(sp._pd.p);
 			esft->_pd = sp._pd;
@@ -144,7 +154,7 @@ class SharedPtr {
 		assert(!_pd.d || _pd.d->shared > 0);
 		if (_pd.d && --_pd.d->shared == 0) {
 			if (_pd.d->weak == 0) {
-				releaseData(_pd);
+				destroyAndReleaseMemory(_pd);
 			} else {
 				_pd.p->~T();
 			}
