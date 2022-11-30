@@ -47,6 +47,12 @@ int registerTestCase(const TestCaseArgs& arg);
 
 void runTests();
 
+template<class Fn>
+void ALCH_IN_FRAME(Fn&& fn) {
+	
+	fn();
+}
+
 } // namespace al
 
 #define ALCHEMY_MACRO_CAT_IMPL(STR1, STR2) STR1##STR2

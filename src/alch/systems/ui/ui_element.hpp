@@ -1,6 +1,7 @@
 #pragma once
 
 #include "alch/common/archive.hpp"
+#include "alch/common/optional.hpp"
 #include "alch/common/rect.hpp"
 #include "alch/common/smart_ptr.hpp"
 #include "alch/common/vector2.hpp"
@@ -16,7 +17,9 @@ namespace al {
 class UISystem;
 class Context;
 
-class UIElement: public Transmitter {
+using UIUnit = float;
+
+class UIElement: public Transmitter, public EnableSharedFromThis<UIElement> {
 	friend class UISystem;
 
   public:
@@ -25,34 +28,34 @@ class UIElement: public Transmitter {
 		HORIZONTAL,
 		FREE,
 	};
-	std::string _debug;
 
-	UIElement(UIElement* parent, Context& context);
+	UIElement(Context& context, WeakPtr<UIElement> parent);
 
 	virtual ~UIElement();
 
-	UIElement* parent() const { return _parent; }
-	void parent(UIElement* parent);
+	WeakPtr<UIElement> parent() const { return _parent; }
+	void parent(WeakPtr<UIElement> parent);
 
-	Vector2f position() const { return _position; }
-	void position(Vector2f position);
+	void updatePositionPart();
+	const Vector2<Opt<float>>& positionPart() const;
+	void positionPart(const Vector2<Opt<float>>& position);
 
-	Vector2f globalPosition() { return toWorldCoords(position()); }
+	Vector2<UIUnit> position() const;
+	void position(Vector2<UIUnit> position);
+
+	Vector2<UIUnit> globalPosition() { return toWorldCoords(position()); }
 
 	virtual Vector2f size() const { return _size; }
-	virtual void size(Vector2f size, bool noParentCallback = false);
+	virtual void size(Vector2<UIUnit> size, bool noParentCallback = false);
 
 	virtual Layout layout() const { return _layout; }
 	virtual void layout(Layout layout) { _layout = layout; }
 
-	bool focused() const { return _focused; }
-
-	virtual void add(std::unique_ptr<UIElement> element);
-	void add(UIElement* element);
+	virtual void add(SharedPtr<UIElement> element);
 
 	template<class E, class... Args>
 	E* create(Args&&... args) {
-		auto sPtr = std::make_unique<E>(this, _context, std::forward<Args>(args)...);
+		auto sPtr = SharedPtr<E>::make(_context, sharedFromThis(), std::forward<Args>(args)...);
 		auto ptr = sPtr.get();
 		add(std::move(sPtr));
 
@@ -61,10 +64,10 @@ class UIElement: public Transmitter {
 
 	virtual void remove(UIElement* element);
 
-	Vector2f toWorldCoords(Vector2f p) {
-		for (auto par = parent(); par;) {
+	Vector2<UIUnit> toWorldCoords(Vector2<UIUnit> p) {
+		for (auto par = parent().lock(); par;) {
 			p += par->position();
-			par = par->parent();
+			par = par->parent().lock();
 		}
 
 		return p;
@@ -75,9 +78,9 @@ class UIElement: public Transmitter {
 	}
 
 	bool isGlobalPointIn(Vector2f p) const {
-		for (auto par = parent(); par;) {
+		for (auto par = parent().lock(); par;) {
 			p -= par->position();
-			par = par->parent();
+			par = par->parent().lock();
 		}
 
 		return isLocalPointIn(p);
@@ -107,31 +110,29 @@ class UIElement: public Transmitter {
 	void enabled(bool enabled);
 	bool enabled() const { return _enabled; }
 
-	void resizeable(bool resizeable);
-	bool resizeable() const { return _resizeable; }
-
 	template<class E>
 	bool eventInside(const E& e);
 
 	UISystem& system() const;
 
-  private:
-	void focused(bool focused) { _focused = focused; }
-
   protected:
 	Context& _context;
 
-	UIElement* _parent;
-
-	Vector2f _position;
-	Vector2f _size;
 	Layout _layout = FREE;
 
-	std::vector<std::unique_ptr<UIElement>> _childs;
+	WeakPtr<UIElement> _parent;
+
+	Vector2<UIUnit> _position;
+	Vector2<Opt<float>> _positionPart;
+
+	Vector2<UIUnit> _sizeMax;
+	Vector2<UIUnit> _size;
+	Vector2<UIUnit> _sizeMin;
+	Vector2<Opt<float>> _sizePart;
+
+	std::vector<SharedPtr<UIElement>> _childs;
 
   private:
-	bool _resizeable = true;
-	bool _focused = false;
 	bool _enabled = true;
 	bool _eventable = true;
 };

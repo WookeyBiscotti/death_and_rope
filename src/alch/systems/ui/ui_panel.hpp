@@ -9,7 +9,7 @@ namespace al {
 
 class UIPanel: public UIElement {
   public:
-	UIPanel(UIElement* parent, Context& context): UIElement(parent, context) {
+	UIPanel(Context& context, WeakPtr<UIElement> parent): UIElement(context, parent) {
 		_shape.setFillColor(sf::Color(200, 200, 200));
 	}
 
@@ -21,4 +21,4 @@ class UIPanel: public UIElement {
 	sf::RectangleShape _shape;
 };
 
-}
+} // namespace al

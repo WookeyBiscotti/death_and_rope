@@ -1,5 +1,6 @@
 #include "ui_element.hpp"
 
+#include "alch/common/test_framework.hpp"
 #include "alch/engine/context.hpp"
 #include "alch/systems/broker/broker.hpp"
 #include "ui_system.hpp"
@@ -8,7 +9,7 @@
 
 using namespace al;
 
-UIElement::UIElement(UIElement* parent, Context& context):
+UIElement::UIElement(Context& context, WeakPtr<UIElement> parent):
     Transmitter(context.systemRef<Broker>()), _parent(parent), _context(context) {
 }
 
@@ -43,21 +44,21 @@ void UIElement::onResize() {
 		// }
 	} else if (_layout == HORIZONTAL) {
 		if (childs.size() == 1) {
-			if (childs.front()->resizeable()) {
-				childs.front()->size(_size, true);
-			} else {
-				childs.front()->size({childs.front()->size().x, size().y}, true);
-			}
-			return;
+			// if (childs.front()->resizeable()) {
+			// 	childs.front()->size(_size, true);
+			// } else {
+			// 	childs.front()->size({childs.front()->size().x, size().y}, true);
+			// }
+			// return;
 		}
 		auto w = _size.x;
 		int count = 0;
 		for (auto& c : childs) {
-			if (!c->resizeable()) {
-				w -= c->size().x;
-			} else {
-				++count;
-			}
+			// if (!c->resizeable()) {
+			// 	w -= c->size().x;
+			// } else {
+			// 	++count;
+			// }
 		}
 		if (count == 0) {
 			return;
@@ -65,31 +66,31 @@ void UIElement::onResize() {
 		const auto dw = w / count;
 		float startPos = 0.0f;
 		for (auto& c : childs) {
-			if (!c->resizeable()) {
-				c->size(Vector2f(c->size().x, _size.y), true);
-			} else {
-				c->size(Vector2f(dw, _size.y), true);
-			}
+			// if (!c->resizeable()) {
+			// 	c->size(Vector2f(c->size().x, _size.y), true);
+			// } else {
+			// 	c->size(Vector2f(dw, _size.y), true);
+			// }
 			c->position(Vector2f(startPos, 0));
 			startPos += c->size().x;
 		}
 	} else if (_layout == VERICAL) {
 		if (childs.size() == 1) {
-			if (childs.front()->resizeable()) {
-				childs.front()->size(_size, true);
-			} else {
-				childs.front()->size({size().x, childs.front()->size().y}, true);
-			}
-			return;
+			// if (childs.front()->resizeable()) {
+			// 	childs.front()->size(_size, true);
+			// } else {
+			// 	childs.front()->size({size().x, childs.front()->size().y}, true);
+			// }
+			// return;
 		}
 		auto h = _size.y;
 		int count = 0;
 		for (auto& c : childs) {
-			if (!c->resizeable()) {
-				h -= c->size().y;
-			} else {
-				++count;
-			}
+			// if (!c->resizeable()) {
+			// 	h -= c->size().y;
+			// } else {
+			// 	++count;
+			// }
 		}
 		if (count == 0) {
 			return;
@@ -97,30 +98,26 @@ void UIElement::onResize() {
 		const auto dh = h / count;
 		float startPos = 0.0f;
 		for (auto& c : childs) {
-			if (!c->resizeable()) {
-				c->size(Vector2f(_size.x, c->size().y), true);
-			} else {
-				c->size(Vector2f(_size.x, dh), true);
-			}
-			c->position(Vector2f(0, startPos));
+			// if (!c->resizeable()) {
+			// 	c->size(Vector2f(_size.x, c->size().y), true);
+			// } else {
+			// 	c->size(Vector2f(_size.x, dh), true);
+			// }
+			// c->position(Vector2f(0, startPos));
 			startPos += c->size().y;
 		}
 	}
 }
 
-void UIElement::add(std::unique_ptr<UIElement> element) {
+void UIElement::add(SharedPtr<UIElement> element) {
 	auto e = element.get();
-	element->parent(this);
+	element->parent(sharedFromThis());
 	_childs.push_back(std::move(element));
 	e->onMove();
 
 	if (_layout != FREE) {
 		onResize();
 	}
-}
-
-void UIElement::add(UIElement* element) {
-	add(std::unique_ptr<UIElement>(element));
 }
 
 UIElement* UIElement::onMouseMove(const UIMouseMove& e) {
@@ -223,32 +220,40 @@ UIElement* UIElement::onMouseWheel(const UIMouseWheel& e) {
 	return nullptr;
 }
 
-void UIElement::parent(UIElement* parent) {
+void UIElement::parent(WeakPtr<UIElement> parent) {
 	_parent = parent;
 	onResize();
 	onMove();
 }
 
-void UIElement::position(Vector2f position) {
+Vector2<UIUnit> UIElement::position() const {
+	return _position;
+}
+
+void UIElement::position(Vector2<UIUnit> position) {
 	_position = position;
 	onMove();
 }
 
-void UIElement::size(Vector2f size, bool noParentCallback) {
+void UIElement::updatePositionPart() {
+}
+
+const Vector2<Opt<float>>& UIElement::positionPart() const {
+	return _positionPart;
+}
+
+void UIElement::positionPart(const Vector2<Opt<float>>& position) {
+}
+
+void UIElement::size(Vector2<UIUnit> size, bool noParentCallback) {
 	if (size == _size) {
 		return;
 	}
 	_size = size;
 	onResize();
-	if (!noParentCallback && _parent) {
-		_parent->onResize();
-	}
-}
-
-void UIElement::resizeable(bool resizeable) {
-	_resizeable = resizeable;
-	if (_parent) {
-		_parent->onResize();
+	auto p = _parent.lock();
+	if (!noParentCallback && p) {
+		p->onResize();
 	}
 }
 
@@ -263,8 +268,9 @@ void UIElement::remove(UIElement* element) {
 }
 
 void UIElement::enabled(bool enabled) {
-	if (_enabled == enabled && _parent) {
-		_parent->onResize();
+	auto p = _parent.lock();
+	if (_enabled == enabled && p) {
+		p->onResize();
 	}
 
 	_enabled = enabled;

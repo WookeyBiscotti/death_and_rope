@@ -4,7 +4,7 @@ using namespace al;
 
 class FieldRoot: public UIElement {
   public:
-	FieldRoot(UIElement* parent, Context& context): UIElement(parent, context) {}
+	FieldRoot(Context& context, WeakPtr<UIElement> parent): UIElement(context, parent) {}
 
 	void onResize() override {
 		if (_layout == UIElement::VERICAL) {
@@ -24,8 +24,8 @@ class FieldRoot: public UIElement {
 	}
 };
 
-UIField::UIField(UIElement* parent, Context& context): UIElement(parent, context) {
-	auto root = std::make_unique<FieldRoot>(this, context);
+UIField::UIField(Context& context, WeakPtr<UIElement> parent): UIElement(context, parent) {
+	auto root = SharedPtr<FieldRoot>::make(context, sharedFromThis());
 	_root = root.get();
 	_root->layout(UIElement::FREE);
 	_layout = UIElement::FREE;
@@ -36,7 +36,7 @@ void UIField::layout(UIElement::Layout l) {
 	_root->layout(l);
 }
 
-void UIField::add(std::unique_ptr<UIElement> element) {
+void UIField::add(SharedPtr<UIElement> element) {
 	if (_root->layout() == UIElement::VERICAL) {
 		size({_size.x, _size.y + element->size().y});
 	} else if (_root->layout() == UIElement::HORIZONTAL) {
@@ -68,6 +68,6 @@ void UIField::internalPosition(Vector2f r) {
 	_root->position(r);
 }
 
-const std::vector<std::unique_ptr<UIElement>>& UIField::internalChilds() const {
+const std::vector<SharedPtr<UIElement>>& UIField::internalChilds() const {
 	return _childs;
 }

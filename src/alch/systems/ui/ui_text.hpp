@@ -14,7 +14,7 @@ class Context;
 
 class UIText: public UIElement {
   public:
-	UIText(UIElement* parent, Context& context, std::string content, SharedPtr<Font> font = nullptr);
+	UIText(Context& context, WeakPtr<UIElement> parent, std::string content, SharedPtr<Font> font = nullptr);
 
 	void draw(sf::RenderTarget& target) override;
 

@@ -15,7 +15,7 @@ struct UIButtonOnPress {};
 
 class UIButton: public UIElement {
   public:
-	UIButton(UIElement* parent, Context& context, std::string content, SharedPtr<Font> font = nullptr);
+	UIButton(Context& context, WeakPtr<UIElement> parent, std::string content, SharedPtr<Font> font = nullptr);
 
 	void draw(sf::RenderTarget& target) override;
 

@@ -2,6 +2,7 @@
 
 #include "alch/common/containers/hash_map.hpp"
 #include "alch/common/containers/hash_set.hpp"
+#include "test_app.hpp"
 
 #include <absl/hash/hash.h>
 #include <cpp-terminal/window.hpp>
@@ -31,7 +32,6 @@ int al::registerTestCase(const TestCaseArgs& arg) {
 void al::runTests() {
 	namespace tr = Term;
 
-
 	const auto& reg = testRegisterGet();
 
 	al::TestContext ctx{std::cout};
@@ -42,10 +42,13 @@ void al::runTests() {
 		ctx.out << tr::style(tr::Style::RESET) << tr::style(tr::Style::ITALIC) << tr::color_fg(tr::Color4::GRAY)
 		        << tc.first << tr::style(tr::Style::RESET) << std::endl;
 		for (const auto& t : tc.second) {
-			ctx.out << tr::style(tr::Style::BOLD) << tr::color_fg(tr::Color4::WHITE) << t.msg;
 			t.fn(ctx);
-			ctx.out << tr::color_fg(tr::Color4::GREEN) << " Pass \n";
+			ctx.out << tr::style(tr::Style::BOLD) << tr::color_fg(tr::Color4::GREEN) << "[Pass]	";
+			ctx.out << tr::style(tr::Style::RESET) << tr::color_fg(tr::Color4::WHITE) << t.msg << "\n";
 		}
 	}
+
 	ctx.out << tr::style(tr::Style::BOLD) << tr::color_fg(tr::Color4::GREEN) << "All tests passed!\n";
+
+	TestApp::get().exit();
 }

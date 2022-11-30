@@ -11,15 +11,14 @@ using namespace al;
 
 class UnchangeableLayout: public UIElement {
   public:
-	UnchangeableLayout(UIElement* parent, Context& context): UIElement(parent, context) { _layout = UIElement::FREE; }
+	UnchangeableLayout(Context& context, WeakPtr<UIElement> parent): UIElement(context, parent) {
+		_layout = UIElement::FREE;
+	}
 
 	void layout(Layout) override {}
 };
 
 UIElement* UISystem::getElementUnderPoint(UIElement* el, Vector2f p) {
-	if (!el->_debug.empty()) {
-		int a = 0;
-	}
 	if (el->isGlobalPointIn(p)) {
 		for (auto it = el->_childs.rbegin(); it != el->_childs.rend(); ++it) {
 			const auto& c = *it;
@@ -37,7 +36,7 @@ UIElement* UISystem::getElementUnderPoint(UIElement* el, Vector2f p) {
 }
 
 UISystem::UISystem(Context& context): System(context) {
-	_root = std::make_unique<UIElement>(nullptr, _context);
+	_root = SharedPtr<UIElement>::make(_context, nullptr);
 	_userRoot = _root->create<UIElement>();
 	_freeLayout = _root->create<UnchangeableLayout>();
 	_lastHovered = _userRoot;

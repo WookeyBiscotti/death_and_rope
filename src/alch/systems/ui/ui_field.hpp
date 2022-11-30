@@ -9,7 +9,7 @@ namespace al {
 
 class UIField: public UIElement {
   public:
-	UIField(UIElement* parent, Context& context);
+	UIField(Context& context, WeakPtr<UIElement> parent);
 
 	void draw(sf::RenderTarget& target) override;
 
@@ -17,11 +17,11 @@ class UIField: public UIElement {
 
 	Vector2f internalSize() const { return _root->size(); }
 
-	const std::vector<std::unique_ptr<UIElement>>& internalChilds() const;
+	const std::vector<SharedPtr<UIElement>>& internalChilds() const;
 
 	void layout(UIElement::Layout l) override;
 
-	void add(std::unique_ptr<UIElement> element) override;
+	void add(SharedPtr<UIElement> element) override;
 
 	void internalPosition(Vector2f r);
 
@@ -30,4 +30,4 @@ class UIField: public UIElement {
 	UIElement* _root;
 };
 
-}
+} // namespace al

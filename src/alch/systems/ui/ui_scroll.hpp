@@ -12,11 +12,11 @@ namespace al {
 
 class UIScroll: public UIElement {
   public:
-	UIScroll(UIElement* parent, Context& context);
+	UIScroll(Context& context, WeakPtr<UIElement> parent);
 
 	void layout(UIElement::Layout l) override;
 
-	void add(std::unique_ptr<UIElement> element) override;
+	void add(SharedPtr<UIElement> element) override;
 
   private:
 	void onLayoutUpdate();

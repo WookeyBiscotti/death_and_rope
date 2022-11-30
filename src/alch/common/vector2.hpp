@@ -16,6 +16,9 @@ using Vector2f = sf::Vector2f;
 using Vector2u = sf::Vector2u;
 using Vector2i = sf::Vector2i;
 
+inline const Vector2f Vector2fMin = {};
+inline const Vector2f Vector2fMax = {std::numeric_limits<float>::max(), std::numeric_limits<float>::max()};
+
 inline Vector2f from(const b2Vec2& vec) {
 	return {vec.x, vec.y};
 }
@@ -80,7 +83,6 @@ template<class Archive>
 inline void serialize(Archive& archive, const b2Vec2& m) {
 	archive(m.x, m.y);
 }
-
 
 namespace std {
 template<class T>

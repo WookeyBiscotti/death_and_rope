@@ -7,8 +7,8 @@
 
 using namespace al;
 
-UIButton::UIButton(UIElement* parent, Context& context, std::string content, SharedPtr<Font> font):
-    UIElement(parent, context), _content(content), _font(std::move(font)) {
+UIButton::UIButton(Context& context, WeakPtr<UIElement> parent, std::string content, SharedPtr<Font> font):
+    UIElement(context, parent), _content(content), _font(std::move(font)) {
 	if (!_font) {
 		_font = context.systemRef<AssetCache>().font();
 	}

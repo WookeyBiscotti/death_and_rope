@@ -5,11 +5,11 @@
 
 using namespace al;
 
-UIScroll::UIScroll(UIElement* parent, Context& context): UIElement(parent, context) {
+UIScroll::UIScroll(Context& context, WeakPtr<UIElement> parent): UIElement(context, parent) {
 	_layout = UIElement::HORIZONTAL;
 
-	auto content = std::make_unique<UIField>(this, context);
-	auto slider = std::make_unique<UISlider>(this, context, 0, 0, 10);
+	auto content = SharedPtr<UIField>::make(context, sharedFromThis());
+	auto slider = SharedPtr<UISlider>::make(context, sharedFromThis(), 0, 0, 10);
 
 	_content = content.get();
 	_slider = slider.get();
@@ -17,8 +17,8 @@ UIScroll::UIScroll(UIElement* parent, Context& context): UIElement(parent, conte
 	_childs.push_back(std::move(content));
 	_childs.push_back(std::move(slider));
 
-	_slider->resizeable(false);
-	_content->resizeable(true);
+	// _slider->resizeable(false);
+	// _content->resizeable(true);
 
 	onLayoutUpdate();
 
@@ -78,7 +78,7 @@ void UIScroll::onResize() {
 	_content->internalSize({w, h});
 }
 
-void UIScroll::add(std::unique_ptr<UIElement> element) {
+void UIScroll::add(SharedPtr<UIElement> element) {
 	_content->add(std::move(element));
 }
 

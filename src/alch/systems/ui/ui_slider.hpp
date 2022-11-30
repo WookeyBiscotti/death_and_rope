@@ -1,7 +1,6 @@
 #pragma once
 
 #include "alch/systems/assets/font.hpp"
-
 #include "ui_element.hpp"
 //
 #include <memory>
@@ -22,7 +21,7 @@ struct UISliderOnValueChange {
 
 class UISlider: public UIElement {
   public:
-	UISlider(UIElement* parent, Context& context, float curr, float min, float max);
+	UISlider(Context& context, WeakPtr<UIElement> parent, float curr, float min, float max);
 
 	void draw(sf::RenderTarget& target) override;
 

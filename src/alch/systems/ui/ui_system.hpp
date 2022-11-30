@@ -1,5 +1,6 @@
 #pragma once
 
+#include "alch/common/smart_ptr.hpp"
 #include "alch/common/vector2.hpp"
 #include "alch/engine/system.hpp"
 
@@ -49,7 +50,7 @@ class UISystem final: public System {
 	void lastDraged(sf::Mouse::Button b, UIElement* lastDraged) { _lastDraged[b] = lastDraged; }
 
   private:
-	std::unique_ptr<UIElement> _root;
+	SharedPtr<UIElement> _root;
 	UIElement* _freeLayout;
 	UIElement* _userRoot;
 
@@ -57,4 +58,4 @@ class UISystem final: public System {
 	std::unordered_map<sf::Mouse::Button, UIElement*> _lastDraged;
 };
 
-}
+} // namespace al

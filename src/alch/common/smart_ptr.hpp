@@ -98,7 +98,7 @@ class SharedPtr {
 	}
 
 	SharedPtr(): _pd{} {}
-	SharedPtr(std::nullptr_t): _pd{} {}
+	SharedPtr(std::nullptr_t): SharedPtr() {}
 	SharedPtr(PtrData<T> o): _pd(o) {}
 
 	template<class TT>
@@ -171,7 +171,7 @@ class SharedPtr {
 	// T* operator->() { return _pd.p; }
 	T* operator->() const { return _pd.p; }
 
-	T* get() { return _pd.p; }
+	T* get() const { return _pd.p; }
 
 	unsigned int useCount() const { return _pd.d ? _pd.d->shared : 0; }
 
@@ -201,6 +201,8 @@ class WeakPtr {
 	}
 
 	WeakPtr(): _pd{} {}
+
+	WeakPtr(std::nullptr_t): WeakPtr() {}
 
 	template<class TT>
 	WeakPtr(const SharedPtr<TT>& sp) noexcept: _pd(sp._pd) {

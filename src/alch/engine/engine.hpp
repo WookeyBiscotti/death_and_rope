@@ -12,6 +12,7 @@ class Context;
 struct EngineConfig {
 	std::string windowName;
 	Path root;
+	Path resourcesRoot;
 	Path localizationFile;
 	std::string startScene;
 	std::function<void(Context& context)> preBegin;
@@ -33,4 +34,4 @@ class Engine: public System {
 	EngineConfig _config;
 };
 
-}
+} // namespace al

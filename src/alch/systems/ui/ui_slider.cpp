@@ -6,8 +6,8 @@
 
 using namespace al;
 
-UISlider::UISlider(UIElement* parent, Context& context, float curr, float min, float max):
-    UIElement(parent, context), _current(curr), _min(min), _max(max) {
+UISlider::UISlider(Context& context, WeakPtr<UIElement> parent, float curr, float min, float max):
+    UIElement(context, parent), _current(curr), _min(min), _max(max) {
 	_slider.setFillColor(sf::Color(200, 200, 200));
 	_slider.setOutlineColor(sf::Color::Black);
 	_slider.setOutlineThickness(-3);
