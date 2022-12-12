@@ -1,5 +1,6 @@
 #include "ui_element.hpp"
 
+#include "alch/common/containers/inline_vector.hpp"
 #include "alch/common/test_framework.hpp"
 #include "alch/engine/context.hpp"
 #include "alch/systems/broker/broker.hpp"
@@ -27,7 +28,43 @@ void UIElement::onMove() {
 	}
 }
 
+void UIElement::updateChildsSize() {
+	if (_layout == FREE) {
+		return;
+	}
+
+	if (_childs.empty()) {
+		return;
+	}
+
+	auto stacker = [this](UIUnit Vector2<UIUnit>::*C) {
+		if (_childs.size() == 1) {
+			_childs.front()->size(_size);
+			return;
+		}
+
+		const auto dw = _size.*C / _childs.size();
+		auto idx = 0;
+		for (const auto& c : _childs) {
+			Vector2<UIUnit> pos{};
+			pos.*C = idx * dw;
+			c->position(pos);
+
+			Vector2<UIUnit> size(_size);
+			size.*C = dw;
+			c->size(size);
+		}
+	};
+
+	if (_layout == UIElement::HORIZONTAL) {
+		stacker(&Vector2<UIUnit>::x);
+	} else {
+		stacker(&Vector2<UIUnit>::y);
+	}
+}
+
 void UIElement::onResize() {
+	// TODO:use small vector
 	std::vector<UIElement*> childs;
 	for (auto& c : _childs) {
 		if (c) {
@@ -115,9 +152,7 @@ void UIElement::add(SharedPtr<UIElement> element) {
 	_childs.push_back(std::move(element));
 	e->onMove();
 
-	if (_layout != FREE) {
-		onResize();
-	}
+	updateChildsSize();
 }
 
 UIElement* UIElement::onMouseMove(const UIMouseMove& e) {
@@ -261,10 +296,13 @@ void UIElement::remove(UIElement* element) {
 	for (auto it = _childs.begin(); it != _childs.end(); ++it) {
 		if (it->get() == element) {
 			_childs.erase(it);
-			onResize();
+			updateChildsSize();
 			break;
 		}
 	}
+}
+void UIElement::removeAll() {
+	_childs.clear();
 }
 
 void UIElement::enabled(bool enabled) {

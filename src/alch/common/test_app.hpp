@@ -5,6 +5,8 @@
 #include "alch/systems/scenes/scene_generic.hpp"
 #include "alch/systems/scenes/scene_system.hpp"
 
+#include <thread>
+
 #pragma once
 
 namespace al {
@@ -21,10 +23,15 @@ class TestApp {
 		_isRunning = false;
 	}
 
+	void waitExit();
+
+	void push(std::function<void(Context&)> fn);
+
   private:
 	TestApp();
 
   private:
+	std::thread _work;
 	std::mutex _guard;
 	bool _isRunning;
 	std::unique_ptr<al::Context> _context;

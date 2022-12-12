@@ -7,7 +7,7 @@
 
 namespace al {
 
-namespace {
+namespace detail {
 
 struct RefCountSharedData {
 	unsigned int shared;
@@ -70,8 +70,8 @@ class SharedPtr {
 	static SharedPtr make(Args&&... args) noexcept {
 		SharedPtr sp;
 		// auto p = reinterpret_cast<RefCountSharedData*>(new unsigned char[sizeof(RefCountSharedData) + sizeof(T)]);
-		auto p = std::launder<RefCountSharedDataAnd<T>>(reinterpret_cast<RefCountSharedDataAnd<T>*>(
-		    std::aligned_alloc(alignof(RefCountSharedDataAnd<T>), sizeof(RefCountSharedDataAnd<T>))));
+		auto p = std::launder<detail::RefCountSharedDataAnd<T>>(reinterpret_cast<detail::RefCountSharedDataAnd<T>*>(
+		    std::aligned_alloc(alignof(detail::RefCountSharedDataAnd<T>), sizeof(detail::RefCountSharedDataAnd<T>))));
 		sp._pd.d = &p->contersBlock;
 		sp._pd.p = new (&p->objStorage) T(std::forward<Args>(args)...);
 
@@ -99,7 +99,7 @@ class SharedPtr {
 
 	SharedPtr(): _pd{} {}
 	SharedPtr(std::nullptr_t): SharedPtr() {}
-	SharedPtr(PtrData<T> o): _pd(o) {}
+	SharedPtr(detail::PtrData<T> o): _pd(o) {}
 
 	template<class TT>
 	SharedPtr(const SharedPtr<TT>& other) noexcept: _pd(other._pd) {
@@ -188,7 +188,7 @@ class SharedPtr {
 	SharedPtr(SharedPtr&& other) noexcept: _pd(other._pd) { other._pd = {}; }
 
   private:
-	PtrData<T> _pd;
+	detail::PtrData<T> _pd;
 };
 
 template<class T>
@@ -271,7 +271,7 @@ class WeakPtr {
 	}
 
   private:
-	PtrData<T> _pd;
+	detail::PtrData<T> _pd;
 };
 
 template<class T>
@@ -289,7 +289,7 @@ class EnableSharedFromThis {
 	}
 
   private:
-	PtrData<T> _pd;
+	detail::PtrData<T> _pd;
 };
 
 } // namespace al

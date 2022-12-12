@@ -48,7 +48,7 @@ using type_id_t = const void*;
  */
 template<typename T>
 constexpr auto TypeId() noexcept -> type_id_t {
-	return &detail::type_id_ptr<T>::id;
+	return &::detail::type_id_ptr<T>::id;
 }
 
 }

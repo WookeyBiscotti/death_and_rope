@@ -1,27 +1,35 @@
 #pragma once
 
+#include <functional>
 #include <iostream>
 
-#define IT_IS_TRUE(F)                                                                                \
-	if (!(F)) {                                                                                      \
-		context.out << "Expected true: " << #F << "; file: " << __FILE__ << ":" << __LINE__ << "\n"; \
-		exit(1);                                                                                     \
-	}
+#define IT_IS_TRUE(F)                                                                                    \
+	do {                                                                                                 \
+		if (!(F)) {                                                                                      \
+			_al_test_context.out << "Expected true: " << #F << "; file: " << __FILE__ << ":" << __LINE__ << "\n"; \
+			exit(1);                                                                                     \
+		}                                                                                                \
+	} while (false);
 
 #define IT_IS_FALSE(F)                                                                                \
 	if ((F)) {                                                                                        \
-		context.out << "Expected false: " << #F << "; file: " << __FILE__ << ":" << __LINE__ << "\n"; \
+		_al_test_context.out << "Expected false: " << #F << "; file: " << __FILE__ << ":" << __LINE__ << "\n"; \
 		exit(1);                                                                                      \
 	}
 
 #define IT_IS_EQ(F, S)                                                                                         \
 	if ((F != S)) {                                                                                            \
-		context.out << "Expected eq, but: " << #F << " != " << #S << "; file: " << __FILE__ << ":" << __LINE__ \
+		_al_test_context.out << "Expected eq, but: " << #F << " != " << #S << "; file: " << __FILE__ << ":" << __LINE__ \
 		            << "\n";                                                                                   \
 		exit(1);                                                                                               \
 	}
 
+#define AL_TEST_TRUE(F) IT_IS_TRUE(F)
+#define AL_TEST_FALSE(F) IT_IS_FALSE(F)
+
 namespace al {
+
+class Context;
 
 struct TestContext {
 	std::ostream& out;
@@ -47,18 +55,19 @@ int registerTestCase(const TestCaseArgs& arg);
 
 void runTests();
 
-template<class Fn>
-void ALCH_IN_FRAME(Fn&& fn) {
-	
-	fn();
-}
+void ALCH_IN_FRAME_Impl(std::function<void(Context&)> fn);
 
 } // namespace al
+
+template<class Fn>
+void ALCH_IN_FRAME(Fn&& fn) {
+	al::ALCH_IN_FRAME_Impl(fn);
+}
 
 #define ALCHEMY_MACRO_CAT_IMPL(STR1, STR2) STR1##STR2
 #define ALCHEMY_MACRO_CAT(STR1, STR2)      ALCHEMY_MACRO_CAT_IMPL(STR1, STR2)
 #define ALCH_TEST(MSG)                                                                                \
-	inline static void ALCHEMY_MACRO_CAT(ALCHEMY_TEST_, __LINE__)(al::TestContext & context);         \
+	inline static void ALCHEMY_MACRO_CAT(ALCHEMY_TEST_, __LINE__)(al::TestContext & _al_test_context);         \
 	[[maybe_unused]] static int ALCHEMY_MACRO_CAT(ALCHEMY_TEST_UNUSED_VAR_, __LINE__) =               \
 	    al::registerTestCase({&ALCHEMY_MACRO_CAT(ALCHEMY_TEST_, __LINE__), MSG, __FILE__, __LINE__}); \
-	static void ALCHEMY_MACRO_CAT(ALCHEMY_TEST_, __LINE__)(al::TestContext & context)
+	static void ALCHEMY_MACRO_CAT(ALCHEMY_TEST_, __LINE__)(al::TestContext & _al_test_context)

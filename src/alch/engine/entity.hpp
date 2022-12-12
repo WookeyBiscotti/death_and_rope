@@ -2,7 +2,6 @@
 
 #include "alch/common/archive.hpp"
 //
-#include "alch/common/chain_delete.hpp"
 #include "alch/common/containers/hash_map.hpp"
 #include "alch/common/prod_build_utils.hpp"
 #include "alch/common/smart_ptr.hpp"

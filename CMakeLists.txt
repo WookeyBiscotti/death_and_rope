@@ -21,7 +21,7 @@ add_subdirectory(3rdparty/Catch2)
 add_subdirectory(3rdparty/AABBTree)
 add_subdirectory(3rdparty/box2d)
 add_subdirectory(3rdparty/ChaiScript)
-add_subdirectory(3rdparty/SDL)
+# add_subdirectory(3rdparty/SDL)
 add_subdirectory(3rdparty/abseil-cpp)
 add_subdirectory(3rdparty/cpp-terminal)
 
@@ -51,7 +51,9 @@ set(INCLUDES_DEPS_DIRS
     3rdparty/box2d/include
     3rdparty/lua
     3rdparty/bgfx/include
-    3rdparty/bx/include)
+    3rdparty/bx/include
+    3rdparty/ChaiScript/include
+    )
 
 set(DEPS_LIBS
     sfml-graphics
@@ -61,7 +63,6 @@ set(DEPS_LIBS
     spdlog::spdlog
     aabb_tree
     box2d
-    chaiscript
     # bgfxRelease
     absl::base
     absl::flat_hash_set
@@ -77,8 +78,8 @@ if(APPLE)
   list(APPEND DEPS_LIBS "-framework OpenGL" "-framework GLUT")
 elseif(UNIX)
   list(APPEND DEPS_LIBS GL GLU)
-  list(APPEND ALCH_DEPS_LIBS_PATH
-       ${CMAKE_CURRENT_LIST_DIR}/3rdparty/bgfx/.build/linux64_gcc/bin)
+  # list(APPEND ALCH_DEPS_LIBS_PATH
+  #      ${CMAKE_CURRENT_LIST_DIR}/3rdparty/bgfx/.build/linux64_gcc/bin)
 endif()
 
 target_link_libraries(AlchemyEngineLib PUBLIC ${DEPS_LIBS})
@@ -111,3 +112,7 @@ file(
 
 add_executable(AlchemyEngineLibBuiltinTests "${CMAKE_CURRENT_LIST_DIR}/tests/builtin_tests.cpp")
 target_link_libraries(AlchemyEngineLibBuiltinTests PUBLIC AlchemyEngineLib)
+
+
+
+

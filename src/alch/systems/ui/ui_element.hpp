@@ -64,6 +64,8 @@ class UIElement: public Transmitter, public EnableSharedFromThis<UIElement> {
 
 	virtual void remove(UIElement* element);
 
+	virtual void removeAll();
+
 	Vector2<UIUnit> toWorldCoords(Vector2<UIUnit> p) {
 		for (auto par = parent().lock(); par;) {
 			p += par->position();
@@ -115,6 +117,11 @@ class UIElement: public Transmitter, public EnableSharedFromThis<UIElement> {
 
 	UISystem& system() const;
 
+	virtual void updateChildsSize();
+
+	const auto& childs() const { return _childs; }
+
+  protected:
   protected:
 	Context& _context;
 

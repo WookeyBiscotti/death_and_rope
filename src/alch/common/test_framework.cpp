@@ -51,4 +51,9 @@ void al::runTests() {
 	ctx.out << tr::style(tr::Style::BOLD) << tr::color_fg(tr::Color4::GREEN) << "All tests passed!\n";
 
 	TestApp::get().exit();
+	TestApp::get().waitExit();
+}
+
+void al::ALCH_IN_FRAME_Impl(std::function<void(Context&)> fn) {
+	TestApp::get().push(std::move(fn));
 }
