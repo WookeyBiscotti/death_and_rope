@@ -32,9 +32,9 @@ UIField::UIField(Context& context, WeakPtr<UIElement> parent): UIElement(context
 	UIElement::add(std::move(root));
 }
 
-void UIField::layout(UIElement::Layout l) {
-	_root->layout(l);
-}
+// void UIField::layout(UIElement::Layout l) {
+// 	_root->layout(l);
+// }
 
 void UIField::add(SharedPtr<UIElement> element) {
 	if (_root->layout() == UIElement::VERICAL) {

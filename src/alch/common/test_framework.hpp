@@ -24,8 +24,8 @@
 		exit(1);                                                                                               \
 	}
 
-#define AL_TEST_TRUE(F) IT_IS_TRUE(F)
-#define AL_TEST_FALSE(F) IT_IS_FALSE(F)
+#define AL_TEST_TRUE(F) IT_IS_TRUE((F))
+#define AL_TEST_FALSE(F) IT_IS_FALSE((F))
 
 namespace al {
 

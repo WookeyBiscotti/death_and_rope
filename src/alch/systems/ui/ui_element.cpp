@@ -29,6 +29,7 @@ void UIElement::onMove() {
 }
 
 void UIElement::updateChildsSize() {
+	constexpr UIUnit EPSILON = 0.00001;
 	if (_layout == FREE) {
 		return;
 	}
@@ -37,112 +38,156 @@ void UIElement::updateChildsSize() {
 		return;
 	}
 
-	auto stacker = [this](UIUnit Vector2<UIUnit>::*C) {
-		if (_childs.size() == 1) {
-			_childs.front()->size(_size);
-			return;
+	auto stacker = [this]<UIUnit Vector2<UIUnit>::*C>(int gravityDir /*[-1,1]*/) {
+		for (auto& c : _childs) {
+			c->_size.*C = 0;
 		}
 
-		const auto dw = _size.*C / _childs.size();
-		auto idx = 0;
+		auto w = _size.*C;
+		auto count = _childs.size();
+		auto dw = w / count;
+		for (const auto& c : _childs) {
+			if (c->_minSize.*C > dw) {
+				w -= c->_minSize.*C;
+				--count;
+				if (count != 0) {
+					dw = w / count;
+				}
+			}
+		}
+		if (w >= EPSILON) {
+			for (const auto& c : _childs) {
+				w -= (c->_maxSize.*C - c->_minSize.*C);
+				if (w < EPSILON) {
+					break;
+				}
+			}
+			if (w > EPSILON) {
+				// места много и мы не в состоянии его заполнить
+				w = 0;
+				for (const auto& c : _childs) {
+					c->_size.*C = c->_maxSize.*C;
+					w += c->_size.*C;
+				}
+
+				dw = w / _childs.size();
+
+				w = 0;
+				for (const auto& c : _childs) {
+					Vector2<UIUnit> pos{};
+					pos.*C = w + dw * (1 + gravityDir) / 2;
+					c->position(pos);
+					w += c->_size.*C + dw * (1 - gravityDir) / 2;
+				}
+
+			} else
+				// хватает места и мы можем полностью его заполнить
+				while (w < EPSILON) {
+					w = _size.*C;
+
+					for (auto& c : _childs) {
+						c->_size.*C = c->_minSize.*C;
+						w -= c->_minSize.*C;
+					}
+					if (w <= EPSILON) {
+						break;
+					}
+
+					UIUnit minSize{std::numeric_limits<UIUnit>::max()};
+					InlinedVector<UIElement*, 16> elms;
+					for (auto& c : _childs) {
+						elms.push_back(c.get());
+						if (c->_size.*C < minSize) {
+							minSize = c->_size.*C;
+						}
+					}
+
+					while (!elms.empty() && w >= EPSILON) {
+						dw = w / elms.size();
+
+						UIUnit newMinSize{std::numeric_limits<UIUnit>::max()};
+						for (auto& e : elms) {
+							if (e->_maxSize.*C <= minSize + dw) {
+								w -= e->_maxSize.*C - e->_size.*C;
+								e->_size.*C = e->_maxSize.*C;
+
+								std::swap(e, elms.back());
+								elms.pop_back();
+
+								break;
+							} else if (e->_size.*C < dw + minSize) {
+								w -= (dw + minSize - e->_size.*C);
+								e->_size.*C = dw + minSize;
+								if (e->_size.*C < newMinSize) {
+									newMinSize = e->_size.*C;
+								}
+							}
+
+							if (&e == &elms.back()) {
+								minSize = newMinSize;
+							}
+						}
+					}
+
+					break;
+				}
+		} else {
+			// все виджеты не помещаются в выделенное место
+			LWARN("We cant put all child widget in parent winget: not enough space");
+			for (const auto& c : _childs) {
+				c->_size.*C = c->_minSize.*C;
+			}
+		}
+
+		w = 0;
 		for (const auto& c : _childs) {
 			Vector2<UIUnit> pos{};
-			pos.*C = idx * dw;
+			pos.*C = w;
 			c->position(pos);
+			w += c->_size.*C;
+		}
+	};
 
-			Vector2<UIUnit> size(_size);
-			size.*C = dw;
-			c->size(size);
+	auto gravityToDir = [](auto g) {
+		auto val = static_cast<int>(g);
+		if (val == 0) {
+			return 0;
+		} else if (val == 1) {
+			return -1;
+		} else {
+			return 1;
+		}
+	};
+
+	auto placeOrthogonal = [this]<UIUnit Vector2<UIUnit>::*C>(int gravityDir /*[-1,1]*/) {
+		for (const auto& c : _childs) {
+			if (_size.*C >= c->_minSize.*C && _size.*C <= c->_maxSize.*C) {
+				c->_size.*C = _size.*C;
+			} else if (_size.*C < c->_minSize.*C) {
+				c->_size.*C = c->_minSize.*C;
+			} else if (_size.*C > c->_maxSize.*C) {
+				c->_size.*C = c->_maxSize.*C;
+
+				auto pos = c->position();
+				auto dw = (_size.*C - c->_maxSize.*C) / 2;
+				pos.*C = dw * (1 + gravityDir) / 2;
+				c->position(pos);
+			} else {
+				LASSERT("We cant reach this")
+			}
 		}
 	};
 
 	if (_layout == UIElement::HORIZONTAL) {
-		stacker(&Vector2<UIUnit>::x);
+		stacker.template operator()<&Vector2<UIUnit>::x>(gravityToDir(_gravityH));
+		placeOrthogonal.template operator()<&Vector2<UIUnit>::y>(gravityToDir(_gravityV));
 	} else {
-		stacker(&Vector2<UIUnit>::y);
-	}
-}
-
-void UIElement::onResize() {
-	// TODO:use small vector
-	std::vector<UIElement*> childs;
-	for (auto& c : _childs) {
-		if (c) {
-			childs.push_back(c.get());
-		}
-	};
-	if (childs.empty()) {
-		return;
+		stacker.template operator()<&Vector2<UIUnit>::y>(gravityToDir(_gravityV));
+		placeOrthogonal.template operator()<&Vector2<UIUnit>::x>(gravityToDir(_gravityH));
 	}
 
-	if (_layout == FREE) {
-		// for (auto& c : _childs) {
-		// 	c->onResize();
-		// }
-	} else if (_layout == HORIZONTAL) {
-		if (childs.size() == 1) {
-			// if (childs.front()->resizeable()) {
-			// 	childs.front()->size(_size, true);
-			// } else {
-			// 	childs.front()->size({childs.front()->size().x, size().y}, true);
-			// }
-			// return;
-		}
-		auto w = _size.x;
-		int count = 0;
-		for (auto& c : childs) {
-			// if (!c->resizeable()) {
-			// 	w -= c->size().x;
-			// } else {
-			// 	++count;
-			// }
-		}
-		if (count == 0) {
-			return;
-		}
-		const auto dw = w / count;
-		float startPos = 0.0f;
-		for (auto& c : childs) {
-			// if (!c->resizeable()) {
-			// 	c->size(Vector2f(c->size().x, _size.y), true);
-			// } else {
-			// 	c->size(Vector2f(dw, _size.y), true);
-			// }
-			c->position(Vector2f(startPos, 0));
-			startPos += c->size().x;
-		}
-	} else if (_layout == VERICAL) {
-		if (childs.size() == 1) {
-			// if (childs.front()->resizeable()) {
-			// 	childs.front()->size(_size, true);
-			// } else {
-			// 	childs.front()->size({size().x, childs.front()->size().y}, true);
-			// }
-			// return;
-		}
-		auto h = _size.y;
-		int count = 0;
-		for (auto& c : childs) {
-			// if (!c->resizeable()) {
-			// 	h -= c->size().y;
-			// } else {
-			// 	++count;
-			// }
-		}
-		if (count == 0) {
-			return;
-		}
-		const auto dh = h / count;
-		float startPos = 0.0f;
-		for (auto& c : childs) {
-			// if (!c->resizeable()) {
-			// 	c->size(Vector2f(_size.x, c->size().y), true);
-			// } else {
-			// 	c->size(Vector2f(_size.x, dh), true);
-			// }
-			// c->position(Vector2f(0, startPos));
-			startPos += c->size().y;
-		}
+	for (const auto& c : _childs) {
+		c->updateChildsSize();
 	}
 }
 
@@ -280,15 +325,66 @@ const Vector2<Opt<float>>& UIElement::positionPart() const {
 void UIElement::positionPart(const Vector2<Opt<float>>& position) {
 }
 
-void UIElement::size(Vector2<UIUnit> size, bool noParentCallback) {
+void UIElement::size(Vector2<UIUnit> size) {
 	if (size == _size) {
 		return;
 	}
-	_size = size;
-	onResize();
+
 	auto p = _parent.lock();
-	if (!noParentCallback && p) {
-		p->onResize();
+	if (!p || p->layout() == UIElement::FREE) {
+		_size = size;
+	}
+}
+
+void UIElement::minSize(Vector2<UIUnit> minSize) {
+	if (_minSize == minSize) {
+		return;
+	}
+
+	_minSize = minSize;
+	if (_maxSize.x < minSize.x) {
+		_maxSize.x = minSize.x;
+	}
+	if (_maxSize.y < minSize.y) {
+		_maxSize.y = minSize.y;
+	}
+
+	auto p = _parent.lock();
+	if (!p || p->layout() == UIElement::FREE) {
+		if (_size.x < _minSize.x) {
+			_size.x = _minSize.x;
+		}
+		if (_size.y < _minSize.y) {
+			_size.y = _minSize.y;
+		}
+	} else if (p) {
+		p->updateChildsSize();
+	}
+}
+
+void UIElement::maxSize(Vector2<UIUnit> maxSize) {
+	if (_maxSize == maxSize) {
+		return;
+	}
+
+	_maxSize = maxSize;
+	if (_minSize.x > maxSize.x) {
+		_maxSize.x = maxSize.x;
+	}
+	if (_minSize.y < maxSize.y) {
+		_minSize.y = maxSize.y;
+	}
+
+	auto p = _parent.lock();
+	if (!p || p->layout() == UIElement::FREE) {
+		if (_size.x > _minSize.x) {
+			_size.x = _minSize.x;
+		}
+		if (_size.y > _minSize.y) {
+			_size.y = _minSize.y;
+		}
+	} else if (p) {
+		p->updateChildsSize();
 	}
 }
 

@@ -39,34 +39,34 @@ class GuiExempleScene: public Scene {
 			auto root = context().systemRef<UISystem>().root();
 			root->layout(UIElement::HORIZONTAL);
 
-			auto v1 = root->create<UIElement>();
-			auto v2 = root->create<UIScroll>();
-			auto v3 = root->create<UIElement>();
+			// auto v1 = root->create<UIElement>();
+			// auto v2 = root->create<UIScroll>();
+			// auto v3 = root->create<UIElement>();
 
-			v1->layout(UIElement::VERICAL);
-			v2->layout(UIElement::VERICAL);
-			v3->layout(UIElement::VERICAL);
+			// v1->layout(UIElement::VERICAL);
+			// v2->layout(UIElement::VERICAL);
+			// v3->layout(UIElement::VERICAL);
 
-			auto e1 = v1->create<UIElement>();
-			auto e2 = v1->create<UIPanel>();
-			auto e3 = v1->create<UIText>("qwe", nullptr);
+			// auto e1 = v1->create<UIElement>();
+			// auto e2 = v1->create<UIPanel>();
+			// auto e3 = v1->create<UIText>("qwe", nullptr);
 
-			auto e4 = v2->create<UIElement>();
-			e4->size({200, 200});
-			auto e5 = v2->create<UIButton>("qwe", nullptr);
-			e5->size({200, 200});
-			auto e6 = v2->create<UIText>("qwe", nullptr);
-			e6->size({200, 200});
-			v2->create<UIButton>("qwe", nullptr)->size({200, 200});
-			v2->create<UIButton>("qwe", nullptr)->size({200, 200});
-			v2->create<UIButton>("qwe", nullptr)->size({200, 200});
-			v2->create<UIButton>("qwe", nullptr)->size({200, 200});
-			v2->create<UIButton>("qwe", nullptr)->size({200, 200});
+			// auto e4 = v2->create<UIElement>();
+			// e4->size({200, 200});
+			// auto e5 = v2->create<UIButton>("qwe", nullptr);
+			// e5->size({200, 200});
+			// auto e6 = v2->create<UIText>("qwe", nullptr);
+			// e6->size({200, 200});
+			// v2->create<UIButton>("qwe", nullptr)->size({200, 200});
+			// v2->create<UIButton>("qwe", nullptr)->size({200, 200});
+			// v2->create<UIButton>("qwe", nullptr)->size({200, 200});
+			// v2->create<UIButton>("qwe", nullptr)->size({200, 200});
+			// v2->create<UIButton>("qwe", nullptr)->size({200, 200});
 
-			auto e7 = v3->create<UISlider>(5, 0, 10);
-			e7->vertical(true);
-			auto e8 = v3->create<UISlider>(5, 0, 10);
-			auto e9 = v3->create<UIButton>("qwe", nullptr);
+			// auto e7 = v3->create<UISlider>(5, 0, 10);
+			// e7->vertical(true);
+			// auto e8 = v3->create<UISlider>(5, 0, 10);
+			// auto e9 = v3->create<UIButton>("qwe", nullptr);
 
 			// e9->layout(UIElement::VERICAL);
 			// auto b = e9->create<UIButton>("qwe", nullptr);

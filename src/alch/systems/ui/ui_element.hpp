@@ -10,6 +10,7 @@
 #include "ui_events.hpp"
 //
 #include <SFML/Graphics.hpp>
+#include <bitset>
 #include <string>
 
 namespace al {
@@ -29,6 +30,21 @@ class UIElement: public Transmitter, public EnableSharedFromThis<UIElement> {
 		FREE,
 	};
 
+	enum class GravityV {
+		NONE,
+
+		UP,   // ⬆️
+		DOWN, // ⬇️
+
+	};
+
+	enum class GravityH {
+		NONE,
+
+		LEFT,  // ⬅️
+		RIGHT, // ➡️
+	};
+
 	UIElement(Context& context, WeakPtr<UIElement> parent);
 
 	virtual ~UIElement();
@@ -45,53 +61,38 @@ class UIElement: public Transmitter, public EnableSharedFromThis<UIElement> {
 
 	Vector2<UIUnit> globalPosition() { return toWorldCoords(position()); }
 
-	virtual Vector2f size() const { return _size; }
-	virtual void size(Vector2<UIUnit> size, bool noParentCallback = false);
+	Vector2f size() const { return _size; }
+	void size(Vector2<UIUnit> size);
 
-	virtual Layout layout() const { return _layout; }
-	virtual void layout(Layout layout) { _layout = layout; }
+	Vector2f minSize() const { return _minSize; }
+	void minSize(Vector2<UIUnit> minSize);
+
+	Vector2f maxSize() const { return _maxSize; }
+	void maxSize(Vector2<UIUnit> maxSize);
+
+	Layout layout() const { return _layout; }
+	void layout(Layout layout);
 
 	virtual void add(SharedPtr<UIElement> element);
 
 	template<class E, class... Args>
-	E* create(Args&&... args) {
-		auto sPtr = SharedPtr<E>::make(_context, sharedFromThis(), std::forward<Args>(args)...);
-		auto ptr = sPtr.get();
-		add(std::move(sPtr));
-
-		return ptr;
-	}
+	E* create(Args&&... args);
 
 	virtual void remove(UIElement* element);
 
 	virtual void removeAll();
 
-	Vector2<UIUnit> toWorldCoords(Vector2<UIUnit> p) {
-		for (auto par = parent().lock(); par;) {
-			p += par->position();
-			par = par->parent().lock();
-		}
+	Vector2<UIUnit> toWorldCoords(Vector2<UIUnit> p);
 
-		return p;
-	}
+	bool isLocalPointIn(Vector2f p) const;
 
-	bool isLocalPointIn(Vector2f p) const {
-		return p.x >= _position.x && p.x <= _position.x + _size.x && p.y >= _position.y && p.y <= _position.y + _size.y;
-	}
-
-	bool isGlobalPointIn(Vector2f p) const {
-		for (auto par = parent().lock(); par;) {
-			p -= par->position();
-			par = par->parent().lock();
-		}
-
-		return isLocalPointIn(p);
-	}
+	bool isGlobalPointIn(Vector2f p) const;
 
 	virtual void draw(sf::RenderTarget& target);
 
-	virtual void onResize();
+	virtual void onResize() {}
 	virtual void onMove();
+	virtual void onLayoutChange(Layout old) {}
 
 	virtual UIElement* onHovered(const UIHovered&);
 	virtual UIElement* onMouseMove(const UIMouseMove&);
@@ -122,7 +123,6 @@ class UIElement: public Transmitter, public EnableSharedFromThis<UIElement> {
 	const auto& childs() const { return _childs; }
 
   protected:
-  protected:
 	Context& _context;
 
 	Layout _layout = FREE;
@@ -132,17 +132,62 @@ class UIElement: public Transmitter, public EnableSharedFromThis<UIElement> {
 	Vector2<UIUnit> _position;
 	Vector2<Opt<float>> _positionPart;
 
-	Vector2<UIUnit> _sizeMax;
 	Vector2<UIUnit> _size;
-	Vector2<UIUnit> _sizeMin;
-	Vector2<Opt<float>> _sizePart;
+
+	Vector2<UIUnit> _minSize;
+	Vector2<Opt<UIUnit>> _minSizePart;
+
+	Vector2<UIUnit> _maxSize = {std::numeric_limits<UIUnit>::max(), std::numeric_limits<UIUnit>::max()};
+	Vector2<Opt<UIUnit>> _maxSizePart;
 
 	std::vector<SharedPtr<UIElement>> _childs;
+
+	GravityV _gravityV = GravityV::NONE;
+	GravityH _gravityH = GravityH::NONE;
 
   private:
 	bool _enabled = true;
 	bool _eventable = true;
 };
+
+inline bool UIElement::isLocalPointIn(Vector2f p) const {
+	return p.x >= _position.x && p.x <= _position.x + _size.x && p.y >= _position.y && p.y <= _position.y + _size.y;
+}
+
+inline bool UIElement::isGlobalPointIn(Vector2f p) const {
+	for (auto par = parent().lock(); par;) {
+		p -= par->position();
+		par = par->parent().lock();
+	}
+
+	return isLocalPointIn(p);
+}
+
+inline Vector2<UIUnit> UIElement::toWorldCoords(Vector2<UIUnit> p) {
+	for (auto par = parent().lock(); par;) {
+		p += par->position();
+		par = par->parent().lock();
+	}
+
+	return p;
+}
+
+template<class E, class... Args>
+E* UIElement::create(Args&&... args) {
+	auto sPtr = SharedPtr<E>::make(_context, sharedFromThis(), std::forward<Args>(args)...);
+	auto ptr = sPtr.get();
+	add(std::move(sPtr));
+
+	return ptr;
+}
+
+inline void UIElement::layout(Layout layout) {
+	auto copyOld = _layout;
+	if (_layout != layout) {
+		_layout = layout;
+		onLayoutChange(copyOld);
+	}
+}
 
 template<class E>
 bool UIElement::eventInside(const E& e) {

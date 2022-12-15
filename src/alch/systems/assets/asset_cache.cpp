@@ -113,7 +113,7 @@ SharedPtr<Font> AssetCache::font(const std::string& name) {
 		font->sf().loadFromMemory(data, size);
 		_fonts.emplace(DEFAULT_FONT, std::move(font));
 	}
-	LERR("Can't find font: {}, load default: {}", name, DEFAULT_FONT);
+	LWARN("Can't find font: {}, load default: {}", name, DEFAULT_FONT);
 
 	return _fonts[DEFAULT_FONT];
 }
