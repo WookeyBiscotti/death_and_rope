@@ -109,3 +109,42 @@ ALCH_TEST("UI check layouts for resize") {
 		}
 	});
 }
+
+ALCH_TEST("UI check layouts for gravity") {
+	ALCH_IN_FRAME([&](al::Context& ctx) {
+		struct TestData {
+			struct TestSubData {
+				Vector2<al::UIUnit> min;
+				Vector2<al::UIUnit> max;
+				Vector2<al::UIUnit> resultPos;
+			};
+			al::UIUnit parentSize;
+			std::vector<TestSubData> data;
+		};
+
+		constexpr auto H = 3;
+		auto INF = std::numeric_limits<al::UIUnit>::max();
+
+		std::vector<TestData> data = {
+		    {11, {{{0, 0}, {1, 1}, {1, 1}}, {{0, 0}, {3, INF}, {4, 0}}, {{0, 0}, {1, 1}, {9, 1}}}}};
+
+		auto uis = ctx.systemRef<al::UISystem>();
+
+		auto r = uis.root();
+		r->layout(al::UIElement::HORIZONTAL);
+		for (const auto& d : data) {
+			r->size({d.parentSize, H});
+			for (const auto& sd : d.data) {
+				auto c = r->create<al::UIElement>();
+				c->minSize(sd.min);
+				c->maxSize(sd.max);
+			}
+			size_t idx = 0;
+			for (const auto& sd : d.data) {
+				AL_TEST_TRUE(r->childs()[idx++]->position() == sd.resultPos);
+			}
+
+			r->removeAll();
+		}
+	});
+}

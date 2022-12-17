@@ -8,9 +8,9 @@
 #include "alch/engine/component.hpp"
 #include "alch/systems/broker/transmitter.hpp"
 #include "ui_events.hpp"
+#include "ui_style.hpp"
 //
 #include <SFML/Graphics.hpp>
-#include <bitset>
 #include <string>
 
 namespace al {
@@ -73,6 +73,12 @@ class UIElement: public Transmitter, public EnableSharedFromThis<UIElement> {
 	Layout layout() const { return _layout; }
 	void layout(Layout layout);
 
+	GravityH gravityH() const { return _gravityH; }
+	void gravityH(GravityH g) const;
+
+	GravityV gravityV() const { return _gravityV; }
+	void gravityV(GravityV g) const;
+
 	virtual void add(SharedPtr<UIElement> element);
 
 	template<class E, class... Args>
@@ -118,7 +124,7 @@ class UIElement: public Transmitter, public EnableSharedFromThis<UIElement> {
 
 	UISystem& system() const;
 
-	virtual void updateChildsSize();
+	virtual void updateChildsPositionSize();
 
 	const auto& childs() const { return _childs; }
 
@@ -144,6 +150,8 @@ class UIElement: public Transmitter, public EnableSharedFromThis<UIElement> {
 
 	GravityV _gravityV = GravityV::NONE;
 	GravityH _gravityH = GravityH::NONE;
+
+	Style _style;
 
   private:
 	bool _enabled = true;

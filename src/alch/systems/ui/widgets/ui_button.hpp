@@ -1,9 +1,9 @@
 #pragma once
 
+#include "../ui_element.hpp"
+#include "alch/common/containers/string.hpp"
 #include "alch/systems/assets/font.hpp"
-#include "ui_element.hpp"
 //
-#include <memory>
 #include <string>
 
 namespace al {
@@ -13,9 +13,9 @@ class Context;
 struct UIButtonOnRelease {};
 struct UIButtonOnPress {};
 
-class UIButtonOld: public UIElement {
+class UIButton: public UIElement {
   public:
-	UIButtonOld(Context& context, WeakPtr<UIElement> parent, std::string content, SharedPtr<Font> font = nullptr);
+	UIButton(Context& context, WeakPtr<UIElement> parent, std::string content, SharedPtr<Font> font = nullptr);
 
 	void draw(sf::RenderTarget& target) override;
 
@@ -34,7 +34,7 @@ class UIButtonOld: public UIElement {
 
   protected:
 	bool _pressed{};
-	std::string _content;
+	String _content;
 	SharedPtr<Font> _font;
 	sf::RectangleShape _bg;
 	sf::Text _text;

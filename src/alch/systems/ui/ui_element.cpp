@@ -28,7 +28,7 @@ void UIElement::onMove() {
 	}
 }
 
-void UIElement::updateChildsSize() {
+void UIElement::updateChildsPositionSize() {
 	constexpr UIUnit EPSILON = 0.00001;
 	if (_layout == FREE) {
 		return;
@@ -64,10 +64,10 @@ void UIElement::updateChildsSize() {
 			}
 			if (w > EPSILON) {
 				// места много и мы не в состоянии его заполнить
-				w = 0;
+				w = _size.*C;
 				for (const auto& c : _childs) {
 					c->_size.*C = c->_maxSize.*C;
-					w += c->_size.*C;
+					w -= c->_size.*C;
 				}
 
 				dw = w / _childs.size();
@@ -77,8 +77,10 @@ void UIElement::updateChildsSize() {
 					Vector2<UIUnit> pos{};
 					pos.*C = w + dw * (1 + gravityDir) / 2;
 					c->position(pos);
-					w += c->_size.*C + dw * (1 - gravityDir) / 2;
+					w += c->_size.*C + dw;
 				}
+
+				return;
 
 			} else
 				// хватает места и мы можем полностью его заполнить
@@ -169,7 +171,7 @@ void UIElement::updateChildsSize() {
 				c->_size.*C = c->_maxSize.*C;
 
 				auto pos = c->position();
-				auto dw = (_size.*C - c->_maxSize.*C) / 2;
+				auto dw = _size.*C - c->_maxSize.*C;
 				pos.*C = dw * (1 + gravityDir) / 2;
 				c->position(pos);
 			} else {
@@ -187,7 +189,7 @@ void UIElement::updateChildsSize() {
 	}
 
 	for (const auto& c : _childs) {
-		c->updateChildsSize();
+		c->updateChildsPositionSize();
 	}
 }
 
@@ -197,7 +199,7 @@ void UIElement::add(SharedPtr<UIElement> element) {
 	_childs.push_back(std::move(element));
 	e->onMove();
 
-	updateChildsSize();
+	updateChildsPositionSize();
 }
 
 UIElement* UIElement::onMouseMove(const UIMouseMove& e) {
@@ -358,7 +360,7 @@ void UIElement::minSize(Vector2<UIUnit> minSize) {
 			_size.y = _minSize.y;
 		}
 	} else if (p) {
-		p->updateChildsSize();
+		p->updateChildsPositionSize();
 	}
 }
 
@@ -371,7 +373,7 @@ void UIElement::maxSize(Vector2<UIUnit> maxSize) {
 	if (_minSize.x > maxSize.x) {
 		_maxSize.x = maxSize.x;
 	}
-	if (_minSize.y < maxSize.y) {
+	if (_minSize.y > maxSize.y) {
 		_minSize.y = maxSize.y;
 	}
 
@@ -384,7 +386,7 @@ void UIElement::maxSize(Vector2<UIUnit> maxSize) {
 			_size.y = _minSize.y;
 		}
 	} else if (p) {
-		p->updateChildsSize();
+		p->updateChildsPositionSize();
 	}
 }
 
@@ -392,7 +394,7 @@ void UIElement::remove(UIElement* element) {
 	for (auto it = _childs.begin(); it != _childs.end(); ++it) {
 		if (it->get() == element) {
 			_childs.erase(it);
-			updateChildsSize();
+			updateChildsPositionSize();
 			break;
 		}
 	}
@@ -417,3 +419,29 @@ void UIElement::draw(sf::RenderTarget& target) {
 		}
 	}
 };
+
+void UIElement::gravityH(GravityH g) const {
+	if (g == _gravityH) {
+		return;
+	}
+
+	g = _gravityH;
+
+	auto p = _parent.lock();
+	if (p && p->layout() != UIElement::FREE) {
+		p->updateChildsPositionSize();
+	}
+}
+
+void UIElement::gravityV(GravityV g) const {
+	if (g == _gravityV) {
+		return;
+	}
+
+	g = _gravityV;
+
+	auto p = _parent.lock();
+	if (p && p->layout() != UIElement::FREE) {
+		p->updateChildsPositionSize();
+	}
+}

@@ -3,11 +3,11 @@
 #include "alch/engine/context.hpp"
 #include "alch/systems/assets/asset_cache.hpp"
 #include "alch/systems/broker/broker.hpp"
-#include "ui_system.hpp"
+#include "../ui_system.hpp"
 
 using namespace al;
 
-UIButtonOld::UIButtonOld(Context& context, WeakPtr<UIElement> parent, std::string content, SharedPtr<Font> font):
+UIButton::UIButton(Context& context, WeakPtr<UIElement> parent, std::string content, SharedPtr<Font> font):
     UIElement(context, parent), _content(content), _font(std::move(font)) {
 	if (!_font) {
 		_font = context.systemRef<AssetCache>().font();
@@ -17,7 +17,7 @@ UIButtonOld::UIButtonOld(Context& context, WeakPtr<UIElement> parent, std::strin
 	_bg.setOutlineThickness(-3);
 }
 
-void UIButtonOld::draw(sf::RenderTarget& target) {
+void UIButton::draw(sf::RenderTarget& target) {
 	if (_pressed) {
 		drawPressed(target);
 	} else {
@@ -25,29 +25,29 @@ void UIButtonOld::draw(sf::RenderTarget& target) {
 	}
 }
 
-void UIButtonOld::drawIdle(sf::RenderTarget& target) {
+void UIButton::drawIdle(sf::RenderTarget& target) {
 	_bg.setFillColor(sf::Color(200, 200, 200));
 	_bg.setOutlineThickness(-3);
 	target.draw(_bg);
 	target.draw(_text);
 }
 
-void UIButtonOld::drawPressed(sf::RenderTarget& target) {
+void UIButton::drawPressed(sf::RenderTarget& target) {
 	_bg.setFillColor(sf::Color(100, 100, 100));
 	_bg.setOutlineThickness(-6);
 	target.draw(_bg);
 	target.draw(_text);
 }
 
-void UIButtonOld::onResize() {
+void UIButton::onResize() {
 	onTransform();
 }
 
-void UIButtonOld::onMove() {
+void UIButton::onMove() {
 	onTransform();
 }
 
-void UIButtonOld::onTransform() {
+void UIButton::onTransform() {
 	if (_font) {
 		_text.setFont(_font->sf());
 	}
@@ -67,7 +67,7 @@ void UIButtonOld::onTransform() {
 	_bg.setPosition(gp);
 }
 
-UIElement* UIButtonOld::onUnhovered(const UIUnhovered&) {
+UIElement* UIButton::onUnhovered(const UIUnhovered&) {
 	if (_pressed) {
 		_pressed = false;
 	}
@@ -75,7 +75,7 @@ UIElement* UIButtonOld::onUnhovered(const UIUnhovered&) {
 	return this;
 }
 
-UIElement* UIButtonOld::onReleased(const UIMouseButtonReleased&) {
+UIElement* UIButton::onReleased(const UIMouseButtonReleased&) {
 	if (_pressed) {
 		_pressed = false;
 		send(UIButtonOnRelease{});
@@ -86,7 +86,7 @@ UIElement* UIButtonOld::onReleased(const UIMouseButtonReleased&) {
 	return nullptr;
 }
 
-UIElement* UIButtonOld::onPressed(const UIMouseButtonPressed&) {
+UIElement* UIButton::onPressed(const UIMouseButtonPressed&) {
 	_pressed = true;
 	send(UIButtonOnPress{});
 
