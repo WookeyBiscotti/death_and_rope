@@ -11,52 +11,25 @@ namespace al {
 
 enum class StyleName {
 	BACKGROUND_COLOR,
+	BORDER_COLOR,
+	BORDER_THICKNESS,
 };
 
-struct StyleValue {
-	using StyleMap = al::HashMap<StyleName, StyleValue>;
-	using StyleValueType = Variant<std::monostate, float, int, bool, Color, String, StyleMap>;
+template<StyleName name, class T>
+static const T styleDefault;
 
-	StyleValueType value;
-};
+template<>
+static const Color styleDefault<StyleName::BACKGROUND_COLOR, Color> = Color::Black;
+template<>
+static const Color styleDefault<StyleName::BORDER_COLOR, Color> = Color::White;
+template<>
+static const float styleDefault<StyleName::BORDER_THICKNESS, float> = 1.0f;
 
-class Style: public EnableSharedFromThis<Style> {
-  public:
-	void clearAgregatedStyles();
+struct Styles {
+	using Map = al::HashMap<StyleName, Styles>;
+	using Value = Variant<std::monostate, float, int, bool, Color, String, Map>;
 
-	template<class T>
-	Optional<T> get(StyleName name) {
-		auto val = std::get_if<T>(_style[name].value);
-		if (val) {
-			return *val;
-		}
-
-		val = std::get_if<T>(_agregatedStyle[name].value);
-		if (val) {
-			return *val;
-		}
-
-		auto p = _parent.lock();
-		if (p) {
-			auto v = p->get<T>(name);
-			_agregatedStyle[name] = v;
-
-			return v;
-		}
-
-		return {};
-	}
-
-	template<class T>
-	T getOr(StyleName name, T&& def) {
-		return get<T>(name).value_or(std::move(def));
-	}
-
-  private:
-	WeakPtr<Style> _parent;
-	StyleValue::StyleMap _style;
-
-	StyleValue::StyleMap _agregatedStyle;
+	Value value;
 };
 
 } // namespace al

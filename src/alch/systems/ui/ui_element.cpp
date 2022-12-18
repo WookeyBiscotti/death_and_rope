@@ -304,6 +304,7 @@ UIElement* UIElement::onMouseWheel(const UIMouseWheel& e) {
 
 void UIElement::parent(WeakPtr<UIElement> parent) {
 	_parent = parent;
+
 	onResize();
 	onMove();
 }
@@ -420,12 +421,12 @@ void UIElement::draw(sf::RenderTarget& target) {
 	}
 };
 
-void UIElement::gravityH(GravityH g) const {
+void UIElement::gravityH(GravityH g) {
 	if (g == _gravityH) {
 		return;
 	}
 
-	g = _gravityH;
+	_gravityH = g;
 
 	auto p = _parent.lock();
 	if (p && p->layout() != UIElement::FREE) {
@@ -433,15 +434,42 @@ void UIElement::gravityH(GravityH g) const {
 	}
 }
 
-void UIElement::gravityV(GravityV g) const {
+void UIElement::gravityV(GravityV g) {
 	if (g == _gravityV) {
 		return;
 	}
 
-	g = _gravityV;
+	_gravityV = g;
 
 	auto p = _parent.lock();
 	if (p && p->layout() != UIElement::FREE) {
 		p->updateChildsPositionSize();
+	}
+}
+
+Opt<Styles::Value> UIElement::calculatedStyleValueOpt(StyleName name) const {
+	if (auto v = _style.find(name); v != _style.end()) {
+		return v->second.value;
+	}
+	if (auto v = _cachedStyle.find(name); v != _cachedStyle.end()) {
+		return v->second.value;
+	}
+
+	auto p = _parent.lock();
+	if (p) {
+		auto v = p->calculatedStyleValueOpt(name);
+		if (v) {
+			_cachedStyle[name].value = v.value();
+			return *v;
+		}
+	}
+
+	return {};
+}
+
+void UIElement::styleClearCache() const {
+	_cachedStyle.clear();
+	for (const auto& c : _childs) {
+		c->styleClearCache();
 	}
 }

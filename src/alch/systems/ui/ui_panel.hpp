@@ -7,9 +7,9 @@
 
 namespace al {
 
-class UIPanel: public UIElement {
+class UIPanelOld: public UIElement {
   public:
-	UIPanel(Context& context, WeakPtr<UIElement> parent): UIElement(context, parent) {
+	UIPanelOld(Context& context, WeakPtr<UIElement> parent): UIElement(context, parent) {
 		_shape.setFillColor(sf::Color(200, 200, 200));
 	}
 

@@ -4,7 +4,7 @@
 
 using namespace al;
 
-void UIPanel::draw(sf::RenderTarget& target) {
+void UIPanelOld::draw(sf::RenderTarget& target) {
 	auto p = toWorldCoords(_position);
 	_shape.setPosition(p);
 	_shape.setSize(_size);

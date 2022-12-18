@@ -92,19 +92,19 @@ SharedPtr<Font> AssetCache::font(const std::string& name) {
 		return font(DEFAULT_FONT);
 	}
 	if (auto found = _fonts.find(name); found != _fonts.end()) {
-		LINFO("Load font from cache: {}", name);
+		LINFO("Load font from cache: `{}`", name);
 
 		return found->second;
 	}
 
 	auto font = SharedPtr<Font>::make(name);
 	if (font->loadFromFile(fontsPath() / name)) {
-		LINFO("Load font to cache: {}", name);
+		LINFO("Load font to cache: `{}`", name);
 		_fonts.emplace(name, font);
 
 		return font;
 	} else {
-		LINFO("Can't load font file: {}. Try to check defaults", name);
+		LINFO("Can't load font file: `{}`. Try to check defaults", name);
 	}
 
 	if (auto found = _fonts.find(DEFAULT_FONT); found == _fonts.end()) {
@@ -113,7 +113,7 @@ SharedPtr<Font> AssetCache::font(const std::string& name) {
 		font->sf().loadFromMemory(data, size);
 		_fonts.emplace(DEFAULT_FONT, std::move(font));
 	}
-	LWARN("Can't find font: {}, load default: {}", name, DEFAULT_FONT);
+	LWARN("Can't find font: `{}`, load default: `{}`", name, DEFAULT_FONT);
 
 	return _fonts[DEFAULT_FONT];
 }

@@ -114,5 +114,8 @@ add_executable(AlchemyEngineLibBuiltinTests "${CMAKE_CURRENT_LIST_DIR}/tests/bui
 target_link_libraries(AlchemyEngineLibBuiltinTests PUBLIC AlchemyEngineLib)
 
 
+add_executable(AlchemyEngineLibUiExperiments "${CMAKE_CURRENT_LIST_DIR}/tests/ui_experiments/main.cpp")
+target_link_libraries(AlchemyEngineLibUiExperiments PUBLIC AlchemyEngineLib)
+
 
 

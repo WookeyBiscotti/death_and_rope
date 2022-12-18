@@ -11,7 +11,6 @@
 #include <SFML/Graphics/Font.hpp>
 //
 #include <fstream>
-#include <memory>
 
 namespace al {
 

@@ -7,6 +7,7 @@
 #include "alch/common/vector2.hpp"
 #include "alch/engine/component.hpp"
 #include "alch/systems/broker/transmitter.hpp"
+#include "alch/systems/logging/logger.hpp"
 #include "ui_events.hpp"
 #include "ui_style.hpp"
 //
@@ -19,6 +20,8 @@ class UISystem;
 class Context;
 
 using UIUnit = float;
+
+constexpr UIUnit UIUnitMax = std::numeric_limits<UIUnit>::max();
 
 class UIElement: public Transmitter, public EnableSharedFromThis<UIElement> {
 	friend class UISystem;
@@ -74,10 +77,10 @@ class UIElement: public Transmitter, public EnableSharedFromThis<UIElement> {
 	void layout(Layout layout);
 
 	GravityH gravityH() const { return _gravityH; }
-	void gravityH(GravityH g) const;
+	void gravityH(GravityH g);
 
 	GravityV gravityV() const { return _gravityV; }
-	void gravityV(GravityV g) const;
+	void gravityV(GravityV g);
 
 	virtual void add(SharedPtr<UIElement> element);
 
@@ -128,6 +131,22 @@ class UIElement: public Transmitter, public EnableSharedFromThis<UIElement> {
 
 	const auto& childs() const { return _childs; }
 
+	// style calculated Or default
+	template<StyleName name, class T>
+	const T& style() const;
+	template<StyleName name, class T>
+	void style(const T& value);
+
+	void styleClearCache() const;
+
+	// Styles::Value styleValueOpt(StyleName name) const;
+	// template<class T>
+	// const T& styleValue(StyleName name) const;
+	// void styleValue(StyleName name, const Styles::Value& value);
+
+  protected:
+	Opt<Styles::Value> calculatedStyleValueOpt(StyleName name) const;
+
   protected:
 	Context& _context;
 
@@ -143,7 +162,7 @@ class UIElement: public Transmitter, public EnableSharedFromThis<UIElement> {
 	Vector2<UIUnit> _minSize;
 	Vector2<Opt<UIUnit>> _minSizePart;
 
-	Vector2<UIUnit> _maxSize = {std::numeric_limits<UIUnit>::max(), std::numeric_limits<UIUnit>::max()};
+	Vector2<UIUnit> _maxSize = {UIUnitMax, UIUnitMax};
 	Vector2<Opt<UIUnit>> _maxSizePart;
 
 	std::vector<SharedPtr<UIElement>> _childs;
@@ -151,12 +170,35 @@ class UIElement: public Transmitter, public EnableSharedFromThis<UIElement> {
 	GravityV _gravityV = GravityV::NONE;
 	GravityH _gravityH = GravityH::NONE;
 
-	Style _style;
+	Styles::Map _style;
+	mutable Styles::Map _cachedStyle;
 
   private:
 	bool _enabled = true;
 	bool _eventable = true;
 };
+
+template<StyleName name, class T>
+void UIElement::style(const T& value) {
+	static_assert(std::is_same_v<std::remove_cvref_t<T>, std::remove_cvref_t<decltype(styleDefault<name, T>)>>, "Must be same types");
+
+	_style[name].value = value;
+}
+
+template<StyleName name, class T>
+const T& UIElement::style() const {
+	auto vo = calculatedStyleValueOpt(name);
+	if (vo) {
+		auto v = std::get_if<T>(&vo.value());
+		if (v) {
+			return *v;
+		}
+	}
+	const auto& d = styleDefault<name, T>;
+	_cachedStyle[name].value = d;
+
+	return d;
+}
 
 inline bool UIElement::isLocalPointIn(Vector2f p) const {
 	return p.x >= _position.x && p.x <= _position.x + _size.x && p.y >= _position.y && p.y <= _position.y + _size.y;
