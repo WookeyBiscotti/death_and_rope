@@ -36,7 +36,6 @@ class UIButton: public UIElement {
 	bool _pressed{};
 	String _content;
 	SharedPtr<Font> _font;
-	sf::RectangleShape _bg;
 	sf::Text _text;
 };
 

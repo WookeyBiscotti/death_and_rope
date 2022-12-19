@@ -145,7 +145,10 @@ class UIElement: public Transmitter, public EnableSharedFromThis<UIElement> {
 	// void styleValue(StyleName name, const Styles::Value& value);
 
   protected:
-	Opt<Styles::Value> calculatedStyleValueOpt(StyleName name) const;
+	const Styles::Value* calculatedStyleValuePtr(StyleName name) const;
+
+	template<StyleName name, class T>
+	void updateCachedStyle(const T& value) const;
 
   protected:
 	Context& _context;
@@ -180,16 +183,18 @@ class UIElement: public Transmitter, public EnableSharedFromThis<UIElement> {
 
 template<StyleName name, class T>
 void UIElement::style(const T& value) {
-	static_assert(std::is_same_v<std::remove_cvref_t<T>, std::remove_cvref_t<decltype(styleDefault<name, T>)>>, "Must be same types");
+	static_assert(std::is_same_v<std::remove_cvref_t<T>, std::remove_cvref_t<decltype(styleDefault<name, T>)>>,
+	    "Must be same types");
 
 	_style[name].value = value;
+	updateCachedStyle<name>(value);
 }
 
 template<StyleName name, class T>
 const T& UIElement::style() const {
-	auto vo = calculatedStyleValueOpt(name);
+	auto vo = calculatedStyleValuePtr(name);
 	if (vo) {
-		auto v = std::get_if<T>(&vo.value());
+		auto v = std::get_if<T>(vo);
 		if (v) {
 			return *v;
 		}
@@ -245,6 +250,17 @@ bool UIElement::eventInside(const E& e) {
 
 	return globalPos.x <= e.event.x && e.event.x <= globalPos.x + _size.x && globalPos.y <= e.event.y &&
 	       e.event.y <= globalPos.y + _size.y;
+}
+
+template<StyleName name, class T>
+void UIElement::updateCachedStyle(const T& v) const {
+	if (auto f = _cachedStyle.find(name); f != _cachedStyle.end()) {
+		f->second = v;
+	} else {
+		for (const auto& c : _childs) {
+			c->updateCachedStyle<name>(v);
+		}
+	}
 }
 
 } // namespace al

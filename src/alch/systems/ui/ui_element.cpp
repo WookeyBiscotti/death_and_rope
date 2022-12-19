@@ -95,7 +95,7 @@ void UIElement::updateChildsPositionSize() {
 						break;
 					}
 
-					UIUnit minSize{std::numeric_limits<UIUnit>::max()};
+					UIUnit minSize{UIUnitMax};
 					InlinedVector<UIElement*, 16> elms;
 					for (auto& c : _childs) {
 						elms.push_back(c.get());
@@ -104,10 +104,10 @@ void UIElement::updateChildsPositionSize() {
 						}
 					}
 
-					while (!elms.empty() && w >= EPSILON) {
+					while (!elms.empty() && w >= EPSILON && minSize != UIUnitMax ) {
 						dw = w / elms.size();
 
-						UIUnit newMinSize{std::numeric_limits<UIUnit>::max()};
+						UIUnit newMinSize{UIUnitMax};
 						for (auto& e : elms) {
 							if (e->_maxSize.*C <= minSize + dw) {
 								w -= e->_maxSize.*C - e->_size.*C;
@@ -190,6 +190,7 @@ void UIElement::updateChildsPositionSize() {
 
 	for (const auto& c : _childs) {
 		c->updateChildsPositionSize();
+		c->onResize();
 	}
 }
 
@@ -447,24 +448,24 @@ void UIElement::gravityV(GravityV g) {
 	}
 }
 
-Opt<Styles::Value> UIElement::calculatedStyleValueOpt(StyleName name) const {
+const Styles::Value* UIElement::calculatedStyleValuePtr(StyleName name) const {
 	if (auto v = _style.find(name); v != _style.end()) {
-		return v->second.value;
+		return &v->second.value;
 	}
 	if (auto v = _cachedStyle.find(name); v != _cachedStyle.end()) {
-		return v->second.value;
+		return &v->second.value;
 	}
 
 	auto p = _parent.lock();
 	if (p) {
-		auto v = p->calculatedStyleValueOpt(name);
+		auto v = p->calculatedStyleValuePtr(name);
 		if (v) {
-			_cachedStyle[name].value = v.value();
-			return *v;
+			_cachedStyle[name].value = *v;
+			return v;
 		}
 	}
 
-	return {};
+	return nullptr;
 }
 
 void UIElement::styleClearCache() const {
