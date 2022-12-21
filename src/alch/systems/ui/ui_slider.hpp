@@ -28,8 +28,8 @@ class UISlider: public UIElement {
 	void onResize() override;
 	void onMove() override;
 
-	UIElement* onDragStart(const UIMouseDragStart&) override;
-	UIElement* onDrag(const UIMouseDrag&) override;
+	void onDragStart(const UIMouseDragStart&) override;
+	void onDrag(const UIMouseDrag&) override;
 
 	UIElement* onMouseWheel(const UIMouseWheel& e) override;
 

@@ -15,11 +15,27 @@ UIButton::UIButton(Context& context, WeakPtr<UIElement> parent, std::string cont
 }
 
 void UIButton::draw(sf::RenderTarget& target) {
-	if (_pressed) {
+	if (_state == State::PRESSED) {
 		drawPressed(target);
-	} else {
+	} else if (_state == State::IDLE) {
 		drawIdle(target);
+	} else {
+		drawHovered(target);
 	}
+}
+
+void UIButton::drawHovered(sf::RenderTarget& target) {
+	using enum StyleName;
+	sf::RectangleShape rs;
+	rs.setSize(_size);
+	rs.setPosition(toWorldCoords(_position));
+
+	rs.setFillColor(style<BTN_HOVERED_COLOR, Color>());
+	rs.setOutlineColor(style<BORDER_COLOR, Color>());
+	rs.setOutlineThickness(-style<BORDER_THICKNESS, float>());
+
+	target.draw(rs);
+	target.draw(_text);
 }
 
 void UIButton::drawIdle(sf::RenderTarget& target) {
@@ -28,7 +44,7 @@ void UIButton::drawIdle(sf::RenderTarget& target) {
 	rs.setSize(_size);
 	rs.setPosition(toWorldCoords(_position));
 
-	rs.setFillColor(style<BACKGROUND_COLOR, Color>());
+	rs.setFillColor(style<BTN_IDL_COLOR, Color>());
 	rs.setOutlineColor(style<BORDER_COLOR, Color>());
 	rs.setOutlineThickness(-style<BORDER_THICKNESS, float>());
 
@@ -42,7 +58,7 @@ void UIButton::drawPressed(sf::RenderTarget& target) {
 	rs.setSize(_size);
 	rs.setPosition(toWorldCoords(_position));
 
-	rs.setFillColor(style<BACKGROUND_COLOR, Color>());
+	rs.setFillColor(style<BTN_PRESSED_COLOR, Color>());
 	rs.setOutlineColor(style<BORDER_COLOR, Color>());
 	rs.setOutlineThickness(-style<BORDER_THICKNESS, float>());
 
@@ -75,28 +91,24 @@ void UIButton::onTransform() {
 	_text.setPosition(gp + 0.5f * size());
 }
 
-UIElement* UIButton::onUnhovered(const UIUnhovered&) {
-	if (_pressed) {
-		_pressed = false;
-	}
-
-	return this;
+void UIButton::onUnhovered(const UIUnhovered&) {
+	_state = State::IDLE;
 }
 
-UIElement* UIButton::onReleased(const UIMouseButtonReleased&) {
-	if (_pressed) {
-		_pressed = false;
-		send(UIButtonOnRelease{});
-
-		return this;
-	}
-
-	return nullptr;
+void UIButton::onHovered(const UIHovered&) {
+	_state = State::HOVERED;
 }
 
-UIElement* UIButton::onPressed(const UIMouseButtonPressed&) {
-	_pressed = true;
+void UIButton::onReleased(const UIMouseButtonReleased& e) {
+	if (_state == State::PRESSED) {
+		_state = State::IDLE;
+		if (isEventInside(e)) {
+			send(UIButtonOnRelease{});
+		}
+	}
+}
+
+void UIButton::onPressed(const UIMouseButtonPressed&) {
+	_state = State::PRESSED;
 	send(UIButtonOnPress{});
-
-	return this;
 }

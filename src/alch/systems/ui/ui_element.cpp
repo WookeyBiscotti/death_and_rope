@@ -104,7 +104,7 @@ void UIElement::updateChildsPositionSize() {
 						}
 					}
 
-					while (!elms.empty() && w >= EPSILON && minSize != UIUnitMax ) {
+					while (!elms.empty() && w >= EPSILON && minSize != UIUnitMax) {
 						dw = w / elms.size();
 
 						UIUnit newMinSize{UIUnitMax};
@@ -203,88 +203,10 @@ void UIElement::add(SharedPtr<UIElement> element) {
 	updateChildsPositionSize();
 }
 
-UIElement* UIElement::onMouseMove(const UIMouseMove& e) {
-	if (eventable() && eventInside(e)) {
-		for (auto& c : _childs) {
-			if (c->eventable() && c->eventInside(e)) {
-				if (system().lastHovered() == c.get()) {
-
-					return c->onMouseMove({e.event});
-				} else {
-					auto hovered = c->onHovered({e.event});
-
-					if (system().lastHovered() && system().lastHovered() != hovered) {
-						system().lastHovered()->onUnhovered({e.event});
-						system().lastHovered(hovered);
-					}
-
-					return hovered;
-				}
-			}
-		}
-
-		return this;
-	}
-
-	return nullptr;
-}
-
-UIElement* UIElement::onHovered(const UIHovered& e) {
-	return UIElement::onMouseMove({e.event});
-}
-
-UIElement* UIElement::onUnhovered(const UIUnhovered& e) {
-	return nullptr;
-}
-
-UIElement* UIElement::onPressed(const UIMouseButtonPressed& e) {
-	if (eventable() && eventInside(e)) {
-		for (auto& c : _childs) {
-			if (c->eventable() && c->eventInside(e)) {
-				return c->onPressed(e);
-			}
-		}
-	}
-
-	return nullptr;
-}
-
-UIElement* UIElement::onReleased(const UIMouseButtonReleased& e) {
-	if (eventable() && eventInside(e)) {
-		for (auto& c : _childs) {
-			if (c->eventable() && c->eventInside(e)) {
-				return c->onReleased(e);
-			}
-		}
-	}
-
-	return nullptr;
-}
-
-UIElement* UIElement::onDragStart(const UIMouseDragStart& e) {
-	if (eventable() && eventInside(e)) {
-		for (auto& c : _childs) {
-			if (c->eventable() && c->eventInside(e)) {
-				return c->onDragStart(e);
-			}
-		}
-	}
-
-	return nullptr;
-}
-
-UIElement* UIElement::onDrag(const UIMouseDrag& e) {
-	return nullptr;
-}
-
-UIElement* UIElement::onDragStop(const UIMouseDragStop& e) {
-	return nullptr;
-}
-
 UIElement* UIElement::onMouseWheel(const UIMouseWheel& e) {
-	if (eventable() && eventInside(e)) {
+	if (eventable() && isEventInside(e)) {
 		for (auto& c : _childs) {
-			if (c->eventable() && c->eventInside(e)) {
+			if (c->eventable() && c->isEventInside(e)) {
 				auto wg = c->onMouseWheel(e);
 				if (wg) {
 					return wg;
@@ -293,9 +215,11 @@ UIElement* UIElement::onMouseWheel(const UIMouseWheel& e) {
 		}
 
 		for (auto& c : _childs) {
-			auto wg = c->onMouseWheel(e);
-			if (wg) {
-				return wg;
+			if (c->eventable()) {
+				auto wg = c->onMouseWheel(e);
+				if (wg) {
+					return wg;
+				}
 			}
 		}
 	}
@@ -322,11 +246,11 @@ void UIElement::position(Vector2<UIUnit> position) {
 void UIElement::updatePositionPart() {
 }
 
-const Vector2<Opt<float>>& UIElement::positionPart() const {
+const Vector2<Optional<float>>& UIElement::positionPart() const {
 	return _positionPart;
 }
 
-void UIElement::positionPart(const Vector2<Opt<float>>& position) {
+void UIElement::positionPart(const Vector2<Optional<float>>& position) {
 }
 
 void UIElement::size(Vector2<UIUnit> size) {

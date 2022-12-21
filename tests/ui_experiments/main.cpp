@@ -22,7 +22,6 @@ int main(int argc, const char** argv) {
 				    auto uis = c.systemRef<al::UISystem>();
 
 				    auto r = uis.root();
-					r->style<StyleName::BACKGROUND_COLOR>(Color(50,50,50));
 				    r->layout(al::UIElement::VERICAL);
 				    r->create<al::UIPanel>();
 				    auto p = r->create<al::UIPanel>();

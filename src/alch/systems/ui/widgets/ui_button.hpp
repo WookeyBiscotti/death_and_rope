@@ -22,18 +22,25 @@ class UIButton: public UIElement {
 	void onResize() override;
 	void onMove() override;
 
-	UIElement* onUnhovered(const UIUnhovered&) override;
-	UIElement* onReleased(const UIMouseButtonReleased&) override;
-	UIElement* onPressed(const UIMouseButtonPressed&) override;
+	void onUnhovered(const UIUnhovered&) override;
+	void onHovered(const UIHovered&) override;
+	void onReleased(const UIMouseButtonReleased&) override;
+	void onPressed(const UIMouseButtonPressed&) override;
 
   protected:
 	virtual void drawIdle(sf::RenderTarget& target);
+	virtual void drawHovered(sf::RenderTarget& target);
 	virtual void drawPressed(sf::RenderTarget& target);
 
 	void onTransform();
 
   protected:
-	bool _pressed{};
+	enum class State {
+		IDLE,
+		HOVERED,
+		PRESSED,
+	} _state = State::IDLE;
+
 	String _content;
 	SharedPtr<Font> _font;
 	sf::Text _text;

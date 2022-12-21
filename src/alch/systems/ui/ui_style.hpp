@@ -13,15 +13,20 @@ enum class StyleName {
 	BACKGROUND_COLOR,
 	BORDER_COLOR,
 	BORDER_THICKNESS,
+
 	TEXT_SIZE,
 	TEXT_COLOR,
+
+	BTN_IDL_COLOR,
+	BTN_PRESSED_COLOR,
+	BTN_HOVERED_COLOR,
 };
 
 template<StyleName name, class T>
 static const T styleDefault;
 
 template<>
-static const Color styleDefault<StyleName::BACKGROUND_COLOR, Color> = Color::Black;
+static const Color styleDefault<StyleName::BACKGROUND_COLOR, Color> = Color(50, 50, 50);
 template<>
 static const Color styleDefault<StyleName::BORDER_COLOR, Color> = Color::White;
 template<>
@@ -30,6 +35,12 @@ template<>
 static const Color styleDefault<StyleName::TEXT_COLOR, Color> = Color::White;
 template<>
 static const float styleDefault<StyleName::TEXT_SIZE, float> = 14.0f;
+template<>
+static const Color styleDefault<StyleName::BTN_IDL_COLOR, Color> = Color(50, 50, 50);
+template<>
+static const Color styleDefault<StyleName::BTN_HOVERED_COLOR, Color> = Color(70, 70, 70);
+template<>
+static const Color styleDefault<StyleName::BTN_PRESSED_COLOR, Color> = Color(35, 35, 35);
 
 struct Styles {
 	using Map = al::HashMap<StyleName, Styles>;

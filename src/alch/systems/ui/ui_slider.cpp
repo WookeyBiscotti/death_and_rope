@@ -42,16 +42,12 @@ void UISlider::onTransform() {
 	}
 }
 
-UIElement* UISlider::onDragStart(const UIMouseDragStart& e) {
+void UISlider::onDragStart(const UIMouseDragStart& e) {
 	setValueFromPoint(Vector2f(e.event.x, e.event.y));
-
-	return this;
 }
 
-UIElement* UISlider::onDrag(const UIMouseDrag& e) {
+void UISlider::onDrag(const UIMouseDrag& e) {
 	setValueFromPoint(Vector2f(e.event.x, e.event.y));
-
-	return this;
 }
 
 void UISlider::setValueFromPoint(Vector2f p) {

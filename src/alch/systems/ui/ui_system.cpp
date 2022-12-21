@@ -15,7 +15,15 @@ class UnchangeableLayout: public UIElement {
 		_layout = UIElement::FREE;
 	}
 
-	// void layout(Layout) override {}
+	bool isPointInside(const Vector2f& p) const override {
+		for (const auto& c : _childs) {
+			if (c->isPointInside(p)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
 };
 
 UIElement* UISystem::getElementUnderPoint(UIElement* el, Vector2f p) {
@@ -35,6 +43,21 @@ UIElement* UISystem::getElementUnderPoint(UIElement* el, Vector2f p) {
 	return el->eventable() ? el : nullptr;
 }
 
+UIElement* findWidgetUnderPoint(UIElement& root, const Vector2f& p) {
+	UIElement* last = nullptr;
+	if (root.isPointInside(p)) {
+		last = &root;
+		for (const auto& c : root.childs()) {
+			if (c->isPointInside(p)) {
+				last = c.get();
+				last = findWidgetUnderPoint(*c.get(), p);
+			}
+		}
+	}
+
+	return last;
+}
+
 UISystem::UISystem(Context& context): System(context) {
 	_root = SharedPtr<UIElement>::make(_context, nullptr);
 	_userRoot = _root->create<UIElement>();
@@ -50,34 +73,46 @@ UISystem::UISystem(Context& context): System(context) {
 		if (eType != sf::Event::Closed && eType != sf::Event::LostFocus && eType != sf::Event::GainedFocus &&
 		    eType != sf::Event::Resized) {
 			if (eType == sf::Event::MouseMoved) {
-				_freeLayout->onMouseMove({UIMouseMove{e.general.event.mouseMove}}) ||
-				    _userRoot->onMouseMove({UIMouseMove{e.general.event.mouseMove}});
-				for (auto& [_, w] : _lastDraged) {
-					if (w) {
-						w->onDrag({e.general.event.mouseMove});
+				if (_lastDraged.empty()) {
+					auto w = findWidgetUnderPoint(*_root,
+					    Vector2f(e.general.event.mouseMove.x, e.general.event.mouseMove.y));
+
+					if (_lastHovered != w) {
+						if (_lastHovered) {
+							_lastHovered->onUnhovered({UIUnhovered{e.general.event.mouseMove}});
+						}
+						_lastHovered = w;
+						if (_lastHovered) {
+							_lastHovered->onHovered({UIHovered{e.general.event.mouseMove}});
+						}
+					} else {
+						if (_lastHovered) {
+							_lastHovered->onMouseMove({UIMouseMove{e.general.event.mouseMove}});
+						}
+					}
+				} else {
+					for (auto& [_, w] : _lastDraged) {
+						if (w) {
+							w->onDrag({e.general.event.mouseMove});
+						}
 					}
 				}
 			} else if (eType == sf::Event::MouseButtonPressed) {
-				_freeLayout->onPressed(UIMouseButtonPressed{e.general.event.mouseButton}) ||
-				    _userRoot->onPressed(UIMouseButtonPressed{e.general.event.mouseButton});
-				auto wg = _freeLayout->onDragStart(UIMouseDragStart{e.general.event.mouseButton});
-				if (!wg) {
-					wg = _userRoot->onDragStart({UIMouseDragStart{e.general.event.mouseButton}});
-				}
-				if (wg) {
-					_lastDraged[e.general.event.mouseButton.button] = wg;
+				auto w =
+				    findWidgetUnderPoint(*_root, Vector2f(e.general.event.mouseMove.x, e.general.event.mouseButton.y));
+				if (w) {
+					w->onDragStart(UIMouseDragStart{e.general.event.mouseButton});
+					w->onPressed(UIMouseButtonPressed{e.general.event.mouseButton});
+					_lastDraged[e.general.event.mouseButton.button] = w;
 				}
 			} else if (eType == sf::Event::MouseButtonReleased) {
-				_freeLayout->onReleased(UIMouseButtonReleased{e.general.event.mouseButton}) ||
-				    _userRoot->onReleased(UIMouseButtonReleased{e.general.event.mouseButton});
-				auto wg = _lastDraged[e.general.event.mouseButton.button];
-				if (wg) {
-					wg->onDragStop({e.general.event.mouseButton});
+				if (auto f = _lastDraged.find(e.general.event.mouseButton.button); f != _lastDraged.end()) {
+					f->second->onReleased(UIMouseButtonReleased{e.general.event.mouseButton});
+					f->second->onDragStop(UIMouseDragStop{e.general.event.mouseButton});
+					_lastDraged.erase(f);
 				}
-				_lastDraged.erase(e.general.event.mouseButton.button);
 			} else if (eType == sf::Event::MouseWheelScrolled) {
-				_freeLayout->onMouseWheel(UIMouseWheel{e.general.event.mouseWheelScroll}) ||
-				    _userRoot->onMouseWheel(UIMouseWheel{e.general.event.mouseWheelScroll});
+				auto w = _root->onMouseWheel(UIMouseWheel{e.general.event.mouseWheelScroll});
 			}
 		}
 		if (eType == sf::Event::Resized) {

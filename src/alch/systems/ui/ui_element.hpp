@@ -23,6 +23,9 @@ using UIUnit = float;
 
 constexpr UIUnit UIUnitMax = std::numeric_limits<UIUnit>::max();
 
+// using EventsPtrs = Variant<UIHovered*, UIMouseMove*, UIUnhovered*, UIMouseButtonPressed*, UIMouseButtonReleased*,
+//     UIMouseDragStart*, UIMouseDrag*, UIMouseDragStop*, UIMouseWheel*>;
+
 class UIElement: public Transmitter, public EnableSharedFromThis<UIElement> {
 	friend class UISystem;
 
@@ -56,8 +59,8 @@ class UIElement: public Transmitter, public EnableSharedFromThis<UIElement> {
 	void parent(WeakPtr<UIElement> parent);
 
 	void updatePositionPart();
-	const Vector2<Opt<float>>& positionPart() const;
-	void positionPart(const Vector2<Opt<float>>& position);
+	const Vector2<Optional<float>>& positionPart() const;
+	void positionPart(const Vector2<Optional<float>>& position);
 
 	Vector2<UIUnit> position() const;
 	void position(Vector2<UIUnit> position);
@@ -91,7 +94,7 @@ class UIElement: public Transmitter, public EnableSharedFromThis<UIElement> {
 
 	virtual void removeAll();
 
-	Vector2<UIUnit> toWorldCoords(Vector2<UIUnit> p);
+	Vector2<UIUnit> toWorldCoords(Vector2<UIUnit> p) const;
 
 	bool isLocalPointIn(Vector2f p) const;
 
@@ -103,16 +106,16 @@ class UIElement: public Transmitter, public EnableSharedFromThis<UIElement> {
 	virtual void onMove();
 	virtual void onLayoutChange(Layout old) {}
 
-	virtual UIElement* onHovered(const UIHovered&);
-	virtual UIElement* onMouseMove(const UIMouseMove&);
-	virtual UIElement* onUnhovered(const UIUnhovered&);
+	virtual void onHovered(const UIHovered&) {}
+	virtual void onMouseMove(const UIMouseMove&) {}
+	virtual void onUnhovered(const UIUnhovered&) {}
 
-	virtual UIElement* onPressed(const UIMouseButtonPressed&);
-	virtual UIElement* onReleased(const UIMouseButtonReleased&);
+	virtual void onPressed(const UIMouseButtonPressed&) {}
+	virtual void onReleased(const UIMouseButtonReleased&) {}
 
-	virtual UIElement* onDragStart(const UIMouseDragStart&);
-	virtual UIElement* onDrag(const UIMouseDrag&);
-	virtual UIElement* onDragStop(const UIMouseDragStop&);
+	virtual void onDragStart(const UIMouseDragStart&) {}
+	virtual void onDrag(const UIMouseDrag&) {}
+	virtual void onDragStop(const UIMouseDragStop&) {}
 
 	virtual UIElement* onMouseWheel(const UIMouseWheel&);
 
@@ -123,7 +126,8 @@ class UIElement: public Transmitter, public EnableSharedFromThis<UIElement> {
 	bool enabled() const { return _enabled; }
 
 	template<class E>
-	bool eventInside(const E& e);
+	bool isEventInside(const E& e) const;
+	virtual bool isPointInside(const Vector2f& p) const;
 
 	UISystem& system() const;
 
@@ -139,11 +143,6 @@ class UIElement: public Transmitter, public EnableSharedFromThis<UIElement> {
 
 	void styleClearCache() const;
 
-	// Styles::Value styleValueOpt(StyleName name) const;
-	// template<class T>
-	// const T& styleValue(StyleName name) const;
-	// void styleValue(StyleName name, const Styles::Value& value);
-
   protected:
 	const Styles::Value* calculatedStyleValuePtr(StyleName name) const;
 
@@ -158,15 +157,15 @@ class UIElement: public Transmitter, public EnableSharedFromThis<UIElement> {
 	WeakPtr<UIElement> _parent;
 
 	Vector2<UIUnit> _position;
-	Vector2<Opt<float>> _positionPart;
+	Vector2<Optional<float>> _positionPart;
 
 	Vector2<UIUnit> _size;
 
 	Vector2<UIUnit> _minSize;
-	Vector2<Opt<UIUnit>> _minSizePart;
+	Vector2<Optional<UIUnit>> _minSizePart;
 
 	Vector2<UIUnit> _maxSize = {UIUnitMax, UIUnitMax};
-	Vector2<Opt<UIUnit>> _maxSizePart;
+	Vector2<Optional<UIUnit>> _maxSizePart;
 
 	std::vector<SharedPtr<UIElement>> _childs;
 
@@ -218,7 +217,8 @@ inline bool UIElement::isGlobalPointIn(Vector2f p) const {
 	return isLocalPointIn(p);
 }
 
-inline Vector2<UIUnit> UIElement::toWorldCoords(Vector2<UIUnit> p) {
+inline Vector2<UIUnit> UIElement::toWorldCoords(Vector2<UIUnit> p) const {
+	// TODO: hash this
 	for (auto par = parent().lock(); par;) {
 		p += par->position();
 		par = par->parent().lock();
@@ -245,17 +245,21 @@ inline void UIElement::layout(Layout layout) {
 }
 
 template<class E>
-bool UIElement::eventInside(const E& e) {
+bool UIElement::isEventInside(const E& e) const {
+
+	return isPointInside(Vector2f(e.event.x, e.event.y));
+}
+
+inline bool UIElement::isPointInside(const Vector2f& p) const {
 	const auto globalPos = toWorldCoords(_position);
 
-	return globalPos.x <= e.event.x && e.event.x <= globalPos.x + _size.x && globalPos.y <= e.event.y &&
-	       e.event.y <= globalPos.y + _size.y;
+	return globalPos.x <= p.x && p.x <= globalPos.x + _size.x && globalPos.y <= p.y && p.y <= globalPos.y + _size.y;
 }
 
 template<StyleName name, class T>
 void UIElement::updateCachedStyle(const T& v) const {
 	if (auto f = _cachedStyle.find(name); f != _cachedStyle.end()) {
-		f->second = v;
+		f->second.value = v;
 	} else {
 		for (const auto& c : _childs) {
 			c->updateCachedStyle<name>(v);

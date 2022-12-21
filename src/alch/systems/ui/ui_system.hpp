@@ -39,7 +39,7 @@ class UISystem final: public System {
 	UIElement* _userRoot;
 
 	UIElement* _lastHovered{};
-	std::unordered_map<sf::Mouse::Button, UIElement*> _lastDraged;
+	al::HashMap<sf::Mouse::Button, UIElement*> _lastDraged;
 };
 
 inline UIElement* UISystem::lastDraged(sf::Mouse::Button b) const {
