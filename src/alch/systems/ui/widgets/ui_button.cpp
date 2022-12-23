@@ -14,6 +14,11 @@ UIButton::UIButton(Context& context, WeakPtr<UIElement> parent, std::string cont
 	}
 }
 
+void UIButton::onSizeChange(const Vector2f& s) {
+	onTransform();
+	UIElement::onSizeChange(s);
+}
+
 void UIButton::draw(sf::RenderTarget& target) {
 	if (_state == State::PRESSED) {
 		drawPressed(target);
@@ -64,14 +69,6 @@ void UIButton::drawPressed(sf::RenderTarget& target) {
 
 	target.draw(rs);
 	target.draw(_text);
-}
-
-void UIButton::onResize() {
-	onTransform();
-}
-
-void UIButton::onMove() {
-	onTransform();
 }
 
 void UIButton::onTransform() {

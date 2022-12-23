@@ -19,13 +19,12 @@ class UIButton: public UIElement {
 
 	void draw(sf::RenderTarget& target) override;
 
-	void onResize() override;
-	void onMove() override;
-
 	void onUnhovered(const UIUnhovered&) override;
 	void onHovered(const UIHovered&) override;
 	void onReleased(const UIMouseButtonReleased&) override;
 	void onPressed(const UIMouseButtonPressed&) override;
+
+	void onSizeChange(const Vector2f&) override;
 
   protected:
 	virtual void drawIdle(sf::RenderTarget& target);

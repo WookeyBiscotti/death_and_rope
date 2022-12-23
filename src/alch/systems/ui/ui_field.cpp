@@ -6,22 +6,22 @@ class FieldRoot: public UIElement {
   public:
 	FieldRoot(Context& context, WeakPtr<UIElement> parent): UIElement(context, parent) {}
 
-	void onResize() override {
-		if (_layout == UIElement::VERICAL) {
-			float h{};
-			for (auto& c : _childs) {
-				h += c->size().y;
-			}
-			size({_size.x, h});
-		} else if (_layout == UIElement::HORIZONTAL) {
-			float w{};
-			for (auto& c : _childs) {
-				w += c->size().x;
-			}
-			size({w, _size.y});
-		}
-		UIElement::onResize();
-	}
+	// void onResize() override {
+	// 	if (_layout == UIElement::VERICAL) {
+	// 		float h{};
+	// 		for (auto& c : _childs) {
+	// 			h += c->size().y;
+	// 		}
+	// 		size({_size.x, h});
+	// 	} else if (_layout == UIElement::HORIZONTAL) {
+	// 		float w{};
+	// 		for (auto& c : _childs) {
+	// 			w += c->size().x;
+	// 		}
+	// 		size({w, _size.y});
+	// 	}
+	// 	UIElement::onResize();
+	// }
 };
 
 UIField::UIField(Context& context, WeakPtr<UIElement> parent): UIElement(context, parent) {

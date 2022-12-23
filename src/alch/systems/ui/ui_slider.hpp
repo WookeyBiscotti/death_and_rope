@@ -25,13 +25,13 @@ class UISlider: public UIElement {
 
 	void draw(sf::RenderTarget& target) override;
 
-	void onResize() override;
-	void onMove() override;
+	// void onResize() override;
+	// void onMove() override;
 
 	void onDragStart(const UIMouseDragStart&) override;
 	void onDrag(const UIMouseDrag&) override;
 
-	UIElement* onMouseWheel(const UIMouseWheel& e) override;
+	bool onMouseWheel(const UIMouseWheel& e) override;
 
 	bool vertical() const { return _isVertical; }
 	void vertical(bool vertial) { _isVertical = vertial; }

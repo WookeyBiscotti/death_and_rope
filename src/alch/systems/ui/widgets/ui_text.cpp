@@ -3,7 +3,7 @@
 #include "alch/engine/context.hpp"
 #include "alch/systems/assets/asset_cache.hpp"
 #include "alch/systems/broker/broker.hpp"
-#include "ui_system.hpp"
+#include "../ui_system.hpp"
 
 using namespace al;
 
@@ -12,31 +12,32 @@ UIText::UIText(Context& context, WeakPtr<UIElement> parent, std::string content,
 	if (!_font) {
 		_font = context.systemRef<AssetCache>().font();
 	}
-	_bg.setOutlineColor(sf::Color::Black);
-	_bg.setOutlineThickness(-3);
-	_bg.setFillColor(sf::Color(250, 250, 250));
 }
 
 void UIText::draw(sf::RenderTarget& target) {
-	target.draw(_bg);
+	using enum StyleName;
+
+	using enum StyleName;
+	sf::RectangleShape rs;
+	rs.setSize(_size);
+	rs.setPosition(toWorldCoords(_position));
+
+	rs.setFillColor(style<BACKGROUND_COLOR, Color>());
+	rs.setOutlineColor(style<BORDER_COLOR, Color>());
+	rs.setOutlineThickness(-style<BORDER_THICKNESS, float>());
+
+	target.draw(rs);
 	target.draw(_text);
 }
 
-void UIText::onResize() {
-	onTransform();
-}
-
-void UIText::onMove() {
-	onTransform();
-}
-
-void UIText::onTransform() {
+void UIText::onSizeChange(const Vector2f& old) {
 	if (_font) {
 		_text.setFont(_font->sf());
 	}
-	_text.setString(_content);
-	_text.setCharacterSize(14);
-	_text.setFillColor(sf::Color::Black);
+	// sf::String::toUtf8(_content);
+	_text.setString(sf::String::fromUtf8(_content.begin(), _content.end()));
+	_text.setCharacterSize(style<StyleName::TEXT_SIZE, float>());
+	_text.setFillColor(style<StyleName::TEXT_COLOR, Color>());
 	// _text.setStyle(sf::Text::Bold | sf::Text::Underlined);
 
 	auto gb = _text.getGlobalBounds();
@@ -44,12 +45,9 @@ void UIText::onTransform() {
 
 	_text.setOrigin(gb.width / 2, gb.height / 2);
 	_text.setPosition(gp + 0.5f * size());
-
-	_bg.setSize(_size);
-	_bg.setPosition(gp);
 }
 
-void UIText::value(const std::string& s) {
+void UIText::content(const std::string& s) {
 	_content = s;
-	onTransform();
+	onSizeChange({});
 }

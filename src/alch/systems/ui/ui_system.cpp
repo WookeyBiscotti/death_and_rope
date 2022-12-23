@@ -104,6 +104,25 @@ UISystem::UISystem(Context& context): System(context) {
 					w->onDragStart(UIMouseDragStart{e.general.event.mouseButton});
 					w->onPressed(UIMouseButtonPressed{e.general.event.mouseButton});
 					_lastDraged[e.general.event.mouseButton.button] = w;
+
+					if (_focused != w) {
+						if (_focused) {
+							_focused->_flags[UIFlags::FOCUSED] = false;
+							_focused->onUnfocused();
+						}
+
+						if (!w->onFocused()) {
+							auto p = w->parent().lock();
+							while (p && p->onFocused()) {
+								p = p->parent().lock();
+							}
+							_focused = p.get();
+						}
+						if (_focused) {
+							_focused->_flags[UIFlags::FOCUSED] = true;
+							_focused->onFocused();
+						}
+					}
 				}
 			} else if (eType == sf::Event::MouseButtonReleased) {
 				if (auto f = _lastDraged.find(e.general.event.mouseButton.button); f != _lastDraged.end()) {
@@ -112,7 +131,16 @@ UISystem::UISystem(Context& context): System(context) {
 					_lastDraged.erase(f);
 				}
 			} else if (eType == sf::Event::MouseWheelScrolled) {
-				auto w = _root->onMouseWheel(UIMouseWheel{e.general.event.mouseWheelScroll});
+				auto w =
+				    findWidgetUnderPoint(*_root, Vector2f(e.general.event.mouseMove.x, e.general.event.mouseButton.y));
+				if (w) {
+					if (!w->onMouseWheel(UIMouseWheel{e.general.event.mouseWheelScroll})) {
+						auto p = w->parent().lock();
+						while (p && p->onMouseWheel(UIMouseWheel{e.general.event.mouseWheelScroll})) {
+							p = p->parent().lock();
+						}
+					}
+				}
 			}
 		}
 		if (eType == sf::Event::Resized) {

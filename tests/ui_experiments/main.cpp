@@ -6,6 +6,7 @@
 #include <alch/systems/ui/ui_system.hpp>
 #include <alch/systems/ui/widgets/ui_panel.hpp>
 #include <alch/systems/ui/widgets/ui_button.hpp>
+#include <alch/systems/ui/widgets/ui_text.hpp>
 
 using namespace al;
 
@@ -26,7 +27,9 @@ int main(int argc, const char** argv) {
 				    r->create<al::UIPanel>();
 				    auto p = r->create<al::UIPanel>();
 				    p->maxSize({40, 40});
-				    r->create<al::UIPanel>();
+				    auto t = r->create<al::UIText>();
+					t->content("WEQWEQWEWQE");
+					t->maxSize({UIUnitMax, 30});
 				    // r->create<al::UIPanel>();
 					r->create<al::UIButton>("Wtf");
 			    },

@@ -16,7 +16,7 @@ using Vector2f = sf::Vector2f;
 using Vector2u = sf::Vector2u;
 using Vector2i = sf::Vector2i;
 
-inline const Vector2f Vector2fMin = {};
+inline const Vector2f Vector2fZero = {};
 inline const Vector2f Vector2fMax = {std::numeric_limits<float>::max(), std::numeric_limits<float>::max()};
 
 inline Vector2f from(const b2Vec2& vec) {

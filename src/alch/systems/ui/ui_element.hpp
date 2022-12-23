@@ -1,6 +1,7 @@
 #pragma once
 
 #include "alch/common/archive.hpp"
+#include "alch/common/bitset.hpp"
 #include "alch/common/optional.hpp"
 #include "alch/common/rect.hpp"
 #include "alch/common/smart_ptr.hpp"
@@ -12,7 +13,6 @@
 #include "ui_style.hpp"
 //
 #include <SFML/Graphics.hpp>
-#include <string>
 
 namespace al {
 
@@ -25,6 +25,16 @@ constexpr UIUnit UIUnitMax = std::numeric_limits<UIUnit>::max();
 
 // using EventsPtrs = Variant<UIHovered*, UIMouseMove*, UIUnhovered*, UIMouseButtonPressed*, UIMouseButtonReleased*,
 //     UIMouseDragStart*, UIMouseDrag*, UIMouseDragStop*, UIMouseWheel*>;
+
+namespace UIFlags {
+enum {
+	ENABLE,
+	EVENTABLE,
+	FOCUSED,
+
+	COUNT,
+};
+};
 
 class UIElement: public Transmitter, public EnableSharedFromThis<UIElement> {
 	friend class UISystem;
@@ -102,9 +112,9 @@ class UIElement: public Transmitter, public EnableSharedFromThis<UIElement> {
 
 	virtual void draw(sf::RenderTarget& target);
 
-	virtual void onResize() {}
-	virtual void onMove();
 	virtual void onLayoutChange(Layout old) {}
+
+	virtual void onSizeChange(const Vector2f& old);
 
 	virtual void onHovered(const UIHovered&) {}
 	virtual void onMouseMove(const UIMouseMove&) {}
@@ -117,13 +127,16 @@ class UIElement: public Transmitter, public EnableSharedFromThis<UIElement> {
 	virtual void onDrag(const UIMouseDrag&) {}
 	virtual void onDragStop(const UIMouseDragStop&) {}
 
-	virtual UIElement* onMouseWheel(const UIMouseWheel&);
+	virtual bool onMouseWheel(const UIMouseWheel&) { return false; }
 
-	bool eventable() const { return _eventable && _enabled; }
-	void eventable(bool eventable) { _eventable = eventable; }
+	virtual bool onFocused() { return false; };
+	virtual void onUnfocused(){};
+
+	bool eventable() const { return _flags[UIFlags::EVENTABLE]; }
+	void eventable(bool eventable) { _flags[UIFlags::EVENTABLE] = eventable; }
 
 	void enabled(bool enabled);
-	bool enabled() const { return _enabled; }
+	bool enabled() const { return _flags[UIFlags::ENABLE]; }
 
 	template<class E>
 	bool isEventInside(const E& e) const;
@@ -175,9 +188,7 @@ class UIElement: public Transmitter, public EnableSharedFromThis<UIElement> {
 	Styles::Map _style;
 	mutable Styles::Map _cachedStyle;
 
-  private:
-	bool _enabled = true;
-	bool _eventable = true;
+	Bitset<UIFlags::COUNT> _flags;
 };
 
 template<StyleName name, class T>

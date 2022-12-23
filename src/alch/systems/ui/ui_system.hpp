@@ -27,9 +27,6 @@ class UISystem final: public System {
 
 	void remove(UIElement* el);
 
-	UIElement* lastHovered() const { return _lastHovered; }
-	void lastHovered(UIElement* lastHovered) { _lastHovered = lastHovered; }
-
 	UIElement* lastDraged(sf::Mouse::Button b) const;
 	void lastDraged(sf::Mouse::Button b, UIElement* lastDraged) { _lastDraged[b] = lastDraged; }
 
@@ -37,6 +34,8 @@ class UISystem final: public System {
 	SharedPtr<UIElement> _root;
 	UIElement* _freeLayout;
 	UIElement* _userRoot;
+
+	UIElement* _focused{};
 
 	UIElement* _lastHovered{};
 	al::HashMap<sf::Mouse::Button, UIElement*> _lastDraged;
@@ -53,6 +52,9 @@ inline UIElement* UISystem::lastDraged(sf::Mouse::Button b) const {
 inline void UISystem::remove(UIElement* el) {
 	if (_lastHovered == el) {
 		_lastHovered = nullptr;
+	}
+	if (_focused == el) {
+		_focused = nullptr;
 	}
 	for (auto& [k, v] : _lastDraged) {
 		if (v == el) {

@@ -17,13 +17,13 @@ Window::Window(Context& context): System(context) {
 	auto& engineConfig = context.systemRef<Engine>().config();
 	sf::Uint32 flags{};
 	if (!config.window.borderless) {
-		flags |= sf::Style::Close | sf::Style::Titlebar;
+		flags |= sf::Style::Close | sf::Style::Titlebar | sf::Style::Resize;
 	}
 	if (config.window.fullscreen) {
 		flags |= sf::Style::Fullscreen;
 	}
-	_window = std::make_shared<RenderWindow>(
-	    sf::VideoMode(config.window.size.x, config.window.size.y), engineConfig.windowName, flags);
+	_window = std::make_shared<RenderWindow>(sf::VideoMode(config.window.size.x, config.window.size.y),
+	    engineConfig.windowName, flags);
 	_window->setVerticalSyncEnabled(config.window.verticalSync);
 	_window->setPosition(Vector2i{config.window.position});
 }

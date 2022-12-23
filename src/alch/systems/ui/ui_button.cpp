@@ -39,13 +39,13 @@ void UIButtonOld::drawPressed(sf::RenderTarget& target) {
 	target.draw(_text);
 }
 
-void UIButtonOld::onResize() {
-	onTransform();
-}
+// void UIButtonOld::onResize() {
+// 	onTransform();
+// }
 
-void UIButtonOld::onMove() {
-	onTransform();
-}
+// void UIButtonOld::onMove() {
+// 	onTransform();
+// }
 
 void UIButtonOld::onTransform() {
 	if (_font) {

@@ -19,8 +19,8 @@ class UIButtonOld: public UIElement {
 
 	void draw(sf::RenderTarget& target) override;
 
-	void onResize() override;
-	void onMove() override;
+	// void onResize() override;
+	// void onMove() override;
 
 	void onUnhovered(const UIUnhovered&) override;
 	void onReleased(const UIMouseButtonReleased&) override;

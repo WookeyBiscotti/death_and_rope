@@ -16,13 +16,13 @@ UISlider::UISlider(Context& context, WeakPtr<UIElement> parent, float curr, floa
 	_bg.setOutlineThickness(-1);
 }
 
-void UISlider::onResize() {
-	onTransform();
-}
+// void UISlider::onResize() {
+// 	onTransform();
+// }
 
-void UISlider::onMove() {
-	onTransform();
-}
+// void UISlider::onMove() {
+// 	onTransform();
+// }
 
 void UISlider::onTransform() {
 	auto gp = toWorldCoords(position());
@@ -78,8 +78,8 @@ void UISlider::draw(sf::RenderTarget& target) {
 	target.draw(_slider);
 }
 
-UIElement* UISlider::onMouseWheel(const UIMouseWheel& e) {
+bool UISlider::onMouseWheel(const UIMouseWheel& e) {
 	value(value() - (e.event.delta > 0 ? 1 : -1));
 
-	return this;
+	return true;
 }

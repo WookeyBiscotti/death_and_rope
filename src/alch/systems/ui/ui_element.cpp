@@ -12,6 +12,9 @@ using namespace al;
 
 UIElement::UIElement(Context& context, WeakPtr<UIElement> parent):
     Transmitter(context.systemRef<Broker>()), _parent(parent), _context(context) {
+	_flags[UIFlags::ENABLE] = true;
+	_flags[UIFlags::EVENTABLE] = true;
+	_flags[UIFlags::FOCUSED] = false;
 }
 
 UIElement::~UIElement() {
@@ -22,14 +25,12 @@ UISystem& UIElement::system() const {
 	return _context.systemRef<UISystem>();
 }
 
-void UIElement::onMove() {
-	for (auto& c : _childs) {
-		c->onMove();
-	}
+void UIElement::onSizeChange(const Vector2f& old) {
+	updateChildsPositionSize();
 }
 
 void UIElement::updateChildsPositionSize() {
-	constexpr UIUnit EPSILON = 0.00001;
+	constexpr UIUnit EPSILON = 0.01;
 	if (_layout == FREE) {
 		return;
 	}
@@ -120,9 +121,9 @@ void UIElement::updateChildsPositionSize() {
 							} else if (e->_size.*C < dw + minSize) {
 								w -= (dw + minSize - e->_size.*C);
 								e->_size.*C = dw + minSize;
-								if (e->_size.*C < newMinSize) {
-									newMinSize = e->_size.*C;
-								}
+							}
+							if (e->_size.*C < newMinSize) {
+								newMinSize = e->_size.*C;
 							}
 
 							if (&e == &elms.back()) {
@@ -189,8 +190,7 @@ void UIElement::updateChildsPositionSize() {
 	}
 
 	for (const auto& c : _childs) {
-		c->updateChildsPositionSize();
-		c->onResize();
+		c->onSizeChange({});
 	}
 }
 
@@ -198,40 +198,12 @@ void UIElement::add(SharedPtr<UIElement> element) {
 	auto e = element.get();
 	element->parent(sharedFromThis());
 	_childs.push_back(std::move(element));
-	e->onMove();
 
 	updateChildsPositionSize();
 }
 
-UIElement* UIElement::onMouseWheel(const UIMouseWheel& e) {
-	if (eventable() && isEventInside(e)) {
-		for (auto& c : _childs) {
-			if (c->eventable() && c->isEventInside(e)) {
-				auto wg = c->onMouseWheel(e);
-				if (wg) {
-					return wg;
-				}
-			}
-		}
-
-		for (auto& c : _childs) {
-			if (c->eventable()) {
-				auto wg = c->onMouseWheel(e);
-				if (wg) {
-					return wg;
-				}
-			}
-		}
-	}
-
-	return nullptr;
-}
-
 void UIElement::parent(WeakPtr<UIElement> parent) {
 	_parent = parent;
-
-	onResize();
-	onMove();
 }
 
 Vector2<UIUnit> UIElement::position() const {
@@ -240,7 +212,6 @@ Vector2<UIUnit> UIElement::position() const {
 
 void UIElement::position(Vector2<UIUnit> position) {
 	_position = position;
-	onMove();
 }
 
 void UIElement::updatePositionPart() {
@@ -331,11 +302,12 @@ void UIElement::removeAll() {
 
 void UIElement::enabled(bool enabled) {
 	auto p = _parent.lock();
-	if (_enabled == enabled && p) {
-		p->onResize();
+	if (enabled != _flags[UIFlags::ENABLE] && p) {
+		// TODO: use enable falg in layout calculation
+		p->updateChildsPositionSize();
 	}
 
-	_enabled = enabled;
+	_flags[UIFlags::ENABLE] = enabled;
 }
 
 void UIElement::draw(sf::RenderTarget& target) {
