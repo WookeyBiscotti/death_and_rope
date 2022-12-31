@@ -13,7 +13,7 @@ void UIPanel::draw(sf::RenderTarget& target) {
 	rs.setSize(_size);
 	rs.setPosition(toWorldCoords(_position));
 
-	rs.setFillColor(style<BACKGROUND_COLOR, Color>());
+	rs.setFillColor(style<FOREGROUND_COLOR, Color>());
 	rs.setOutlineColor(style<BORDER_COLOR, Color>());
 	rs.setOutlineThickness(-style<BORDER_THICKNESS, float>());
 

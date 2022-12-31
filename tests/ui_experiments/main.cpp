@@ -7,6 +7,7 @@
 #include <alch/systems/ui/widgets/ui_panel.hpp>
 #include <alch/systems/ui/widgets/ui_button.hpp>
 #include <alch/systems/ui/widgets/ui_text.hpp>
+#include <alch/systems/ui/widgets/ui_input.hpp>
 
 using namespace al;
 
@@ -32,6 +33,7 @@ int main(int argc, const char** argv) {
 					t->maxSize({UIUnitMax, 30});
 				    // r->create<al::UIPanel>();
 					r->create<al::UIButton>("Wtf");
+					r->create<al::UIInput>("йцу");
 			    },
 			    [&c]() {});
 		});

@@ -40,4 +40,8 @@ struct UIMouseWheel {
 	const sf::Event::MouseWheelScrollEvent& event;
 };
 
+struct UITextEntered {
+	const sf::Event::TextEvent event;
+};
+
 }

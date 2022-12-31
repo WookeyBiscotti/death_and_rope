@@ -14,9 +14,9 @@
 #include "alch/systems/render/sprite_component.hpp"
 #include "alch/systems/scenes/scene.hpp"
 #include "alch/systems/transform/transform.hpp"
-#include "alch/systems/ui/ui_button.hpp"
+#include "alch/systems/ui/widgets/ui_button.hpp"
 #include "alch/systems/ui/ui_field.hpp"
-#include "alch/systems/ui/ui_panel.hpp"
+#include "alch/systems/ui/widgets/ui_panel.hpp"
 #include "alch/systems/ui/ui_scroll.hpp"
 #include "alch/systems/ui/ui_slider.hpp"
 #include "alch/systems/ui/ui_system.hpp"
@@ -26,7 +26,6 @@
 //
 #include <SFML/Graphics/View.hpp>
 //
-#include <memory>
 
 namespace al {
 

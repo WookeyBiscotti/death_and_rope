@@ -21,6 +21,7 @@ class UIText: public UIElement {
 
   protected:
 	void onSizeChange(const Vector2f& old) override;
+
 	// void onMove() override;
 
 	// void onTransform();

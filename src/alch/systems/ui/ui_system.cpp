@@ -6,6 +6,7 @@
 #include "alch/systems/window/window.hpp"
 #include "ui_element.hpp"
 #include "ui_events.hpp"
+#include "ui_utf8.hpp"
 
 using namespace al;
 
@@ -117,7 +118,10 @@ UISystem::UISystem(Context& context): System(context) {
 								p = p->parent().lock();
 							}
 							_focused = p.get();
+						} else {
+							_focused = w;
 						}
+
 						if (_focused) {
 							_focused->_flags[UIFlags::FOCUSED] = true;
 							_focused->onFocused();
@@ -147,6 +151,19 @@ UISystem::UISystem(Context& context): System(context) {
 			_root->size(Vector2f(e.general.event.size.width, e.general.event.size.height));
 			_freeLayout->size(Vector2f(e.general.event.size.width, e.general.event.size.height));
 			_userRoot->size(Vector2f(e.general.event.size.width, e.general.event.size.height));
+		}
+		if (eType == sf::Event::TextEntered) {
+			if (_focused) {
+				constexpr auto SPECIAL_SYMBOL_FIRST = 0;
+				constexpr auto SPECIAL_SYMBOL_LAST = 31;
+				constexpr auto SPECIAL_SYMBOL_TAB = 9;
+				const auto& text = e.general.event.text;
+				if (text.unicode > UTF8_SPECIAL_SYMBOL1_LAST || text.unicode == UTF8_SPECIAL_SYMBOL_TAB) {
+					_focused->onText({text});
+				} else {
+					_focused->onSpecialText({text});
+				}
+			}
 		}
 		// if (eType == sf::Event::MouseLeft) {
 		// 	if (_lastDraged) {

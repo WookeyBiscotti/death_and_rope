@@ -129,6 +129,9 @@ class UIElement: public Transmitter, public EnableSharedFromThis<UIElement> {
 
 	virtual bool onMouseWheel(const UIMouseWheel&) { return false; }
 
+	virtual void onText(const UITextEntered&) {}
+	virtual void onSpecialText(const UITextEntered&) {}
+
 	virtual bool onFocused() { return false; };
 	virtual void onUnfocused(){};
 
