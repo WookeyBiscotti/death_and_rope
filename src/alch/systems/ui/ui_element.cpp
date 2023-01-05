@@ -44,8 +44,11 @@ void UIElement::updateChildsPositionSize() {
 			c->_size.*C = 0;
 		}
 
-		auto w = _size.*C;
 		auto count = _childs.size();
+		const auto freeSpace = _size.*C - ((count > 1 ? count - 1 : 0) * _distanceBetweenChildren + _indentBotRight.*C +
+		                                      _indentTopLeft.*C);
+
+		auto w = freeSpace;
 		auto dw = w / count;
 		for (const auto& c : _childs) {
 			if (c->_minSize.*C > dw) {
@@ -65,7 +68,7 @@ void UIElement::updateChildsPositionSize() {
 			}
 			if (w > EPSILON) {
 				// места много и мы не в состоянии его заполнить
-				w = _size.*C;
+				w = freeSpace;
 				for (const auto& c : _childs) {
 					c->_size.*C = c->_maxSize.*C;
 					w -= c->_size.*C;
@@ -73,12 +76,15 @@ void UIElement::updateChildsPositionSize() {
 
 				dw = w / _childs.size();
 
-				w = 0;
+				w = _indentTopLeft.*C;
 				for (const auto& c : _childs) {
 					Vector2<UIUnit> pos{};
 					pos.*C = w + dw * (1 + gravityDir) / 2;
 					c->position(pos);
 					w += c->_size.*C + dw;
+					if (&c != &_childs.back()) {
+						w += _distanceBetweenChildren;
+					}
 				}
 
 				return;
@@ -86,7 +92,7 @@ void UIElement::updateChildsPositionSize() {
 			} else
 				// хватает места и мы можем полностью его заполнить
 				while (w < EPSILON) {
-					w = _size.*C;
+					w = freeSpace;
 
 					for (auto& c : _childs) {
 						c->_size.*C = c->_minSize.*C;
@@ -142,12 +148,13 @@ void UIElement::updateChildsPositionSize() {
 			}
 		}
 
-		w = 0;
+		w = _indentTopLeft.*C;
 		for (const auto& c : _childs) {
 			Vector2<UIUnit> pos{};
 			pos.*C = w;
 			c->position(pos);
 			w += c->_size.*C;
+			w += _distanceBetweenChildren;
 		}
 	};
 
@@ -163,21 +170,25 @@ void UIElement::updateChildsPositionSize() {
 	};
 
 	auto placeOrthogonal = [this]<UIUnit Vector2<UIUnit>::*C>(int gravityDir /*[-1,1]*/) {
-		for (const auto& c : _childs) {
-			if (_size.*C >= c->_minSize.*C && _size.*C <= c->_maxSize.*C) {
-				c->_size.*C = _size.*C;
-			} else if (_size.*C < c->_minSize.*C) {
-				c->_size.*C = c->_minSize.*C;
-			} else if (_size.*C > c->_maxSize.*C) {
-				c->_size.*C = c->_maxSize.*C;
+		const auto freeSpace = _size.*C - (_indentBotRight.*C + _indentTopLeft.*C);
 
+		for (const auto& c : _childs) {
+			if (freeSpace >= c->_minSize.*C && freeSpace <= c->_maxSize.*C) {
+				c->_size.*C = freeSpace;
+			} else if (freeSpace < c->_minSize.*C) {
+				c->_size.*C = c->_minSize.*C;
+			} else if (freeSpace > c->_maxSize.*C) {
+				c->_size.*C = c->_maxSize.*C;
 				auto pos = c->position();
-				auto dw = _size.*C - c->_maxSize.*C;
+				auto dw = freeSpace - c->_maxSize.*C;
 				pos.*C = dw * (1 + gravityDir) / 2;
 				c->position(pos);
 			} else {
 				LASSERT("We cant reach this")
 			}
+			auto pos = c->position();
+			pos.*C += _indentTopLeft.*C;
+			c->position(pos);
 		}
 	};
 
@@ -327,7 +338,7 @@ void UIElement::gravityH(GravityH g) {
 
 	auto p = _parent.lock();
 	if (p && p->layout() != UIElement::FREE) {
-		p->updateChildsPositionSize();
+		updateChildsPositionSize();
 	}
 }
 
@@ -340,7 +351,7 @@ void UIElement::gravityV(GravityV g) {
 
 	auto p = _parent.lock();
 	if (p && p->layout() != UIElement::FREE) {
-		p->updateChildsPositionSize();
+		updateChildsPositionSize();
 	}
 }
 
@@ -369,4 +380,29 @@ void UIElement::styleClearCache() const {
 	for (const auto& c : _childs) {
 		c->styleClearCache();
 	}
+}
+
+void UIElement::distanceBetweenChildren(UIUnit distanceBetweenChildren) {
+	_distanceBetweenChildren = distanceBetweenChildren;
+	updateChildsPositionSize();
+}
+
+void UIElement::indentLeft(UIUnit indentLeft) {
+	_indentTopLeft.x = indentLeft;
+	updateChildsPositionSize();
+}
+
+void UIElement::indentRight(UIUnit indentRight) {
+	_indentBotRight.x = indentRight;
+	updateChildsPositionSize();
+}
+
+void UIElement::indentTop(UIUnit indentTop) {
+	_indentTopLeft.y = indentTop;
+	updateChildsPositionSize();
+}
+
+void UIElement::indentBot(UIUnit indentBottom) {
+	_indentBotRight.y = indentBottom;
+	updateChildsPositionSize();
 }

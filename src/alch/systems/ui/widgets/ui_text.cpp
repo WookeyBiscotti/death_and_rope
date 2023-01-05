@@ -36,7 +36,7 @@ void UIText::onSizeChange(const Vector2f& old) {
 	_text.setString(sf::String::fromUtf8(_content.begin(), _content.end()));
 	_text.setCharacterSize(style<StyleName::TEXT_SIZE, float>());
 	_text.setFillColor(style<StyleName::TEXT_COLOR, Color>());
-	_text.setStyle(sf::Text::Bold | sf::Text::Underlined);
+	// _text.setStyle(sf::Text::Bold | sf::Text::Underlined);
 
 	auto gb = _text.getGlobalBounds();
 	auto gp = toWorldCoords(position());

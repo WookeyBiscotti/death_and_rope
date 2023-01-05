@@ -159,6 +159,21 @@ class UIElement: public Transmitter, public EnableSharedFromThis<UIElement> {
 
 	void styleClearCache() const;
 
+	void distanceBetweenChildren(UIUnit distanceBetweenChildren);
+	UIUnit distanceBetweenChildren() const { return _distanceBetweenChildren; }
+
+	void indentLeft(UIUnit indentLeft);
+	UIUnit indentLeft() const { return _indentTopLeft.x; }
+
+	void indentRight(UIUnit indentRight);
+	UIUnit indentRight() const { return _indentBotRight.x; }
+
+	void indentTop(UIUnit indentTop);
+	UIUnit indentTop() const { return _indentTopLeft.y; }
+
+	void indentBot(UIUnit indentBottom);
+	UIUnit indentBot() const { return _indentBotRight.y; }
+
   protected:
 	const Styles::Value* calculatedStyleValuePtr(StyleName name) const;
 
@@ -192,6 +207,11 @@ class UIElement: public Transmitter, public EnableSharedFromThis<UIElement> {
 	mutable Styles::Map _cachedStyle;
 
 	Bitset<UIFlags::COUNT> _flags;
+
+	UIUnit _distanceBetweenChildren{};
+
+	Vector2f _indentTopLeft{};
+	Vector2f _indentBotRight{};
 };
 
 template<StyleName name, class T>

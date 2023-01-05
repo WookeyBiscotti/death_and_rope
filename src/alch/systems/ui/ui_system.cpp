@@ -99,8 +99,8 @@ UISystem::UISystem(Context& context): System(context) {
 					}
 				}
 			} else if (eType == sf::Event::MouseButtonPressed) {
-				auto w =
-				    findWidgetUnderPoint(*_root, Vector2f(e.general.event.mouseMove.x, e.general.event.mouseButton.y));
+				auto w = findWidgetUnderPoint(*_root,
+				    Vector2f(e.general.event.mouseButton.x, e.general.event.mouseButton.y));
 				if (w) {
 					w->onDragStart(UIMouseDragStart{e.general.event.mouseButton});
 					w->onPressed(UIMouseButtonPressed{e.general.event.mouseButton});
@@ -154,9 +154,6 @@ UISystem::UISystem(Context& context): System(context) {
 		}
 		if (eType == sf::Event::TextEntered) {
 			if (_focused) {
-				constexpr auto SPECIAL_SYMBOL_FIRST = 0;
-				constexpr auto SPECIAL_SYMBOL_LAST = 31;
-				constexpr auto SPECIAL_SYMBOL_TAB = 9;
 				const auto& text = e.general.event.text;
 				if (text.unicode > UTF8_SPECIAL_SYMBOL1_LAST || text.unicode == UTF8_SPECIAL_SYMBOL_TAB) {
 					_focused->onText({text});
