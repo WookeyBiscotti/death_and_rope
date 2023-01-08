@@ -1,16 +1,17 @@
 #include "ui_text.hpp"
 
+#include "../ui_system.hpp"
 #include "alch/engine/context.hpp"
 #include "alch/systems/assets/asset_cache.hpp"
 #include "alch/systems/broker/broker.hpp"
-#include "../ui_system.hpp"
 
 using namespace al;
 
-UIText::UIText(Context& context, WeakPtr<UIElement> parent, std::string content, SharedPtr<Font> font):
-    UIElement(context, parent), _content(content), _font(std::move(font)) {
+UIText::UIText(Context& context, WeakPtr<UIElement> parent, String content):
+    UIElement(context, parent), _content(std::move(content)) {
+
 	if (!_font) {
-		_font = context.systemRef<AssetCache>().font();
+		_font = context.systemRef<AssetCache>().font(style<StyleName::FONT, String>());
 	}
 }
 
@@ -28,7 +29,7 @@ void UIText::draw(sf::RenderTarget& target) {
 	target.draw(_text);
 }
 
-void UIText::onSizeChange(const Vector2f& old) {
+void UIText::onSizeChange() {
 	if (_font) {
 		_text.setFont(_font->sf());
 	}
@@ -45,7 +46,12 @@ void UIText::onSizeChange(const Vector2f& old) {
 	_text.setPosition(gp + 0.5f * size());
 }
 
+void UIText::onPositionChange() {
+	auto gp = toWorldCoords(position());
+	_text.setPosition(gp + 0.5f * size());
+}
+
 void UIText::content(const std::string& s) {
 	_content = s;
-	onSizeChange({});
+	onSizeChange();
 }

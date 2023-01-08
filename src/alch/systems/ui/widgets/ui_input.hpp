@@ -12,7 +12,7 @@ class Context;
 
 class UIInput: public UIElement {
   public:
-	UIInput(Context& context, WeakPtr<UIElement> parent, String content, SharedPtr<Font> font = nullptr);
+	UIInput(Context& context, WeakPtr<UIElement> parent, String content);
 
 	void draw(sf::RenderTarget& target) override;
 
@@ -26,7 +26,7 @@ class UIInput: public UIElement {
 	void onSpecialText(const UITextEntered& e) override;
 
   protected:
-	void onSizeChange(const Vector2f& old) override;
+	void onSizeChange() override;
 
   protected:
 	enum class State {

@@ -4,10 +4,11 @@
 #include <alch/systems/scenes/scene_system.hpp>
 #include <alch/systems/ui/ui_element.hpp>
 #include <alch/systems/ui/ui_system.hpp>
-#include <alch/systems/ui/widgets/ui_panel.hpp>
 #include <alch/systems/ui/widgets/ui_button.hpp>
-#include <alch/systems/ui/widgets/ui_text.hpp>
 #include <alch/systems/ui/widgets/ui_input.hpp>
+#include <alch/systems/ui/widgets/ui_panel.hpp>
+#include <alch/systems/ui/widgets/ui_text.hpp>
+#include <alch/systems/ui/widgets/ui_window.hpp>
 
 using namespace al;
 
@@ -18,27 +19,33 @@ int main(int argc, const char** argv) {
 	config.startScene = "Tests";
 	config.preBegin = [&](Context& c) {
 		c.system<SceneSystem>()->registerScene("Tests", [&c]() {
-			return std::make_shared<SceneGeneric>(
+			return SharedPtr<SceneGeneric>::make(
 			    c,
 			    [&c] {
 				    auto uis = c.systemRef<al::UISystem>();
 
-				    auto r = uis.root();
-					r->distanceBetweenChildren(10);
-					r->indentTop(5);
-					r->indentBot(15);
-					r->indentLeft(20);
-					r->indentRight(40);
-				    r->layout(al::UIElement::VERICAL);
-				    r->create<al::UIPanel>();
-				    auto p = r->create<al::UIPanel>();
-				    p->maxSize({40, 40});
-				    auto t = r->create<al::UIText>();
-					t->content("WEQWEQWEWQE");
-					t->maxSize({UIUnitMax, 30});
+				    // auto r = uis.root();
+				    // r->distanceBetweenChildren(10);
+				    // r->indentTop(5);
+				    // r->indentBot(15);
+				    // r->indentLeft(20);
+				    // r->indentRight(40);
+				    // r->layout(al::UIElement::VERICAL);
 				    // r->create<al::UIPanel>();
-					r->create<al::UIButton>("Wtf");
-					r->create<al::UIInput>("йцу");
+				    // auto p = r->create<al::UIPanel>();
+				    // p->maxSize({40, 40});
+				    // auto t = r->create<al::UIText>();
+				    // t->content("WEQWEQWEWQE");
+				    // t->maxSize({UIUnitMax, 30});
+				    // r->create<al::UIPanel>();
+				    // r->create<al::UIButton>("Wtf");
+				    // r->create<al::UIInput>("йцу");
+
+				    auto w = uis.popout()->create<UIWindow>("Test window");
+				    w->minSize({200, 200});
+					w->position({100,100});
+					w->layout(UIElement::HORIZONTAL);
+					w->create<UIPanel>();
 			    },
 			    [&c]() {});
 		});

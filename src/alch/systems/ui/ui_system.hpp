@@ -6,6 +6,7 @@
 #include "ui_style.hpp"
 
 //
+#include <SFML/Window/Event.hpp>
 #include <SFML/Window/Mouse.hpp>
 
 namespace al {
@@ -28,7 +29,7 @@ class UISystem final: public System {
 	void remove(UIElement* el);
 
 	UIElement* lastDraged(sf::Mouse::Button b) const;
-	void lastDraged(sf::Mouse::Button b, UIElement* lastDraged) { _lastDraged[b] = lastDraged; }
+	void lastDraged(sf::Mouse::Button b, UIElement* lastDraged) { _lastDraged[b].second = lastDraged; }
 
   private:
 	SharedPtr<UIElement> _root;
@@ -38,12 +39,12 @@ class UISystem final: public System {
 	UIElement* _focused{};
 
 	UIElement* _lastHovered{};
-	al::HashMap<sf::Mouse::Button, UIElement*> _lastDraged;
+	al::HashMap<sf::Mouse::Button, std::pair<Vector2f, UIElement*>> _lastDraged;
 };
 
 inline UIElement* UISystem::lastDraged(sf::Mouse::Button b) const {
 	if (auto found = _lastDraged.find(b); found != _lastDraged.end()) {
-		return found->second;
+		return found->second.second;
 	}
 
 	return nullptr;
@@ -57,7 +58,7 @@ inline void UISystem::remove(UIElement* el) {
 		_focused = nullptr;
 	}
 	for (auto& [k, v] : _lastDraged) {
-		if (v == el) {
+		if (v.second == el) {
 			_lastDraged.erase(k);
 		}
 	}

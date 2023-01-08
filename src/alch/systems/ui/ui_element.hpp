@@ -23,9 +23,6 @@ using UIUnit = float;
 
 constexpr UIUnit UIUnitMax = std::numeric_limits<UIUnit>::max();
 
-// using EventsPtrs = Variant<UIHovered*, UIMouseMove*, UIUnhovered*, UIMouseButtonPressed*, UIMouseButtonReleased*,
-//     UIMouseDragStart*, UIMouseDrag*, UIMouseDragStop*, UIMouseWheel*>;
-
 namespace UIFlags {
 enum {
 	ENABLE,
@@ -35,6 +32,38 @@ enum {
 	COUNT,
 };
 };
+
+#define AL_UI_DECL_TYPE()                                    \
+	type_id_t type() override {                              \
+		return TypeId<std::remove_cvref<decltype(*this)>>(); \
+	}
+
+#define AL_UI_NAME(NAME)                            \
+	std::string_view uName() const override {       \
+		static const std::string_view name = #NAME; \
+		return name;                                \
+	};
+
+struct UIElementOnHovered {};
+struct UIElementOnMouseMove {};
+struct UIElementOnUnhovered {};
+
+struct UIElementOnPressed {};
+struct UIElementOnReleased {};
+
+struct UIElementOnDragStart {};
+struct UIElementOnDrag {
+	Vector2f dr;
+};
+struct UIElementOnDragStop {};
+
+struct UIElementOnMouseWheel {};
+
+struct UIElementOnText {};
+struct UIElementOnSpecialText {};
+
+struct UIElementOnFocused {};
+struct UIElementOnUnfocused {};
 
 class UIElement: public Transmitter, public EnableSharedFromThis<UIElement> {
 	friend class UISystem;
@@ -86,14 +115,14 @@ class UIElement: public Transmitter, public EnableSharedFromThis<UIElement> {
 	Vector2f maxSize() const { return _maxSize; }
 	void maxSize(Vector2<UIUnit> maxSize);
 
-	Layout layout() const { return _layout; }
-	void layout(Layout layout);
+	virtual Layout layout() const { return _layout; }
+	virtual void layout(Layout layout);
 
-	GravityH gravityH() const { return _gravityH; }
-	void gravityH(GravityH g);
+	virtual GravityH gravityH() const { return _gravityH; }
+	virtual void gravityH(GravityH g);
 
-	GravityV gravityV() const { return _gravityV; }
-	void gravityV(GravityV g);
+	virtual GravityV gravityV() const { return _gravityV; }
+	virtual void gravityV(GravityV g);
 
 	virtual void add(SharedPtr<UIElement> element);
 
@@ -114,26 +143,27 @@ class UIElement: public Transmitter, public EnableSharedFromThis<UIElement> {
 
 	virtual void onLayoutChange(Layout old) {}
 
-	virtual void onSizeChange(const Vector2f& old);
+	virtual void onSizeChange();
+	virtual void onPositionChange();
 
-	virtual void onHovered(const UIHovered&) {}
-	virtual void onMouseMove(const UIMouseMove&) {}
-	virtual void onUnhovered(const UIUnhovered&) {}
+	virtual void onHovered(const UIHovered&) { send(UIElementOnHovered{}); }
+	virtual void onMouseMove(const UIMouseMove&) { send(UIElementOnMouseMove{}); }
+	virtual void onUnhovered(const UIUnhovered&) { send(UIElementOnUnhovered{}); }
 
-	virtual void onPressed(const UIMouseButtonPressed&) {}
-	virtual void onReleased(const UIMouseButtonReleased&) {}
+	virtual void onPressed(const UIMouseButtonPressed&) { send(UIElementOnPressed{}); }
+	virtual void onReleased(const UIMouseButtonReleased&) { send(UIElementOnReleased{}); }
 
-	virtual void onDragStart(const UIMouseDragStart&) {}
-	virtual void onDrag(const UIMouseDrag&) {}
-	virtual void onDragStop(const UIMouseDragStop&) {}
+	virtual void onDragStart(const UIMouseDragStart&) { send(UIElementOnDragStart{}); }
+	virtual void onDrag(const UIMouseDrag& e) { send(UIElementOnDrag{e.dr}); }
+	virtual void onDragStop(const UIMouseDragStop&) { send(UIElementOnDragStop{}); }
 
 	virtual bool onMouseWheel(const UIMouseWheel&) { return false; }
 
-	virtual void onText(const UITextEntered&) {}
-	virtual void onSpecialText(const UITextEntered&) {}
+	virtual void onText(const UITextEntered&) { send(UIElementOnText{}); }
+	virtual void onSpecialText(const UITextEntered&) { send(UIElementOnSpecialText{}); }
 
 	virtual bool onFocused() { return false; };
-	virtual void onUnfocused(){};
+	virtual void onUnfocused() { send(UIElementOnUnfocused{}); };
 
 	bool eventable() const { return _flags[UIFlags::EVENTABLE]; }
 	void eventable(bool eventable) { _flags[UIFlags::EVENTABLE] = eventable; }
@@ -144,12 +174,16 @@ class UIElement: public Transmitter, public EnableSharedFromThis<UIElement> {
 	template<class E>
 	bool isEventInside(const E& e) const;
 	virtual bool isPointInside(const Vector2f& p) const;
+	virtual UIElement* isPointElement(const Vector2f& p);
 
 	UISystem& system() const;
 
 	virtual void updateChildsPositionSize();
 
-	const auto& childs() const { return _childs; }
+	virtual const std::vector<SharedPtr<UIElement>>& childs() const { return _childs; }
+	std::vector<SharedPtr<UIElement>>& childs() {
+		return const_cast<std::vector<SharedPtr<UIElement>>&>(static_cast<const UIElement*>(this)->childs());
+	}
 
 	// style calculated Or default
 	template<StyleName name, class T>
@@ -159,20 +193,31 @@ class UIElement: public Transmitter, public EnableSharedFromThis<UIElement> {
 
 	void styleClearCache() const;
 
-	void distanceBetweenChildren(UIUnit distanceBetweenChildren);
-	UIUnit distanceBetweenChildren() const { return _distanceBetweenChildren; }
+	virtual void distanceBetweenChildren(UIUnit distanceBetweenChildren);
+	virtual UIUnit distanceBetweenChildren() const { return _distanceBetweenChildren; }
 
-	void indentLeft(UIUnit indentLeft);
-	UIUnit indentLeft() const { return _indentTopLeft.x; }
+	virtual void indentLeft(UIUnit indentLeft);
+	virtual UIUnit indentLeft() const { return _indentTopLeft.x; }
 
-	void indentRight(UIUnit indentRight);
-	UIUnit indentRight() const { return _indentBotRight.x; }
+	virtual void indentRight(UIUnit indentRight);
+	virtual UIUnit indentRight() const { return _indentBotRight.x; }
 
-	void indentTop(UIUnit indentTop);
-	UIUnit indentTop() const { return _indentTopLeft.y; }
+	virtual void indentTop(UIUnit indentTop);
+	virtual UIUnit indentTop() const { return _indentTopLeft.y; }
 
-	void indentBot(UIUnit indentBottom);
-	UIUnit indentBot() const { return _indentBotRight.y; }
+	virtual void indentBot(UIUnit indentBottom);
+	virtual UIUnit indentBot() const { return _indentBotRight.y; }
+
+	virtual type_id_t type() { return TypeId<std::remove_cvref<decltype(*this)>>(); }
+
+	virtual std::string_view uName() const { return "UIElement"; }
+
+	const String& name() const { return _name; }
+	// returns true if name assigned, else name already exist
+	bool name(String name);
+
+	virtual const UIElement* find(const String& s) const;
+	UIElement* find(const String& s);
 
   protected:
 	const Styles::Value* calculatedStyleValuePtr(StyleName name) const;
@@ -212,6 +257,8 @@ class UIElement: public Transmitter, public EnableSharedFromThis<UIElement> {
 
 	Vector2f _indentTopLeft{};
 	Vector2f _indentBotRight{};
+
+	String _name;
 };
 
 template<StyleName name, class T>
@@ -263,7 +310,7 @@ inline Vector2<UIUnit> UIElement::toWorldCoords(Vector2<UIUnit> p) const {
 
 template<class E, class... Args>
 E* UIElement::create(Args&&... args) {
-	auto sPtr = SharedPtr<E>::make(_context, sharedFromThis(), std::forward<Args>(args)...);
+	auto sPtr = SharedPtr<E>::make(_context, weakFromThis(), std::forward<Args>(args)...);
 	auto ptr = sPtr.get();
 	add(std::move(sPtr));
 
@@ -274,6 +321,7 @@ inline void UIElement::layout(Layout layout) {
 	auto copyOld = _layout;
 	if (_layout != layout) {
 		_layout = layout;
+		updateChildsPositionSize();
 		onLayoutChange(copyOld);
 	}
 }
@@ -288,6 +336,18 @@ inline bool UIElement::isPointInside(const Vector2f& p) const {
 	const auto globalPos = toWorldCoords(_position);
 
 	return globalPos.x <= p.x && p.x <= globalPos.x + _size.x && globalPos.y <= p.y && p.y <= globalPos.y + _size.y;
+}
+
+inline UIElement* UIElement::isPointElement(const Vector2f& p) {
+	if (isPointInside(p)) {
+		for (const auto& c : _childs) {
+			if (auto e = c->isPointElement(p)) {
+				return e;
+			}
+		}
+		return this;
+	}
+	return nullptr;
 }
 
 template<StyleName name, class T>

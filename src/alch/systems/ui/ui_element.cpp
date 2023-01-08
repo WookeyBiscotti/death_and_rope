@@ -25,8 +25,14 @@ UISystem& UIElement::system() const {
 	return _context.systemRef<UISystem>();
 }
 
-void UIElement::onSizeChange(const Vector2f& old) {
+void UIElement::onSizeChange() {
 	updateChildsPositionSize();
+}
+
+void UIElement::onPositionChange() {
+	for (const auto& c : _childs) {
+		c->onPositionChange();
+	}
 }
 
 void UIElement::updateChildsPositionSize() {
@@ -189,6 +195,7 @@ void UIElement::updateChildsPositionSize() {
 			auto pos = c->position();
 			pos.*C += _indentTopLeft.*C;
 			c->position(pos);
+			c->onPositionChange();
 		}
 	};
 
@@ -201,7 +208,7 @@ void UIElement::updateChildsPositionSize() {
 	}
 
 	for (const auto& c : _childs) {
-		c->onSizeChange({});
+		c->onSizeChange();
 	}
 }
 
@@ -223,6 +230,9 @@ Vector2<UIUnit> UIElement::position() const {
 
 void UIElement::position(Vector2<UIUnit> position) {
 	_position = position;
+	for (const auto& c : _childs) {
+		c->onPositionChange();
+	}
 }
 
 void UIElement::updatePositionPart() {
@@ -267,6 +277,7 @@ void UIElement::minSize(Vector2<UIUnit> minSize) {
 		if (_size.y < _minSize.y) {
 			_size.y = _minSize.y;
 		}
+		updateChildsPositionSize();
 	} else if (p) {
 		p->updateChildsPositionSize();
 	}
@@ -405,4 +416,34 @@ void UIElement::indentTop(UIUnit indentTop) {
 void UIElement::indentBot(UIUnit indentBottom) {
 	_indentBotRight.y = indentBottom;
 	updateChildsPositionSize();
+}
+
+bool UIElement::name(String name) {
+	auto p = _parent.lock();
+
+	if (p && p->find(name)) {
+		return false;
+	}
+	_name = std::move(name);
+
+	return true;
+}
+
+const UIElement* UIElement::find(const String& name) const {
+	if (name == _name) {
+		return this;
+	}
+	UIElement* found = nullptr;
+	for (const auto& c : _childs) {
+		found = c->find(name);
+		if (found) {
+			break;
+		}
+	}
+
+	return found;
+}
+
+UIElement* UIElement::find(const String& name) {
+	return const_cast<UIElement*>(find(name));
 }

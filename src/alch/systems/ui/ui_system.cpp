@@ -10,20 +10,20 @@
 
 using namespace al;
 
-class UnchangeableLayout: public UIElement {
+class RootLayout: public UIElement {
   public:
-	UnchangeableLayout(Context& context, WeakPtr<UIElement> parent): UIElement(context, parent) {
-		_layout = UIElement::FREE;
-	}
+	RootLayout(Context& context, WeakPtr<UIElement> parent): UIElement(context, parent) {}
 
-	bool isPointInside(const Vector2f& p) const override {
-		for (const auto& c : _childs) {
-			if (c->isPointInside(p)) {
-				return true;
+	UIElement* isPointElement(const Vector2f& p) override {
+		if (isPointInside(p)) {
+			for (const auto& c : _childs) {
+				if (auto e = c->isPointElement(p)) {
+					return e;
+				}
 			}
+			return nullptr;
 		}
-
-		return false;
+		return nullptr;
 	}
 };
 
@@ -44,25 +44,25 @@ UIElement* UISystem::getElementUnderPoint(UIElement* el, Vector2f p) {
 	return el->eventable() ? el : nullptr;
 }
 
-UIElement* findWidgetUnderPoint(UIElement& root, const Vector2f& p) {
-	UIElement* last = nullptr;
-	if (root.isPointInside(p)) {
-		last = &root;
-		for (const auto& c : root.childs()) {
-			if (c->isPointInside(p)) {
-				last = c.get();
-				last = findWidgetUnderPoint(*c.get(), p);
-			}
-		}
-	}
+// UIElement* findWidgetUnderPoint(UIElement& root, const Vector2f& p) {
+// 	UIElement* last = nullptr;
+// 	if (root.isPointInside(p)) {
+// 		last = &root;
+// 		for (const auto& c : root._childs) {
+// 			if (c->isPointInside(p)) {
+// 				last = c.get();
+// 				last = findWidgetUnderPoint(*c.get(), p);
+// 			}
+// 		}
+// 	}
 
-	return last;
-}
+// 	return last;
+// }
 
 UISystem::UISystem(Context& context): System(context) {
-	_root = SharedPtr<UIElement>::make(_context, nullptr);
-	_userRoot = _root->create<UIElement>();
-	_freeLayout = _root->create<UnchangeableLayout>();
+	_root = SharedPtr<RootLayout>::make(_context, nullptr);
+	_userRoot = _root->create<RootLayout>();
+	_freeLayout = _root->create<RootLayout>();
 	_lastHovered = _userRoot;
 	const auto windowSize = context.systemRef<Window>().window().getSize();
 	_root->size(Vector2f(windowSize.x, windowSize.y));
@@ -75,8 +75,7 @@ UISystem::UISystem(Context& context): System(context) {
 		    eType != sf::Event::Resized) {
 			if (eType == sf::Event::MouseMoved) {
 				if (_lastDraged.empty()) {
-					auto w = findWidgetUnderPoint(*_root,
-					    Vector2f(e.general.event.mouseMove.x, e.general.event.mouseMove.y));
+					auto w = _root->isPointElement(Vector2f(e.general.event.mouseMove.x, e.general.event.mouseMove.y));
 
 					if (_lastHovered != w) {
 						if (_lastHovered) {
@@ -93,18 +92,21 @@ UISystem::UISystem(Context& context): System(context) {
 					}
 				} else {
 					for (auto& [_, w] : _lastDraged) {
-						if (w) {
-							w->onDrag({e.general.event.mouseMove});
+						if (w.second) {
+							auto dr = Vector2f(e.general.event.mouseMove.x, e.general.event.mouseMove.y) - w.first;
+							w.first += dr;
+							w.second->onDrag({e.general.event.mouseMove, dr});
 						}
 					}
 				}
 			} else if (eType == sf::Event::MouseButtonPressed) {
-				auto w = findWidgetUnderPoint(*_root,
-				    Vector2f(e.general.event.mouseButton.x, e.general.event.mouseButton.y));
+				auto w = _root->isPointElement(Vector2f(e.general.event.mouseButton.x, e.general.event.mouseButton.y));
 				if (w) {
 					w->onDragStart(UIMouseDragStart{e.general.event.mouseButton});
 					w->onPressed(UIMouseButtonPressed{e.general.event.mouseButton});
-					_lastDraged[e.general.event.mouseButton.button] = w;
+					_lastDraged[e.general.event.mouseButton.button].second = w;
+					_lastDraged[e.general.event.mouseButton.button].first =
+					    Vector2f(e.general.event.mouseButton.x, e.general.event.mouseButton.y);
 
 					if (_focused != w) {
 						if (_focused) {
@@ -130,13 +132,12 @@ UISystem::UISystem(Context& context): System(context) {
 				}
 			} else if (eType == sf::Event::MouseButtonReleased) {
 				if (auto f = _lastDraged.find(e.general.event.mouseButton.button); f != _lastDraged.end()) {
-					f->second->onReleased(UIMouseButtonReleased{e.general.event.mouseButton});
-					f->second->onDragStop(UIMouseDragStop{e.general.event.mouseButton});
+					f->second.second->onReleased(UIMouseButtonReleased{e.general.event.mouseButton});
+					f->second.second->onDragStop(UIMouseDragStop{e.general.event.mouseButton});
 					_lastDraged.erase(f);
 				}
 			} else if (eType == sf::Event::MouseWheelScrolled) {
-				auto w =
-				    findWidgetUnderPoint(*_root, Vector2f(e.general.event.mouseMove.x, e.general.event.mouseButton.y));
+				auto w = _root->isPointElement(Vector2f(e.general.event.mouseMove.x, e.general.event.mouseButton.y));
 				if (w) {
 					if (!w->onMouseWheel(UIMouseWheel{e.general.event.mouseWheelScroll})) {
 						auto p = w->parent().lock();
@@ -181,7 +182,8 @@ void UISystem::render() {
 	auto& w = _context.systemRef<Window>();
 	auto currentView = w.window().getView();
 	w.window().setView(w.window().getDefaultView());
-	_root->draw(w.window());
+	// _root->draw(w.window());
+	_freeLayout->draw(w.window());
 	w.window().setView(currentView);
 }
 

@@ -10,12 +10,9 @@ namespace al {
 
 class Context;
 
-struct UIButtonOnRelease {};
-struct UIButtonOnPress {};
-
 class UIButton: public UIElement {
   public:
-	UIButton(Context& context, WeakPtr<UIElement> parent, std::string content, SharedPtr<Font> font = nullptr);
+	UIButton(Context& context, WeakPtr<UIElement> parent, std::string content);
 
 	void draw(sf::RenderTarget& target) override;
 
@@ -24,7 +21,7 @@ class UIButton: public UIElement {
 	void onReleased(const UIMouseButtonReleased&) override;
 	void onPressed(const UIMouseButtonPressed&) override;
 
-	void onSizeChange(const Vector2f&) override;
+	void onSizeChange() override;
 
   protected:
 	virtual void drawIdle(sf::RenderTarget& target);

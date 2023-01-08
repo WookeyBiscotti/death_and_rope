@@ -16,7 +16,7 @@ TestApp::TestApp() {
 
 		config.preBegin = [&, this](Context& c) {
 			c.system<SceneSystem>()->registerScene("Tests", [&c, this]() {
-				return std::make_shared<SceneGeneric>(
+				return SharedPtr<SceneGeneric>::make(
 				    c, [this] {},
 				    [&c, this]() {
 					    std::unique_lock lk(_guard);

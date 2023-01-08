@@ -35,6 +35,7 @@
 #include "alch/scenes/main_menu.hpp"
 #include "alch/scenes/test.hpp"
 #include "alch/scenes/test_physics.hpp"
+#include "alch/scenes/ui_editor/scene.hpp"
 //
 #include "box2d/b2_user_settings.h"
 
@@ -53,12 +54,13 @@ Engine::Engine(Context& context): System(context) {
 
 static void addStandardScenes(Context& context) {
 	auto& scenes = context.systemRef<SceneSystem>();
-	scenes.registerScene("default", [&context] { return std::make_shared<DefaultScene>(context); });
-	scenes.registerScene("dev_menu", [&context] { return std::make_shared<DevMenu>(context); });
-	scenes.registerScene("test", [&context] { return std::make_shared<TestScene>(context); });
-	scenes.registerScene("test_physics", [&context] { return std::make_shared<TestPhysicsScene>(context); });
-	scenes.registerScene("editor", [&context] { return std::make_shared<EditorScene>(context); });
-	scenes.registerScene("ui_example", [&context] { return std::make_shared<GuiExempleScene>(context); });
+	scenes.registerScene("default", [&context] { return SharedPtr<DefaultScene>::make(context); });
+	scenes.registerScene("dev_menu", [&context] { return SharedPtr<DevMenu>::make(context); });
+	scenes.registerScene("test", [&context] { return SharedPtr<TestScene>::make(context); });
+	scenes.registerScene("test_physics", [&context] { return SharedPtr<TestPhysicsScene>::make(context); });
+	scenes.registerScene("editor", [&context] { return SharedPtr<EditorScene>::make(context); });
+	scenes.registerScene("ui_example", [&context] { return SharedPtr<GuiExempleScene>::make(context); });
+	scenes.registerScene("__ui_editor", [&context] { return SharedPtr<GuiExempleScene>::make(context); });
 }
 
 void Engine::run(const char** argv, int argc, const EngineConfig& engineConfig) {

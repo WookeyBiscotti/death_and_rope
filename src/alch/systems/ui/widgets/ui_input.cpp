@@ -8,10 +8,10 @@
 
 using namespace al;
 
-UIInput::UIInput(Context& context, WeakPtr<UIElement> parent, std::string content, SharedPtr<Font> font):
-    UIElement(context, parent), _content(content), _font(std::move(font)) {
+UIInput::UIInput(Context& context, WeakPtr<UIElement> parent, std::string content):
+    UIElement(context, parent), _content(std::move(content)) {
 	if (!_font) {
-		_font = context.systemRef<AssetCache>().font();
+		_font = context.systemRef<AssetCache>().font(style<StyleName::FONT, String>());
 	}
 }
 
@@ -30,7 +30,7 @@ void UIInput::draw(sf::RenderTarget& target) {
 	target.draw(_text);
 }
 
-void UIInput::onSizeChange(const Vector2f& old) {
+void UIInput::onSizeChange() {
 	if (_font) {
 		_text.setFont(_font->sf());
 	}
@@ -43,20 +43,20 @@ void UIInput::onSizeChange(const Vector2f& old) {
 	auto gb = _text.getGlobalBounds();
 	auto gp = toWorldCoords(position());
 
-	_text.setOrigin(gb.width / 2, gb.height / 2);
-	_text.setPosition(gp + 0.5f * size());
+	_text.setOrigin(0, gb.height / 2);
+	_text.setPosition(gp + 0.5f * Vector2f{0, size().y});
 }
 
 void UIInput::onText(const UITextEntered& e) {
 	char buf[5] = {};
 	sf::Utf8::encode(e.event.unicode, buf);
 	_content += buf;
-	onSizeChange(_size);
+	onSizeChange();
 }
 
 void UIInput::onSpecialText(const UITextEntered& e) {
 	if (e.event.unicode == al::UTF8_SPECIAL_SYMBOL_BACKSPACE) {
 		popBackUtf8(_content);
-		onSizeChange(_size);
+		onSizeChange();
 	}
 }

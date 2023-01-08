@@ -1,10 +1,10 @@
 #pragma once
 
+#include "alch/common/smart_ptr.hpp"
 #include "alch/engine/system.hpp"
 #include "alch/systems/scenes/scene.hpp"
 //
 #include <functional>
-#include <memory>
 
 namespace al {
 
@@ -12,7 +12,7 @@ class SceneSystem: public System {
   public:
 	SceneSystem(Context& context);
 
-	const std::shared_ptr<Scene>& current() { return _current; }
+	const SharedPtr<Scene>& current() { return _current; }
 
 	bool newSceneRequired() const { return _newSceneRequired; }
 
@@ -43,23 +43,23 @@ class SceneSystem: public System {
 
 	std::vector<std::string> list() const;
 
-	void registerScene(const std::string& name, std::function<std::shared_ptr<Scene>()> creator);
+	void registerScene(const std::string& name, std::function<SharedPtr<Scene>()> creator);
 	void removeSceneCache(const std::string& name);
-	std::shared_ptr<Scene> find(const std::string& name);
+	SharedPtr<Scene> find(const std::string& name);
 
 	void exportScriptFunctions(Context& context) override;
 
   private:
-	std::shared_ptr<Scene> _current;
+	SharedPtr<Scene> _current;
 	bool _newSceneRequired{};
-	std::shared_ptr<Scene> _next;
+	SharedPtr<Scene> _next;
 
 	struct SceneCreator {
-		std::function<std::shared_ptr<Scene>()> fn;
-		std::shared_ptr<Scene> cache;
+		std::function<SharedPtr<Scene>()> fn;
+		SharedPtr<Scene> cache;
 	};
 
 	std::unordered_map<std::string, SceneCreator> _creator;
 };
 
-}
+} // namespace al

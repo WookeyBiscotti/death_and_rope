@@ -11,7 +11,7 @@ using namespace al;
 SceneSystem::SceneSystem(Context& context): System(context) {
 }
 
-void SceneSystem::registerScene(const std::string& name, std::function<std::shared_ptr<Scene>()> creator) {
+void SceneSystem::registerScene(const std::string& name, std::function<SharedPtr<Scene>()> creator) {
 	_creator[name] = {std::move(creator), nullptr};
 }
 
@@ -21,7 +21,7 @@ void SceneSystem::removeSceneCache(const std::string& name) {
 	}
 }
 
-std::shared_ptr<Scene> SceneSystem::find(const std::string& name) {
+SharedPtr<Scene> SceneSystem::find(const std::string& name) {
 	if (auto found = _creator.find(name); found != _creator.end()) {
 		LINFO("Scene found: {}", name);
 		if (found->second.cache) {

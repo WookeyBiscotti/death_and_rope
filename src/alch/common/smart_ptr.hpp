@@ -16,8 +16,7 @@ struct RefCountSharedData {
 
 template<class T>
 struct PtrData {
-	PtrData(): d{}, p{} {}
-
+	PtrData() = default;
 	template<class TT>
 	PtrData(const PtrData<TT>& o): d(o.d), p(o.p) {
 		static_assert(std::is_same_v<T, TT> || std::is_base_of_v<T, TT>);
@@ -49,7 +48,7 @@ struct RefCountSharedDataAnd {
 	T objStorage;
 };
 
-} // namespace
+} // namespace detail
 
 template<class TT>
 class EnableSharedFromThis;
@@ -69,21 +68,25 @@ class SharedPtr {
 	template<class... Args>
 	static SharedPtr make(Args&&... args) noexcept {
 		SharedPtr sp;
-		// auto p = reinterpret_cast<RefCountSharedData*>(new unsigned char[sizeof(RefCountSharedData) + sizeof(T)]);
 		auto p = std::launder<detail::RefCountSharedDataAnd<T>>(reinterpret_cast<detail::RefCountSharedDataAnd<T>*>(
 		    std::aligned_alloc(alignof(detail::RefCountSharedDataAnd<T>), sizeof(detail::RefCountSharedDataAnd<T>))));
 		sp._pd.d = &p->contersBlock;
-		sp._pd.p = new (&p->objStorage) T(std::forward<Args>(args)...);
-
 		sp._pd.d->shared = 1;
 		sp._pd.d->weak = 0;
-		if constexpr (std::is_base_of_v<EnableSharedFromThis<T>, T>) {
-			auto esft = static_cast<EnableSharedFromThis<T>*>(sp._pd.p);
-			esft->_pd = sp._pd;
-		}
+		sp._pd.p = &p->objStorage;
 
+		processEnableIf(&sp, &p->objStorage);
+
+		new (sp._pd.p) T(std::forward<Args>(args)...);
 		return sp;
 	}
+
+	template<class TT>
+	static void processEnableIf(SharedPtr* sp, EnableSharedFromThis<TT>* p) {
+		p->_pd = sp->_pd;
+	}
+
+	static void processEnableIf(...) {}
 
 	template<class TT>
 	SharedPtr<TT> cast() const {
@@ -188,11 +191,14 @@ class SharedPtr {
 	SharedPtr(SharedPtr&& other) noexcept: _pd(other._pd) { other._pd = {}; }
 
   private:
-	detail::PtrData<T> _pd;
+	detail::PtrData<T> _pd{};
 };
 
 template<class T>
 class WeakPtr {
+	template<class TT>
+	friend class EnableSharedFromThis;
+
   public:
 	~WeakPtr() {
 		if (_pd.d && _pd.d->shared == 0 && --_pd.d->weak == 0) {
@@ -271,7 +277,7 @@ class WeakPtr {
 	}
 
   private:
-	detail::PtrData<T> _pd;
+	detail::PtrData<T> _pd{};
 };
 
 template<class T>
@@ -284,6 +290,14 @@ class EnableSharedFromThis {
 		SharedPtr<T> ptr;
 		ptr._pd = _pd;
 		_pd.d->shared++;
+
+		return ptr;
+	}
+
+	WeakPtr<T> weakFromThis() const {
+		WeakPtr<T> ptr;
+		ptr._pd = _pd;
+		_pd.d->weak++;
 
 		return ptr;
 	}

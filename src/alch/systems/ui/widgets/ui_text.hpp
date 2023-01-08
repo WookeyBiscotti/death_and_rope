@@ -1,9 +1,7 @@
 #pragma once
 
-#include "alch/systems/assets/font.hpp"
-
-
 #include "../ui_element.hpp"
+#include "alch/systems/assets/font.hpp"
 //
 #include <string>
 
@@ -11,18 +9,22 @@ namespace al {
 
 class Context;
 
+struct UITextOnDrug {
+	Vector2f dr;
+};
+
 class UIText: public UIElement {
   public:
-	UIText(Context& context, WeakPtr<UIElement> parent, std::string content = "", SharedPtr<Font> font = nullptr);
+	UIText(Context& context, WeakPtr<UIElement> parent, std::string content = "");
 
 	void draw(sf::RenderTarget& target) override;
 
 	void content(const std::string& s);
 
   protected:
-	void onSizeChange(const Vector2f& old) override;
+	void onSizeChange() override;
 
-	// void onMove() override;
+	void onPositionChange() override;
 
 	// void onTransform();
 
@@ -32,4 +34,4 @@ class UIText: public UIElement {
 	sf::Text _text;
 };
 
-}
+} // namespace al

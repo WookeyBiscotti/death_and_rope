@@ -7,16 +7,16 @@
 
 using namespace al;
 
-UIButton::UIButton(Context& context, WeakPtr<UIElement> parent, std::string content, SharedPtr<Font> font):
-    UIElement(context, parent), _content(content), _font(std::move(font)) {
+UIButton::UIButton(Context& context, WeakPtr<UIElement> parent, std::string content):
+    UIElement(context, parent), _content(std::move(content)) {
 	if (!_font) {
-		_font = context.systemRef<AssetCache>().font();
+		_font = context.systemRef<AssetCache>().font(style<StyleName::FONT, String>());
 	}
 }
 
-void UIButton::onSizeChange(const Vector2f& s) {
+void UIButton::onSizeChange() {
 	onTransform();
-	UIElement::onSizeChange(s);
+	UIElement::onSizeChange();
 }
 
 void UIButton::draw(sf::RenderTarget& target) {
@@ -100,12 +100,12 @@ void UIButton::onReleased(const UIMouseButtonReleased& e) {
 	if (_state == State::PRESSED) {
 		_state = State::IDLE;
 		if (isEventInside(e)) {
-			send(UIButtonOnRelease{});
+			send(UIElementOnReleased{});
 		}
 	}
 }
 
 void UIButton::onPressed(const UIMouseButtonPressed&) {
 	_state = State::PRESSED;
-	send(UIButtonOnPress{});
+	send(UIElementOnPressed{});
 }

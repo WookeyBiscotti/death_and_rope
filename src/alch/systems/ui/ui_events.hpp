@@ -1,5 +1,6 @@
 #pragma once
 
+#include "alch/common/vector2.hpp"
 #include <SFML/Window/Event.hpp>
 
 namespace al {
@@ -30,6 +31,7 @@ struct UIMouseDragStart {
 
 struct UIMouseDrag {
 	const sf::Event::MouseMoveEvent& event;
+	Vector2f dr;
 };
 
 struct UIMouseDragStop {
