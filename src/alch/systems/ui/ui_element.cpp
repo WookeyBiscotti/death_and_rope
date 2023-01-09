@@ -253,6 +253,7 @@ void UIElement::size(Vector2<UIUnit> size) {
 	auto p = _parent.lock();
 	if (!p || p->layout() == UIElement::FREE) {
 		_size = size;
+		updateChildsPositionSize();
 	}
 }
 

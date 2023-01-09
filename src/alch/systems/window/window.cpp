@@ -37,13 +37,31 @@ RenderWindow& Window::window() {
 void Window::pullEvents() {
 	bool captured = false;
 	WindowUIEvent e{captured};
-	while (_window->pollEvent(e.general.event)) {
-		if (e.general.event.type != sf::Event::Closed && e.general.event.type != sf::Event::LostFocus &&
-		    e.general.event.type != sf::Event::GainedFocus && e.general.event.type != sf::Event::Resized) {
-			send(e);
+	//TODO: rewrite this
+	static sf::Vector2u p;
+	while (_window->pollEvent(e.general.event) ) {
+		if (e.general.event.type == sf::Event::Resized && p != Vector2u{e.general.event.size.width, e.general.event.size.height}) {
+			p = Vector2u{e.general.event.size.width, e.general.event.size.height};
+			auto& config = _context.systemRef<Config>().staticConfig();
+			auto& engineConfig = _context.systemRef<Engine>().config();
+			sf::Uint32 flags{};
+			if (!config.window.borderless) {
+				flags |= sf::Style::Close | sf::Style::Titlebar | sf::Style::Resize;
+			}
+			if (config.window.fullscreen) {
+				flags |= sf::Style::Fullscreen;
+			}
+			auto pos = _window->getPosition();
+			_window->create(
+			    sf::VideoMode(e.general.event.size.width, e.general.event.size.height), engineConfig.windowName, flags);
+				_window->setPosition(pos);
 		}
-		if (!captured) {
-			send(e.general);
-		}
+		send(e);
+		// if (e.general.event.type != sf::Event::Closed && e.general.event.type != sf::Event::LostFocus &&
+		// e.general.event.type != sf::Event::GainedFocus && e.general.event.type != sf::Event::Resized) {
+		// }
+		// if (!captured) {
+		// 	send(e.general);
+		// }
 	}
 }
