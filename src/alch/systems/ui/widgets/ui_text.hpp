@@ -23,10 +23,7 @@ class UIText: public UIElement {
 
   protected:
 	void onSizeChange() override;
-
 	void onPositionChange() override;
-
-	// void onTransform();
 
   protected:
 	std::string _content;

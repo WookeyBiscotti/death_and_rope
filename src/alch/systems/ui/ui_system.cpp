@@ -61,8 +61,8 @@ UIElement* UISystem::getElementUnderPoint(UIElement* el, Vector2f p) {
 
 UISystem::UISystem(Context& context): System(context) {
 	_root = SharedPtr<RootLayout>::make(_context, nullptr);
-	_userRoot = _root->create<RootLayout>();
 	_freeLayout = _root->create<RootLayout>();
+	_userRoot = _root->create<RootLayout>();
 	_lastHovered = _userRoot;
 	const auto windowSize = context.systemRef<Window>().window().getSize();
 	_root->size(Vector2f(windowSize.x, windowSize.y));
@@ -182,7 +182,7 @@ void UISystem::render() {
 	auto& w = _context.systemRef<Window>();
 	auto currentView = w.window().getView();
 	w.window().setView(w.window().getDefaultView());
-	// _root->draw(w.window());
+	_root->draw(w.window());
 	_freeLayout->draw(w.window());
 	w.window().setView(currentView);
 }

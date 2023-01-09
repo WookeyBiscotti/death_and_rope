@@ -22,13 +22,12 @@ class UIButton: public UIElement {
 	void onPressed(const UIMouseButtonPressed&) override;
 
 	void onSizeChange() override;
+	void onPositionChange() override;
 
   protected:
 	virtual void drawIdle(sf::RenderTarget& target);
 	virtual void drawHovered(sf::RenderTarget& target);
 	virtual void drawPressed(sf::RenderTarget& target);
-
-	void onTransform();
 
   protected:
 	enum class State {

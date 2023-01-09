@@ -14,11 +14,6 @@ UIButton::UIButton(Context& context, WeakPtr<UIElement> parent, std::string cont
 	}
 }
 
-void UIButton::onSizeChange() {
-	onTransform();
-	UIElement::onSizeChange();
-}
-
 void UIButton::draw(sf::RenderTarget& target) {
 	if (_state == State::PRESSED) {
 		drawPressed(target);
@@ -71,23 +66,6 @@ void UIButton::drawPressed(sf::RenderTarget& target) {
 	target.draw(_text);
 }
 
-void UIButton::onTransform() {
-	if (_font) {
-		_text.setFont(_font->sf());
-	}
-	// sf::String::toUtf8(_content);
-	_text.setString(sf::String::fromUtf8(_content.begin(), _content.end()));
-	_text.setCharacterSize(style<StyleName::TEXT_SIZE, float>());
-	_text.setFillColor(style<StyleName::TEXT_COLOR, Color>());
-	// _text.setStyle(sf::Text::Bold | sf::Text::Underlined);
-
-	auto gb = _text.getGlobalBounds();
-	auto gp = toWorldCoords(position());
-
-	_text.setOrigin(gb.width / 2, gb.height / 2);
-	_text.setPosition(gp + 0.5f * size());
-}
-
 void UIButton::onUnhovered(const UIUnhovered&) {
 	_state = State::IDLE;
 }
@@ -108,4 +86,27 @@ void UIButton::onReleased(const UIMouseButtonReleased& e) {
 void UIButton::onPressed(const UIMouseButtonPressed&) {
 	_state = State::PRESSED;
 	send(UIElementOnPressed{});
+}
+
+
+void UIButton::onSizeChange() {
+	if (_font) {
+		_text.setFont(_font->sf());
+	}
+	// sf::String::toUtf8(_content);
+	_text.setString(sf::String::fromUtf8(_content.begin(), _content.end()));
+	_text.setCharacterSize(style<StyleName::TEXT_SIZE, float>());
+	_text.setFillColor(style<StyleName::TEXT_COLOR, Color>());
+	// _text.setStyle(sf::Text::Bold | sf::Text::Underlined);
+
+	auto gb = _text.getGlobalBounds();
+	auto gp = toWorldCoords(position());
+
+	_text.setOrigin(gb.width / 2, gb.height / 2);
+	_text.setPosition(gp + 0.5f * size());
+}
+
+void UIButton::onPositionChange() {
+	auto gp = toWorldCoords(position());
+	_text.setPosition(gp + 0.5f * size());
 }

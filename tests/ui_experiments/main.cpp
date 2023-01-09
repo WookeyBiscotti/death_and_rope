@@ -24,28 +24,38 @@ int main(int argc, const char** argv) {
 			    [&c] {
 				    auto uis = c.systemRef<al::UISystem>();
 
-				    // auto r = uis.root();
-				    // r->distanceBetweenChildren(10);
-				    // r->indentTop(5);
-				    // r->indentBot(15);
-				    // r->indentLeft(20);
-				    // r->indentRight(40);
-				    // r->layout(al::UIElement::VERICAL);
-				    // r->create<al::UIPanel>();
-				    // auto p = r->create<al::UIPanel>();
-				    // p->maxSize({40, 40});
-				    // auto t = r->create<al::UIText>();
-				    // t->content("WEQWEQWEWQE");
-				    // t->maxSize({UIUnitMax, 30});
-				    // r->create<al::UIPanel>();
-				    // r->create<al::UIButton>("Wtf");
-				    // r->create<al::UIInput>("йцу");
-
-				    auto w = uis.popout()->create<UIWindow>("Test window");
-				    w->minSize({200, 200});
-					w->position({100,100});
-					w->layout(UIElement::HORIZONTAL);
-					w->create<UIPanel>();
+				    auto r = uis.root();
+				    {
+					    r->distanceBetweenChildren(10);
+					    r->indentTop(5);
+					    r->indentBot(15);
+					    r->indentLeft(20);
+					    r->indentRight(40);
+					    r->layout(al::UIElement::VERICAL);
+					    r->create<al::UIPanel>();
+					    auto p = r->create<al::UIPanel>();
+					    p->maxSize({40, 40});
+					    auto t = r->create<al::UIText>();
+					    t->content("WEQWEQWEWQE");
+					    t->maxSize({UIUnitMax, 30});
+					    r->create<al::UIPanel>();
+					    r->create<al::UIButton>("Wtf");
+					    r->create<al::UIInput>("йцу");
+				    }
+				    {
+					    auto w = uis.popout()->create<UIWindow>("Test window");
+					    w->minSize({200, 200});
+					    w->position({100, 100});
+					    w->layout(UIElement::HORIZONTAL);
+						w->distanceBetweenChildren(5);
+						w->indentLeft(10);
+						w->indentRight(10);
+						w->indentTop(10);
+						w->indentBot(10);
+					    auto p = w->create<UIPanel>();
+					    p->style<StyleName::FOREGROUND_COLOR>(Color(255, 0, 0));
+					    w->create<UIButton>("Test btn");
+				    }
 			    },
 			    [&c]() {});
 		});
