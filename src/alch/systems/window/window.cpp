@@ -22,7 +22,7 @@ Window::Window(Context& context): System(context) {
 	if (config.window.fullscreen) {
 		flags |= sf::Style::Fullscreen;
 	}
-	_window = std::make_shared<RenderWindow>(sf::VideoMode(config.window.size.x, config.window.size.y),
+	_window = SharedPtr<RenderWindow>::make(sf::VideoMode(config.window.size.x, config.window.size.y),
 	    engineConfig.windowName, flags);
 	_window->setVerticalSyncEnabled(config.window.verticalSync);
 	_window->setPosition(Vector2i{config.window.position});

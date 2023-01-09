@@ -1,9 +1,9 @@
 #pragma once
 
 #include "alch/engine/system.hpp"
-
-//
-#include <memory>
+#include "alch/common/smart_ptr.hpp"
+#include "alch/common/optional.hpp"
+#include "alch/common/vector2.hpp"
 
 namespace sf {
 class RenderWindow;
@@ -25,7 +25,7 @@ class Window: public System {
 	void pullEvents();
 
   private:
-	std::shared_ptr<RenderWindow> _window;
+	SharedPtr<RenderWindow> _window;
 };
 
 } // namespace al
