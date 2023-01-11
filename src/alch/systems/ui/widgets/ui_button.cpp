@@ -30,7 +30,7 @@ void UIButton::drawHovered(sf::RenderTarget& target) {
 	rs.setSize(_size);
 	rs.setPosition(toWorldCoords(_position));
 
-	rs.setFillColor(style<BTN_HOVERED_COLOR, Color>());
+	rs.setFillColor(style<FOREGROUND_COLOR2, Color>());
 	rs.setOutlineColor(style<BORDER_COLOR, Color>());
 	rs.setOutlineThickness(-style<BORDER_THICKNESS, float>());
 
@@ -44,7 +44,7 @@ void UIButton::drawIdle(sf::RenderTarget& target) {
 	rs.setSize(_size);
 	rs.setPosition(toWorldCoords(_position));
 
-	rs.setFillColor(style<BTN_IDL_COLOR, Color>());
+	rs.setFillColor(style<FOREGROUND_COLOR, Color>());
 	rs.setOutlineColor(style<BORDER_COLOR, Color>());
 	rs.setOutlineThickness(-style<BORDER_THICKNESS, float>());
 
@@ -58,7 +58,7 @@ void UIButton::drawPressed(sf::RenderTarget& target) {
 	rs.setSize(_size);
 	rs.setPosition(toWorldCoords(_position));
 
-	rs.setFillColor(style<BTN_PRESSED_COLOR, Color>());
+	rs.setFillColor(style<BACKGROUND_COLOR2, Color>());
 	rs.setOutlineColor(style<BORDER_COLOR, Color>());
 	rs.setOutlineThickness(-style<BORDER_THICKNESS, float>());
 

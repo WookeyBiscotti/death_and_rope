@@ -8,6 +8,7 @@ using namespace al;
 UIWindow::UIWindow(Context& context, WeakPtr<UIElement> parent, String content): UIProxy(context, parent) {
 	_layout = UIElement::VERICAL;
 	auto header = SharedPtr<UIText>::make(context, parent, content);
+	header->style<StyleName::FOREGROUND_COLOR>(styleDefault<StyleName::HEADER_COLOR, Color>);
 	UIElement::add(header);
 	header->maxSize({UIUnitMax, 30});
 	auto body = SharedPtr<UIPanel>::make(context, parent);

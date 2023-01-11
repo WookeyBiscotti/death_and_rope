@@ -44,6 +44,10 @@ enum {
 		return name;                                \
 	};
 
+#define AL_UI(NAME)   \
+	AL_UI_DECL_TYPE() \
+	AL_UI_NAME(NAME)
+
 struct UIElementOnHovered {};
 struct UIElementOnMouseMove {};
 struct UIElementOnUnhovered {};

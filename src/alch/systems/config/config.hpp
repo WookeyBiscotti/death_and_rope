@@ -1,18 +1,23 @@
 #pragma once
 
+#include "alch/common/archive.hpp"
+#include "alch/common/containers/string.hpp"
 #include "alch/common/types.hpp"
 #include "alch/common/vector2.hpp"
 #include "alch/engine/system.hpp"
+#include "alch/systems/config/config_tree.hpp"
 
 //
 #include <future>
 #include <list>
-#include <string>
+//
+#include "alch/common/archive.hpp"
 
 namespace al {
 
 struct StaticConfig {
 	Path root;
+
 	std::string appName;
 
 	struct Window {
@@ -28,6 +33,14 @@ struct StaticConfig {
 
 	std::string toString() const;
 	bool fromString(const std::string& str);
+
+	Path _assetsPath;
+	Path _userPath;
+
+	template<class Archive>
+	void serialize(Archive& ar) {
+		ar(_assetsPath, _userPath);
+	}
 };
 
 class Context;
@@ -46,6 +59,13 @@ class Config: public System {
 	StaticConfig _staticConfig;
 
 	std::list<std::future<void>> _asyncOps;
+
+	Path _pathToApp;
+	Path _assetsPath;
+	Path _userPath;
+
+	ConfigTree _systemConfig;
+	ConfigTree _userConfig;
 };
 
-}
+} // namespace al

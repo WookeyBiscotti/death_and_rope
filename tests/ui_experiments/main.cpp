@@ -10,7 +10,14 @@
 #include <alch/systems/ui/widgets/ui_text.hpp>
 #include <alch/systems/ui/widgets/ui_window.hpp>
 
+#include <cereal/archives/json.hpp>
+#include <cereal/archives/xml.hpp>
+
 using namespace al;
+
+
+
+
 
 int main(int argc, const char** argv) {
 	EngineConfig config;
@@ -53,7 +60,6 @@ int main(int argc, const char** argv) {
 						w->indentTop(10);
 						w->indentBot(10);
 					    auto p = w->create<UIPanel>();
-					    p->style<StyleName::FOREGROUND_COLOR>(Color(255, 0, 0));
 					    w->create<UIButton>("Test btn");
 				    }
 			    },
