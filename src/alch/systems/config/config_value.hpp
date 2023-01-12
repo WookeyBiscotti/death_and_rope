@@ -1,5 +1,7 @@
 #pragma once
 
+#include "alch/common/containers/hash_map.hpp"
+#include "alch/common/containers/map.hpp"
 #include "alch/common/containers/string.hpp"
 #include "alch/common/containers/vector.hpp"
 #include "alch/common/variant.hpp"
@@ -11,12 +13,18 @@ struct ConfigValue {
 		ENGINE,
 		USER,
 	};
-
-	using Value = Variant<VariantEmpty, bool, float, int64_t, String>;
-
 	Access write = ENGINE;
 
-	Value value{VariantEmpty{}};
+	using Map = NodeHashMap<String, ConfigValue>;
+
+	using Value = Variant<VariantEmpty, bool, float, int64_t, String, NodeHashMap<String, ConfigValue>>;
+
+	Value value;
+
+	template<class Archive>
+	void serialize(Archive& ar) {
+		ar(write, value);
+	}
 	// TODO:: Add observers
 };
 

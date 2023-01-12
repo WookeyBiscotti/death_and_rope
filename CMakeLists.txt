@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.21.0)
+cmake_minimum_required(VERSION 3.16.3)
 
 project(
   AlchemyEngine
@@ -67,6 +67,7 @@ set(DEPS_LIBS
     absl::base
     absl::flat_hash_set
     absl::flat_hash_map
+    absl::btree
     absl::inlined_vector
     # SDL2::SDL2-static
     cpp-terminal::cpp-terminal

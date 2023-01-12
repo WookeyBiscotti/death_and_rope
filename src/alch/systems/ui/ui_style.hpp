@@ -4,7 +4,7 @@
 #include "alch/common/containers/hash_map.hpp"
 #include "alch/common/containers/optional.hpp"
 #include "alch/common/containers/string.hpp"
-#include "alch/common/containers/variant.hpp"
+#include "alch/common/variant.hpp"
 #include "alch/common/smart_ptr.hpp"
 
 #include <cereal/types/variant.hpp>

@@ -64,8 +64,8 @@ class Config: public System {
 	Path _assetsPath;
 	Path _userPath;
 
-	ConfigTree _systemConfig;
-	ConfigTree _userConfig;
+	SystemTree _systemConfig;
+	UserTree _userConfig;
 };
 
 } // namespace al
