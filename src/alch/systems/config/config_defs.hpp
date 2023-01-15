@@ -1,15 +1,41 @@
 #pragma once
 
-namespace al::config::names {
-constexpr auto APPLICATION_NAME = "application.name";
+#include "alch/common/containers/string.hpp"
+#include "alch/systems/config/config_value.hpp"
 
-constexpr auto WINDOW_SIZE_W = "window.size.w";
-constexpr auto WINDOW_SIZE_H = "window.size.h";
+namespace al::config {
 
-constexpr auto WINDOW_POSITION_X = "window.position.x";
-constexpr auto WINDOW_POSITION_Y = "window.position.y";
+template<class T, const char C[]>
+static const T defaultValue;
 
-constexpr auto WINDOW_FULLSCREEN = "window.fullscreen";
-constexpr auto WINDOW_BORDERLESS = "window.borderless";
-constexpr auto WINDOW_VERTICAL_SYNC = "window.vertical_sync";
-} // namespace al::config::names
+#define DEFAULT(NAME, TYPE, VALUE) \
+	template<>                     \
+	static const ::al::ConfigValue defaultValue<TYPE, NAME> = VALUE;
+
+constexpr char APPLICATION_NAME[] = "application.name";
+DEFAULT(APPLICATION_NAME, String, "Alchemy Engine Application")
+
+constexpr char CONFIG_PATH[] = "cofig.path";
+DEFAULT(CONFIG_PATH, String, "")
+
+constexpr char RESOURCES_PATH[] = "resources.path";
+DEFAULT(RESOURCES_PATH, String, "")
+
+constexpr char USER_DATA_PATH[] = "user.data.path";
+DEFAULT(USER_DATA_PATH, String, "")
+
+constexpr char WINDOW_SIZE_W[] = "window.size.w";
+DEFAULT(WINDOW_SIZE_W, int64_t, 800)
+constexpr char WINDOW_SIZE_H[] = "window.size.h";
+DEFAULT(WINDOW_SIZE_H, int64_t, 600)
+
+constexpr char WINDOW_POSITION_X[] = "window.position.x";
+constexpr char WINDOW_POSITION_Y[] = "window.position.y";
+
+constexpr char WINDOW_FULLSCREEN[] = "window.fullscreen";
+DEFAULT(WINDOW_FULLSCREEN, bool, true)
+constexpr char WINDOW_BORDERLESS[] = "window.borderless";
+constexpr char WINDOW_VERTICAL_SYNC[] = "window.vertical_sync";
+
+#undef DEFAULT
+} // namespace al::config

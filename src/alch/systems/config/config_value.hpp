@@ -8,24 +8,6 @@
 
 namespace al {
 
-struct ConfigValue {
-	enum Access {
-		ENGINE,
-		USER,
-	};
-	Access write = ENGINE;
-
-	using Map = NodeHashMap<String, ConfigValue>;
-
-	using Value = Variant<VariantEmpty, bool, float, int64_t, String, NodeHashMap<String, ConfigValue>>;
-
-	Value value;
-
-	template<class Archive>
-	void serialize(Archive& ar) {
-		ar(write, value);
-	}
-	// TODO:: Add observers
-};
+using ConfigValue = Variant<bool, float, int64_t, String>;
 
 } // namespace al

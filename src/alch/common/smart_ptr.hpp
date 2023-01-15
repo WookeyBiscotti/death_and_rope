@@ -81,6 +81,7 @@ class SharedPtr {
 		return sp;
 	}
 
+  private:
 	template<class TT>
 	static void processEnableIf(SharedPtr* sp, EnableSharedFromThis<TT>* p) {
 		p->_pd = sp->_pd;
@@ -88,6 +89,7 @@ class SharedPtr {
 
 	static void processEnableIf(...) {}
 
+  public:
 	template<class TT>
 	SharedPtr<TT> cast() const {
 		auto ptr = SharedPtr<TT>();

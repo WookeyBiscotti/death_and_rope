@@ -7,56 +7,71 @@
 
 namespace al {
 
-class SystemTree {
-  public:
+struct SystemConfigValue {
+	enum Access {
+		ENGINE,
+		USER,
+	} access = ENGINE;
+
+	ConfigValue value;
+
 	template<class Archive>
 	void serialize(Archive& ar) {
-		ar(_values);
+		ar(access, value);
 	}
-
-	template<class N, class T>
-	void set(const N& name, ConfigValue::Access writeAccess, const T& val) {
-		auto& v = _values[name];
-		v.value = val;
-		v.write = writeAccess;
-	}
-
-	template<class N, class T>
-	T* get(const N& name) {
-		if (!_values.contains(name)) {
-			return nullptr;
-		}
-		return std::get_if<T>(&_values[name].value);
-	}
-
-  private:
-	Map<String, ConfigValue> _values;
 };
 
+using UserConfigValue = ConfigValue;
 
-class UserTree {
-  public:
-	template<class Archive>
-	void serialize(Archive& ar) {
-		ar(_values);
-	}
+// class SystemTree {
+//   public:
+// 	template<class Archive>
+// 	void serialize(Archive& ar) {
+// 		ar(_values);
+// 	}
 
-	template<class N, class T>
-	void set(const N& name, const T& val) {
-		auto& v = _values[name];
-		v.value = val;
-	}
+// 	template<class N, class T>
+// 	void set(const N& name, ConfigValue::Access writeAccess, const T& val) {
+// 		auto& v = _values[name];
+// 		v.value = val;
+// 		v.write = writeAccess;
+// 	}
 
-	template<class N, class T>
-	T* get(const N& name) {
-		if (!_values.contains(name)) {
-			return nullptr;
-		}
-		return std::get_if<T>(&_values[name]);
-	}
+// 	template<class N, class T>
+// 	T* get(const N& name) {
+// 		if (!_values.contains(name)) {
+// 			return nullptr;
+// 		}
+// 		return std::get_if<T>(&_values[name].value);
+// 	}
 
-  private:
-	Map<String, ConfigValue> _values;
-};
+//   private:
+// 	Map<String, ConfigValue> _values;
+// };
+
+// class UserTree {
+//   public:
+// 	template<class Archive>
+// 	void serialize(Archive& ar) {
+// 		ar(_values);
+// 	}
+
+// 	template<class N, class T>
+// 	void set(const N& name, const T& val) {
+// 		auto& v = _values[name];
+// 		v.value = val;
+// 	}
+
+// 	template<class N, class T>
+// 	T* get(const N& name) {
+// 		if (!_values.contains(name)) {
+// 			return nullptr;
+// 		}
+// 		return std::get_if<T>(&_values[name]);
+// 	}
+
+//   private:
+// 	Map<String, ConfigValue> _values;
+// };
 
 } // namespace al

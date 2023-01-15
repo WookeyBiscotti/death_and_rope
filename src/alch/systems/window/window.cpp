@@ -6,6 +6,7 @@
 #include "alch/engine/engine.hpp"
 #include "alch/systems/broker/broker.hpp"
 #include "alch/systems/config/config.hpp"
+#include "alch/systems/config/config_defs.hpp"
 #include "events.hpp"
 //
 #include <SFML/Graphics.hpp>
@@ -13,19 +14,7 @@
 using namespace al;
 
 Window::Window(Context& context): System(context) {
-	auto& config = context.systemRef<Config>().staticConfig();
-	auto& engineConfig = context.systemRef<Engine>().config();
-	sf::Uint32 flags{};
-	if (!config.window.borderless) {
-		flags |= sf::Style::Close | sf::Style::Titlebar | sf::Style::Resize;
-	}
-	if (config.window.fullscreen) {
-		flags |= sf::Style::Fullscreen;
-	}
-	_window = SharedPtr<RenderWindow>::make(sf::VideoMode(config.window.size.x, config.window.size.y),
-	    engineConfig.windowName, flags);
-	_window->setVerticalSyncEnabled(config.window.verticalSync);
-	_window->setPosition(Vector2i{config.window.position});
+	updateWindowFromConfig();
 }
 
 Window::~Window(){};
@@ -34,28 +23,38 @@ RenderWindow& Window::window() {
 	return *_window;
 }
 
+void Window::updateWindowFromConfig() {
+	if (!_window) {
+		_window = SharedPtr<RenderWindow>::make();
+	}
+
+	using namespace al::config;
+	auto& config = _context.systemRef<ConfigSystem>();
+
+	sf::Uint32 flags{};
+	if (!config.valueOr(WINDOW_BORDERLESS, false)) {
+		flags |= sf::Style::Close | sf::Style::Titlebar | sf::Style::Resize;
+	}
+	if (config.valueOr(WINDOW_FULLSCREEN, false)) {
+		flags |= sf::Style::Fullscreen;
+	}
+
+	if (!config.value<int64_t>(WINDOW_SIZE_W) || !config.value<int64_t>(WINDOW_SIZE_H)) {
+		_window->create(sf::VideoMode::getDesktopMode(), config.valueOr<String>(APPLICATION_NAME, ""), flags);
+	} else {
+		_window->create(sf::VideoMode(*config.value<int64_t>(WINDOW_SIZE_W), *config.value<int64_t>(WINDOW_SIZE_H)),
+		    config.valueOr<String>(APPLICATION_NAME, ""), flags);
+	}
+	_window->setPosition(
+	    Vector2i(config.valueOr<int64_t>(WINDOW_POSITION_X, 0), config.valueOr<int64_t>(WINDOW_POSITION_Y, 0)));
+}
+
 void Window::pullEvents() {
+	using namespace al::config;
 	bool captured = false;
 	WindowUIEvent e{captured};
-	//TODO: rewrite this
-	static sf::Vector2u p;
-	while (_window->pollEvent(e.general.event) ) {
-		if (e.general.event.type == sf::Event::Resized && p != Vector2u{e.general.event.size.width, e.general.event.size.height}) {
-			p = Vector2u{e.general.event.size.width, e.general.event.size.height};
-			auto& config = _context.systemRef<Config>().staticConfig();
-			auto& engineConfig = _context.systemRef<Engine>().config();
-			sf::Uint32 flags{};
-			if (!config.window.borderless) {
-				flags |= sf::Style::Close | sf::Style::Titlebar | sf::Style::Resize;
-			}
-			if (config.window.fullscreen) {
-				flags |= sf::Style::Fullscreen;
-			}
-			auto pos = _window->getPosition();
-			_window->create(
-			    sf::VideoMode(e.general.event.size.width, e.general.event.size.height), engineConfig.windowName, flags);
-				_window->setPosition(pos);
-		}
+	// TODO: rewrite this
+	while (_window->pollEvent(e.general.event)) {
 		send(e);
 		// if (e.general.event.type != sf::Event::Closed && e.general.event.type != sf::Event::LostFocus &&
 		// e.general.event.type != sf::Event::GainedFocus && e.general.event.type != sf::Event::Resized) {

@@ -71,7 +71,7 @@ class Context final {
 	}
 
   private:
-	HashMap<type_id_t, System*> _systems;
+	FlatMap<type_id_t, System*> _systems;
 	InlinedVector<std::unique_ptr<System>, 16> _store;
 };
 

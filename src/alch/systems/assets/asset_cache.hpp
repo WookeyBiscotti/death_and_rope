@@ -35,9 +35,9 @@ class AssetCache: public System {
   private:
 	const std::string _root;
 
-	HashMap<std::string, SharedPtr<Texture>> _textures;
-	HashMap<std::string, SharedPtr<Scene>> _scenes;
-	HashMap<std::string, SharedPtr<Font>> _fonts;
+	FlatMap<std::string, SharedPtr<Texture>> _textures;
+	FlatMap<std::string, SharedPtr<Scene>> _scenes;
+	FlatMap<std::string, SharedPtr<Font>> _fonts;
 };
 
 } // namespace al

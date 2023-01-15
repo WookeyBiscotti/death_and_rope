@@ -48,7 +48,7 @@ class Group: public Component, public Transmitter {
   private:
 	bool _moveChilds{};
 
-	HashMap<Entity*, SharedPtr<Entity>> _childs;
+	FlatMap<Entity*, SharedPtr<Entity>> _childs;
 };
 
 } // namespace al

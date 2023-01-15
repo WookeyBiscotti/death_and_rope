@@ -39,7 +39,7 @@ class UISystem final: public System {
 	UIElement* _focused{};
 
 	UIElement* _lastHovered{};
-	al::HashMap<sf::Mouse::Button, std::pair<Vector2f, UIElement*>> _lastDraged;
+	al::FlatMap<sf::Mouse::Button, std::pair<Vector2f, UIElement*>> _lastDraged;
 };
 
 inline UIElement* UISystem::lastDraged(sf::Mouse::Button b) const {

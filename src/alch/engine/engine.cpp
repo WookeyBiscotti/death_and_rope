@@ -68,7 +68,7 @@ void Engine::run(const char** argv, int argc, const EngineConfig& engineConfig) 
 
 	IF_NOT_PROD_BUILD(context().createSystem<Logger>());
 	auto& broker = context().systemRef<Broker>();
-	context().createSystem<Config>(argv, argc);
+	context().createSystem<ConfigSystem>(ConfigSystem::ConfigTree{}, argv, argc);
 	context().createSystem<FileSystem>();
 	context().createSystem<Localization>(_config.localizationFile);
 	context().createSystem<Scripts>();

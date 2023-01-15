@@ -3,44 +3,62 @@
 #include "alch/common/containers/hash_map.hpp"
 #include "alch/common/containers/inline_vector.hpp"
 #include "alch/common/containers/map.hpp"
+#include "alch/common/containers/recursive_tree.hpp"
 #include "alch/common/containers/span.hpp"
 #include "alch/common/containers/string.hpp"
 #include "alch/common/containers/vector.hpp"
 #include "alch/common/variant.hpp"
+//
+#include <cereal/archives/json.hpp>
+#include <cereal/cereal.hpp>
+#include <cereal/specialize.hpp>
+#include <cereal/types/variant.hpp>
 
 namespace al {
 
 template<class K, class V>
-class RecursiveTree {
+class RecursiveTreeNode {
   public:
-	using Map = NodeHashMap<K, RecursiveTree>;
-	using Value = Variant<V, Map>;
+	using Map = NodeMap<K, RecursiveTreeNode>;
 	using Path = InlinedVector<K, 4>;
-	using PathSpan = Span<K>;
+	using PathSpan = Span<const K>;
 
-	bool isEmpty(const Path& path) const { return isEmpty(MakeSpan(path)); }
+	void operator()(const V& v) { _value = v; }
 
-	bool isEmpty(const PathSpan& path) const {
+	const V& operator()() const { return _value; }
+	V& operator()() { return _value; }
+
+	V& operator[](const K& path) { return (*this)[MakeSpan(&path, 1)]; }
+	V& operator[](const Path& path) { return (*this)[MakeSpan(path)]; }
+	V& operator[](PathSpan path) {
 		if (path.empty()) {
-			return false;
+			return _value;
 		}
-		auto found = _values.find(path.front());
-		if(found != _values.end()) {
-			if(path.size() == 1) {
-				return true;
-			} else {
-				const auto& v = found->
-			}
+		return _childs[path.front()][path.subspan(1)];
+	}
+
+	const V* find(const Path& path) const { return find(MakeSpan(path)); }
+	const V* find(const K& path) const { return find(MakeSpan(&path, 1)); }
+	const V* find(PathSpan path) const {
+		if (path.empty()) {
+			return &_value;
 		}
+		auto found = _childs.find(path.front());
+		if (found != _childs.end()) {
+			return found->second.find(path.subspan(1));
+		}
+
+		return nullptr;
 	}
 
 	template<class Archive>
 	void serialize(Archive& ar) {
-		ar(_values);
+		ar(_value, _childs);
 	}
 
   private:
-	Value _values;
+	V _value;
+	Map _childs;
 };
 
 } // namespace al

@@ -8,7 +8,7 @@
 #include <cpp-terminal/window.hpp>
 
 namespace {
-using Registry = al::HashMap<std::string_view /*file*/, al::HashSet<al::TestCaseArgs>>;
+using Registry = al::FlatMap<std::string_view /*file*/, al::HashSet<al::TestCaseArgs>>;
 } // namespace
 
 namespace std {

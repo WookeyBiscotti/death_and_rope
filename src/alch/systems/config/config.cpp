@@ -1,9 +1,18 @@
+#include <cereal/cereal.hpp>
+#include <cereal/archives/json.hpp>
+
 #include "config.hpp"
 
+
+#include "alch/common/archive.hpp"
+#include "alch/common/containers/recursive_tree.hpp"
 #include "alch/common/file.hpp"
 #include "alch/common/json.hpp"
 #include "alch/engine/context.hpp"
 #include "alch/systems/broker/broker.hpp"
+#include "alch/systems/config/config_defs.hpp"
+#include "alch/systems/config/config_tree.hpp"
+#include "alch/systems/config/config_value.hpp"
 #include "alch/systems/logging/logger.hpp"
 #include "events.hpp"
 //
@@ -11,6 +20,7 @@
 #include <fstream>
 #include <future>
 #include <unordered_map>
+//
 
 #if defined(linux) || defined(__APPLE__)
 #include <pwd.h>
@@ -54,45 +64,61 @@ auto parseArgs(const char** argv, int argc) {
 	return res;
 }
 
-std::string StaticConfig::toString() const {
-	Json js{};
+// std::string StaticConfigSystem::toString() const {
+// 	Json js{};
 
-	JSON_WRITE(js, root);
+// 	JSON_WRITE(js, root);
 
-	JSON_WRITE(js, window.fullscreen);
-	JSON_WRITE(js, window.borderless);
-	JSON_WRITE(js, window.size.x);
-	JSON_WRITE(js, window.size.y);
-	JSON_WRITE(js, window.verticalSync);
-	JSON_WRITE(js, window.position.x);
-	JSON_WRITE(js, window.position.y);
+// 	JSON_WRITE(js, window.fullscreen);
+// 	JSON_WRITE(js, window.borderless);
+// 	JSON_WRITE(js, window.size.x);
+// 	JSON_WRITE(js, window.size.y);
+// 	JSON_WRITE(js, window.verticalSync);
+// 	JSON_WRITE(js, window.position.x);
+// 	JSON_WRITE(js, window.position.y);
 
-	return js.dump(1);
+// 	return js.dump(1);
+// }
+
+// bool StaticConfigSystem::fromString(const std::string& str) {
+// 	const Json js = [&str]() -> Json {
+// 		try {
+// 			return Json::parse(str);
+// 		} catch (...) {}
+// 		return {};
+// 	}();
+
+// 	bool ok = JSON_READ(js, root);
+// 	ok = JSON_READ(js, window.fullscreen) && ok;
+// 	ok = JSON_READ(js, window.borderless) && ok;
+// 	ok = JSON_READ(js, window.size.x) && ok;
+// 	ok = JSON_READ(js, window.size.y) && ok;
+// 	ok = JSON_READ(js, window.verticalSync) && ok;
+// 	ok = JSON_READ(js, window.position.x) && ok;
+// 	ok = JSON_READ(js, window.position.y) && ok;
+
+// 	return ok;
+// }
+
+al::ConfigSystem::ConfigTree ConfigSystem::createDefaultConfig() {
+	using namespace al::config;
+	ConfigTree config;
+
+	auto setter = [&config]<class T, const char name[]>(SystemConfigValue::Access access) {
+		config[name] = SystemConfigValue{access, defaultValue<T, name>};
+	};
+
+	setter.template operator()<int64_t, WINDOW_SIZE_W>(SystemConfigValue::USER);
+	setter.template operator()<int64_t, WINDOW_SIZE_H>(SystemConfigValue::USER);
+	setter.template operator()<bool, WINDOW_FULLSCREEN>(SystemConfigValue::USER);
+	setter.template operator()<String, APPLICATION_NAME>(SystemConfigValue::USER);
+
+	return config;
 }
 
-bool StaticConfig::fromString(const std::string& str) {
-	const Json js = [&str]() -> Json {
-		try {
-			return Json::parse(str);
-		} catch (...) {}
-		return {};
-	}();
-
-	bool ok = JSON_READ(js, root);
-	ok = JSON_READ(js, window.fullscreen) && ok;
-	ok = JSON_READ(js, window.borderless) && ok;
-	ok = JSON_READ(js, window.size.x) && ok;
-	ok = JSON_READ(js, window.size.y) && ok;
-	ok = JSON_READ(js, window.verticalSync) && ok;
-	ok = JSON_READ(js, window.position.x) && ok;
-	ok = JSON_READ(js, window.position.y) && ok;
-
-	return ok;
-}
-
-Config::Config(Context& context, const char** argv, int argc): System(context) {
-	const auto appPath = fs::path(argv[0]);
-	const auto appName = appPath.filename().replace_extension();
+ConfigSystem::ConfigSystem(Context& context, const ConfigTree& startConfig, const char** argv, int argc):
+    System(context) {
+	_pathToApp = fs::path(argv[0]);
 
 	auto args = parseArgs(argv, argc);
 
@@ -101,7 +127,7 @@ Config::Config(Context& context, const char** argv, int argc): System(context) {
 	}
 	if (_configPath.empty()) {
 		_configPath = getHomeDir();
-		_configPath /= appName;
+		_configPath /= "";
 		_configPath /= "config.json";
 
 		if (!fs::exists(_configPath.parent_path()) && !fs::create_directories(_configPath.parent_path())) {
@@ -111,46 +137,67 @@ Config::Config(Context& context, const char** argv, int argc): System(context) {
 
 	LINFO("Config path: {}", _configPath.string());
 
-	if (!_staticConfig.fromString(readFromFile(_configPath))) {
-		LERR("Can't load config: {}", _configPath.string());
-		asyncSave();
-	} else {
-		LINFO("Config: {}", _staticConfig.toString());
-	}
+	// if (!_staticConfig.fromString(readFromFile(_configPath))) {
+	// 	LERR("Can't load config: {}", _configPath.string());
+	// 	asyncSave();
+	// } else {
+	// 	LINFO("Config: {}", _staticConfig.toString());
+	// }
 
-	if (_staticConfig.root.empty()) {
-		_staticConfig.root = appPath.parent_path().string();
-	}
+	// if (_staticConfig.root.empty()) {
+	// 	// _staticConfig.root = appPath.parent_path().string();
+	// }
 
-	LINFO("App root: {}", _staticConfig.root.string());
+	// LINFO("App root: {}", _staticConfig.root.string());
 
 	if (args.contains(ROOT)) {
 		fs::path newRootPath(args[ROOT]);
 		if (fs::is_directory(newRootPath)) {
-			_staticConfig.root = appPath.parent_path().string();
+			// _staticConfig.root = appPath.parent_path().string();
 		} else {
 			LERR("Wrong path for root: {}", newRootPath.string());
 		}
 	}
 }
 
-void Config::asyncSave() {
+void ConfigSystem::asyncConfigSave() {
 	_asyncOps.remove_if([](auto& f) { return f.wait_for(std::chrono::seconds(0)) == std::future_status::ready; });
 
-	_asyncOps.push_back(std::async(std::launch::async, [this, staticConfig = _staticConfig]() {
-		if (!writeToFile(staticConfig.toString(), _configPath)) {
-			LERR("Cant save config: {}", _configPath.string());
+	_asyncOps.push_back(std::async(std::launch::async, [this]() {
+		using namespace al::config;
+		const auto configPath = value<String>(USER_DATA_PATH);
+		if (configPath) {
+			std::ofstream stream(configPath->c_str());
+			OJSONArchive ar(stream);
+			_userConfig.serialize(ar);
 		} else {
-			LINFO("Save config: {}", _configPath.string());
+			LERR("Cant save config: no config path in variables");
 		}
 	}));
 }
 
-void Config::staticConfig(const StaticConfig& newConfig) {
-	if (newConfig != _staticConfig) {
-		send(ConfigOnChange{});
+// void ConfigSystem::staticConfig(const StaticConfig& newConfig) {
+// 	if (newConfig != _staticConfig) {
+// 		send(ConfigOnChange{});
+// 	}
+
+// 	_staticConfig = newConfig;
+// 	asyncSave();
+// }
+
+const ConfigValue* ConfigSystem::valueVariant(const char* name) const {
+	auto uFound = _userConfig.find(name);
+	if (uFound) {
+		return uFound;
+	}
+	auto sFound = _systemConfig.find(name);
+	if (sFound) {
+		return &sFound->value;
 	}
 
-	_staticConfig = newConfig;
-	asyncSave();
+	return nullptr;
+}
+
+ConfigValue* ConfigSystem::valueVariant(const char* name) {
+	return const_cast<ConfigValue*>(static_cast<const ConfigSystem*>(this)->valueVariant(name));
 }

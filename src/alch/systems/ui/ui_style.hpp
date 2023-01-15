@@ -54,7 +54,7 @@ template<>
 static const String styleDefault<StyleName::FONT, String> = "__default__";
 
 struct Styles {
-	using Map = al::HashMap<StyleName, Styles>;
+	using Map = al::FlatMap<StyleName, Styles>;
 	using Value = Variant<float, int, bool, Color, String, Map>;
 
 	Value value;

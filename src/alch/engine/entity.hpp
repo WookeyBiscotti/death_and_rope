@@ -164,7 +164,7 @@ class Entity: public Transmitter, public EnableSharedFromThis<Entity> {
 	Transform _transform;
 	Parent _parent;
 
-	HashMap<type_id_t, SharedPtr<Component>> _components;
+	FlatMap<type_id_t, SharedPtr<Component>> _components;
 };
 
 } // namespace al

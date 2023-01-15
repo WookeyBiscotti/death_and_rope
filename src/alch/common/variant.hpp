@@ -5,7 +5,7 @@
 
 namespace al {
 
-struct VariantEmpty {};
+using VariantEmpty = std::monostate;
 
 template<class... Ts>
 using Variant = std::variant<Ts...>;

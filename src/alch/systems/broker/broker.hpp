@@ -256,11 +256,11 @@ class Broker: public System {
 		}
 	}
 
-	HashMap<type_id_t, HashMap<Transmitter*, EventFromAllListner>> _eventsFn;
-	HashMap<Transmitter*, HashSet<type_id_t>> _receiversFns;
+	FlatMap<type_id_t, FlatMap<Transmitter*, EventFromAllListner>> _eventsFn;
+	FlatMap<Transmitter*, HashSet<type_id_t>> _receiversFns;
 
-	HashMap<Transmitter*, HashMap<type_id_t, HashMap<Transmitter*, EventFromOneListner>>> _personalEventsFn;
-	HashMap<Transmitter*, HashMap<Transmitter*, HashSet<type_id_t>>> _personalReceiversFns;
+	FlatMap<Transmitter*, FlatMap<type_id_t, FlatMap<Transmitter*, EventFromOneListner>>> _personalEventsFn;
+	FlatMap<Transmitter*, FlatMap<Transmitter*, HashSet<type_id_t>>> _personalReceiversFns;
 };
 
 } // namespace al
