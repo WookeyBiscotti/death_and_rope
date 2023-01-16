@@ -104,8 +104,12 @@ DebugSystem::DebugSystem(Context& context): System(context) {
 	_text.setScale(0.5, 0.5);
 
 	subscribe<WindowEvent>([this](const WindowEvent& e) {
-		if (e.event.type == sf::Event::KeyPressed && e.event.key.code == Keyboard::F12) {
-			_isLogShown = !_isLogShown;
+		if (e.event.type == sf::Event::KeyPressed) {
+			if (e.event.key.code == Keyboard::F11) {
+				_isLogShown = true;
+			} else if (e.event.key.code == Keyboard::F12) {
+				_isLogShown = false;
+			}
 		}
 	});
 

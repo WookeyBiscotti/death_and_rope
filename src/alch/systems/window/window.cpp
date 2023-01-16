@@ -39,8 +39,12 @@ void Window::updateWindowFromConfig() {
 		flags |= sf::Style::Fullscreen;
 	}
 
-	if (!config.value<int64_t>(WINDOW_SIZE_W) || !config.value<int64_t>(WINDOW_SIZE_H)) {
-		_window->create(sf::VideoMode::getDesktopMode(), config.valueOr<String>(APPLICATION_NAME, ""), flags);
+	if ((!config.value<int64_t>(WINDOW_SIZE_W) || !config.value<int64_t>(WINDOW_SIZE_H))) {
+		if (config.valueOr(WINDOW_FULLSCREEN, false)) {
+			_window->create(sf::VideoMode::getDesktopMode(), config.valueOr<String>(APPLICATION_NAME, ""), flags);
+		} else {
+			_window->create(sf::VideoMode(800, 600), config.valueOr<String>(APPLICATION_NAME, ""), flags);
+		}
 	} else {
 		_window->create(sf::VideoMode(*config.value<int64_t>(WINDOW_SIZE_W), *config.value<int64_t>(WINDOW_SIZE_H)),
 		    config.valueOr<String>(APPLICATION_NAME, ""), flags);
@@ -59,8 +63,8 @@ void Window::pullEvents() {
 		// if (e.general.event.type != sf::Event::Closed && e.general.event.type != sf::Event::LostFocus &&
 		// e.general.event.type != sf::Event::GainedFocus && e.general.event.type != sf::Event::Resized) {
 		// }
-		// if (!captured) {
-		// 	send(e.general);
-		// }
+		if (!captured) {
+			send(e.general);
+		}
 	}
 }
