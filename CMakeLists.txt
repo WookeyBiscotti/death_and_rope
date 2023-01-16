@@ -22,6 +22,7 @@ add_subdirectory(3rdparty/AABBTree)
 add_subdirectory(3rdparty/box2d)
 add_subdirectory(3rdparty/ChaiScript)
 # add_subdirectory(3rdparty/SDL)
+add_subdirectory(3rdparty/sol2)
 add_subdirectory(3rdparty/abseil-cpp)
 add_subdirectory(3rdparty/cpp-terminal)
 
@@ -42,6 +43,8 @@ set(DEPS_SOURCES
     3rdparty/imgui/imgui_draw.cpp 3rdparty/imgui/imgui.cpp
     3rdparty/imgui-sfml/imgui-SFML.cpp 3rdparty/imgui/misc/cpp/imgui_stdlib.cpp)
 
+#TODO: make build commands for luaJit: make CFLAGS="-fPIC" make install PREFIX=/home/alex/code/game/3rdparty/death_and_rope/3rdparty/LuaJIT/LuaJIT
+
 set(INCLUDES_DEPS_DIRS
     src
     3rdparty/imgui
@@ -53,6 +56,8 @@ set(INCLUDES_DEPS_DIRS
     3rdparty/bgfx/include
     3rdparty/bx/include
     3rdparty/ChaiScript/include
+    3rdparty/LuaJIT/LuaJIT/include
+    3rdparty/LuaJIT/LuaJIT/include/luajit-2.1
     )
 
 set(DEPS_LIBS
@@ -71,9 +76,11 @@ set(DEPS_LIBS
     absl::inlined_vector
     # SDL2::SDL2-static
     cpp-terminal::cpp-terminal
+    sol2::sol2
+    libluajit-5.1.a
     ${CMAKE_DL_LIBS})
 
-set(ALCH_DEPS_LIBS_PATH "")
+set(ALCH_DEPS_LIBS_PATH 3rdparty/LuaJIT/LuaJIT/lib)
 
 if(APPLE)
   list(APPEND DEPS_LIBS "-framework OpenGL" "-framework GLUT")

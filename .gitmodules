@@ -49,3 +49,9 @@
 [submodule "3rdparty/cpp-terminal"]
 	path = 3rdparty/cpp-terminal
 	url = https://github.com/jupyter-xeus/cpp-terminal.git
+[submodule "3rdparty/sol2"]
+	path = 3rdparty/sol2
+	url = https://github.com/ThePhD/sol2.git
+[submodule "3rdparty/LuaJIT"]
+	path = 3rdparty/LuaJIT
+	url = https://github.com/LuaJIT/LuaJIT.git

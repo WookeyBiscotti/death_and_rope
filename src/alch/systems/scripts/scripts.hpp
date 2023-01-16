@@ -2,6 +2,10 @@
 
 #include "alch/engine/system.hpp"
 //
+#include <luajit-2.1/lua.hpp>
+#include <sol/sol.hpp>
+
+//
 #include <memory>
 #include <string>
 
@@ -21,6 +25,7 @@ class Scripts: public System {
 
   private:
 	std::unique_ptr<chaiscript::ChaiScript> _state;
+	sol::state lua;
 };
 
 }
