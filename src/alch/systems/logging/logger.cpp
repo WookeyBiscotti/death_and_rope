@@ -52,6 +52,10 @@ Logger::~Logger() {
 void Logger::exportScriptFunctions(Context& context) {
 	auto& s = context.systemRef<Scripts>();
 	s.internal().add(chaiscript::fun([](const std::string& s) { LINFO(s); }), "log");
+	// s.internal2().set_function("log", [](const std::string& s) { LINFO(s); });
+	// s.internal2().set_function("log", [](int64_t i) { LINFO(i); });
+	// sol::overload( &pup::bark, &picky_bark )
+	s.internal2().set_function("log", sol::overload( [](const std::string& s) { LINFO(s); }, [](int64_t i) { LINFO(i); } ));
 }
 
 const std::deque<std::string>& Logger::logs() const {

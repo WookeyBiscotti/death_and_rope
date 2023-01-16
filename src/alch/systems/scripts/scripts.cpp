@@ -12,6 +12,8 @@ Scripts::Scripts(Context& context): System(context) {
 
 	_state = std::make_unique<chaiscript::ChaiScript>();
 
+	_lua.open_libraries(sol::lib::base, sol::lib::package);
+
 	auto lib = std::make_shared<Module>();
 	bootstrap::standard_library::vector_type<std::vector<std::string>>("StringVector", *lib);
 	_state->add(lib);
@@ -28,13 +30,19 @@ Scripts::Scripts(Context& context): System(context) {
 	    "to_string");
 }
 
-Scripts::~Scripts() {
-}
+Scripts::~Scripts() = default;
 
 void Scripts::eval(const std::string& command) {
 	// TODO: Do smth here
 	try {
 		auto res = _state->eval(command);
 		// LERR("Executing error: {}", res);
+	} catch (const std::exception& e) { LERR("Executing error: {}", e.what()); }
+}
+
+void Scripts::eval2(const std::string& command) {
+	// TODO: Do smth here
+	try {
+		auto res = _lua.script(command);
 	} catch (const std::exception& e) { LERR("Executing error: {}", e.what()); }
 }

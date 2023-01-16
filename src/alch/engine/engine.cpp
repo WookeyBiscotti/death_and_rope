@@ -180,4 +180,15 @@ void Engine::exportScriptFunctions(Context& context) {
 		entity.deserialize(ar);
 	}),
 	    "load");
+
+	auto& scripts = context.systemRef<Scripts>();
+	auto& lua = context.systemRef<Scripts>().internal2();
+	scripts.add_func("exit", [&context] {
+		auto& scene = context.systemRef<SceneSystem>();
+		scene.exit();
+	});
+	scripts.add_func("context", [&context] {
+		return &context;
+	});
+	lua.new_usertype<Entity>("Entity", sol::constructors<Entity(Context&)>());
 }

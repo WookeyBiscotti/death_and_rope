@@ -157,7 +157,7 @@ DebugSystem::DebugSystem(Context& context): System(context) {
 				auto& scripts = _context.systemRef<Scripts>();
 				_commandsHistory.push_front(_buffer.data());
 				dumpHistoryToFilesystem();
-				scripts.eval(_buffer.data());
+				scripts.eval2(_buffer.data());
 				_buffer[0] = 0;
 				ImGui::SetKeyboardFocusHere(-1);
 			}

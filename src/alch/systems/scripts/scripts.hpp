@@ -20,12 +20,19 @@ class Scripts: public System {
 	Scripts(Context& context);
 	~Scripts();
 	void eval(const std::string& command);
+	void eval2(const std::string& command);
 
 	chaiscript::ChaiScript& internal() { return *_state; }
+	sol::state& internal2() { return _lua; }
+
+	template<class Str, class Fn>
+	void add_func(Str&& str, Fn&& fn) {
+		_lua.set_function(std::move(str), std::move(fn));
+	}
 
   private:
 	std::unique_ptr<chaiscript::ChaiScript> _state;
-	sol::state lua;
+	sol::state _lua;
 };
 
-}
+} // namespace al

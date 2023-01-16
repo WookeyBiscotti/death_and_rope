@@ -24,6 +24,8 @@ class Context final {
   public:
 	Context();
 
+	Context(const Context&) = delete;
+
 	~Context();
 
 	template<class S>
