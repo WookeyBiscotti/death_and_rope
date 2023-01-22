@@ -22,6 +22,8 @@ class Window: public System {
 
 	RenderWindow& window();
 
+	std::vector<Vector2<int>> resolutions() const;
+
 	void pullEvents();
 
   private:

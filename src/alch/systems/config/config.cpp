@@ -1,8 +1,4 @@
-#include <cereal/cereal.hpp>
-#include <cereal/archives/json.hpp>
-
 #include "config.hpp"
-
 
 #include "alch/common/archive.hpp"
 #include "alch/common/containers/recursive_tree.hpp"
@@ -15,6 +11,9 @@
 #include "alch/systems/config/config_value.hpp"
 #include "alch/systems/logging/logger.hpp"
 #include "events.hpp"
+
+#include <cereal/archives/json.hpp>
+#include <cereal/cereal.hpp>
 //
 #include <filesystem>
 #include <fstream>
@@ -63,42 +62,6 @@ auto parseArgs(const char** argv, int argc) {
 
 	return res;
 }
-
-// std::string StaticConfigSystem::toString() const {
-// 	Json js{};
-
-// 	JSON_WRITE(js, root);
-
-// 	JSON_WRITE(js, window.fullscreen);
-// 	JSON_WRITE(js, window.borderless);
-// 	JSON_WRITE(js, window.size.x);
-// 	JSON_WRITE(js, window.size.y);
-// 	JSON_WRITE(js, window.verticalSync);
-// 	JSON_WRITE(js, window.position.x);
-// 	JSON_WRITE(js, window.position.y);
-
-// 	return js.dump(1);
-// }
-
-// bool StaticConfigSystem::fromString(const std::string& str) {
-// 	const Json js = [&str]() -> Json {
-// 		try {
-// 			return Json::parse(str);
-// 		} catch (...) {}
-// 		return {};
-// 	}();
-
-// 	bool ok = JSON_READ(js, root);
-// 	ok = JSON_READ(js, window.fullscreen) && ok;
-// 	ok = JSON_READ(js, window.borderless) && ok;
-// 	ok = JSON_READ(js, window.size.x) && ok;
-// 	ok = JSON_READ(js, window.size.y) && ok;
-// 	ok = JSON_READ(js, window.verticalSync) && ok;
-// 	ok = JSON_READ(js, window.position.x) && ok;
-// 	ok = JSON_READ(js, window.position.y) && ok;
-
-// 	return ok;
-// }
 
 al::ConfigSystem::ConfigTree ConfigSystem::createDefaultConfig() {
 	using namespace al::config;
@@ -185,7 +148,7 @@ void ConfigSystem::asyncConfigSave() {
 // 	asyncSave();
 // }
 
-const ConfigValue* ConfigSystem::valueVariant(const char* name) const {
+const ConfigValue* ConfigSystem::valueVariant(const String& name) const {
 	auto uFound = _userConfig.find(name);
 	if (uFound) {
 		return uFound;
@@ -198,6 +161,32 @@ const ConfigValue* ConfigSystem::valueVariant(const char* name) const {
 	return nullptr;
 }
 
-ConfigValue* ConfigSystem::valueVariant(const char* name) {
+ConfigValue* ConfigSystem::valueVariant(const String& name) {
 	return const_cast<ConfigValue*>(static_cast<const ConfigSystem*>(this)->valueVariant(name));
+}
+
+void ConfigSystem::subscribe(ConfigHandler& handler, const String& event, std::function<void(const String&)> fn) {
+	_eventToHandler[event].emplace(&handler, std::move(fn));
+	_handlerToEvent[&handler].insert(event);
+}
+
+void ConfigSystem::unsubscribe(ConfigHandler& handler, const String& event) {
+	auto foundH = _handlerToEvent.find(&handler);
+	if (foundH != _handlerToEvent.end()) {
+		foundH->second.erase(event);
+		auto foundE = _eventToHandler.find(event);
+		if (foundE != _eventToHandler.end()) {
+			foundE->second.erase(&handler);
+		}
+	}
+}
+
+void ConfigSystem::unsubscribe(ConfigHandler& handler) {
+	auto foundH = _handlerToEvent.find(&handler);
+	if (foundH != _handlerToEvent.end()) {
+		for (const auto& e : foundH->second) {
+			_eventToHandler[e].erase(&handler);
+		}
+	}
+	_handlerToEvent.erase(&handler);
 }

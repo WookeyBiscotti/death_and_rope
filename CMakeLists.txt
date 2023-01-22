@@ -7,11 +7,13 @@ project(
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_library(AlchemyEngineLib)
+add_library(AlchemyEngineLib STATIC)
 
 set(SDL_STATIC TRUE)
 set(SKIP_PERFORMANCE_COMPARISON TRUE)
 set(ABSL_ENABLE_INSTALL TRUE)
+
+set(CMAKE_CXX_FLAGS -stdlib=libc++)
 
 add_subdirectory(3rdparty/SFML)
 add_subdirectory(3rdparty/json)

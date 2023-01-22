@@ -22,5 +22,4 @@ inline Path getHomeDir() {
 	return homedir;
 }
 
-
 }

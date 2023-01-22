@@ -5,6 +5,6 @@
 namespace al {
 
 template<class V>
-using HashSet = absl::flat_hash_set<V>;
+using FlatSet = absl::flat_hash_set<V>;
 
 }

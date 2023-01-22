@@ -257,10 +257,10 @@ class Broker: public System {
 	}
 
 	FlatMap<type_id_t, FlatMap<Transmitter*, EventFromAllListner>> _eventsFn;
-	FlatMap<Transmitter*, HashSet<type_id_t>> _receiversFns;
+	FlatMap<Transmitter*, FlatSet<type_id_t>> _receiversFns;
 
 	FlatMap<Transmitter*, FlatMap<type_id_t, FlatMap<Transmitter*, EventFromOneListner>>> _personalEventsFn;
-	FlatMap<Transmitter*, FlatMap<Transmitter*, HashSet<type_id_t>>> _personalReceiversFns;
+	FlatMap<Transmitter*, FlatMap<Transmitter*, FlatSet<type_id_t>>> _personalReceiversFns;
 };
 
 } // namespace al

@@ -68,3 +68,12 @@ void Window::pullEvents() {
 		}
 	}
 }
+
+std::vector<Vector2<int>> Window::resolutions() const {
+	std::vector<Vector2<int>> result;
+	for (const auto& vm : sf::VideoMode::getFullscreenModes()) {
+		result.push_back(Vector2<int>(vm.width, vm.height));
+	}
+
+	return result;
+}
