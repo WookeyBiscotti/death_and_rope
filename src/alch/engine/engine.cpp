@@ -66,6 +66,10 @@ Engine::Engine(Context& c, ConfigSystem::ConfigTree config, const char** argv, i
 	context().createSystem<Physics>();
 	context().createSystem<NameSystem>();
 	IF_NOT_PROD_BUILD(context().createSystem<DebugSystem>());
+
+	for (auto s : context().systems()) {
+		s->exportScriptFunctions(context());
+	}
 }
 
 static void addStandardScenes(Context& context) {
@@ -100,14 +104,6 @@ void Engine::run(SharedPtr<Scene> scene) {
 
 	if (config.valueOr(config::ENABLE_DEFAULT_SCENES, false)) {
 		addStandardScenes(context());
-	}
-
-	if (_config.preBegin) {
-		_config.preBegin(context());
-	}
-
-	for (auto s : context().systems()) {
-		s->exportScriptFunctions(context());
 	}
 
 	auto& scenes = context().systemRef<SceneSystem>();

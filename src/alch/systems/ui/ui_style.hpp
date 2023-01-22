@@ -31,23 +31,23 @@ template<StyleName name, class T>
 static const T styleDefault;
 //https://coolors.co/palette/03045e-023e8a-0077b6-0096c7-00b4d8-48cae4-90e0ef-ade8f4-caf0f8
 template<>
-static const Color styleDefault<StyleName::HEADER_COLOR, Color> = Color(2, 62, 138);
+static const Color styleDefault<StyleName::HEADER_COLOR, Color> = Color(0xC74E00ff);
 template<>
-static const Color styleDefault<StyleName::BACKGROUND_COLOR, Color> = Color(0, 180, 216);
+static const Color styleDefault<StyleName::BACKGROUND_COLOR, Color> = Color(0x696969);
 template<>
-static const Color styleDefault<StyleName::BACKGROUND_COLOR2, Color> = Color(0, 150, 199);
+static const Color styleDefault<StyleName::BACKGROUND_COLOR2, Color> = Color(0x808080);
 template<>
-static const Color styleDefault<StyleName::FOREGROUND_COLOR, Color> = Color(72, 202, 228);
+static const Color styleDefault<StyleName::FOREGROUND_COLOR, Color> = Color(0x909090);
 template<>
-static const Color styleDefault<StyleName::FOREGROUND_COLOR2, Color> = Color(144, 224, 239);
+static const Color styleDefault<StyleName::FOREGROUND_COLOR2, Color> = Color(0x999999);
 template<>
-static const Color styleDefault<StyleName::BORDER_COLOR, Color> = Color::White;
+static const Color styleDefault<StyleName::BORDER_COLOR, Color> = Color(0x111111ff);
 template<>
 static const float styleDefault<StyleName::BORDER_THICKNESS, float> = 1.0f;
 template<>
-static const Color styleDefault<StyleName::TEXT_COLOR, Color> = Color(202, 240, 248);
+static const Color styleDefault<StyleName::TEXT_COLOR, Color> = Color(0xffffffff);
 template<>
-static const float styleDefault<StyleName::TEXT_SIZE, float> = 14.0f;
+static const float styleDefault<StyleName::TEXT_SIZE, float> = 18.0f;
 template<>
 static const float styleDefault<StyleName::TEXT_BOLD, bool> = true;
 template<>

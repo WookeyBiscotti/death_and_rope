@@ -4,11 +4,11 @@
 
 namespace al {
 
-class MainMenu: public Scene {
-  public:
-	MainMenu(Context& context): Scene(context) {}
+// class MainMenu: public Scene {
+//   public:
+// 	MainMenu(Context& context): Scene(context) {}
 
-	void onFrame() override;
-};
+// 	void onFrame() override;
+// };
 
 }
