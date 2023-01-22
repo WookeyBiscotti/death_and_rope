@@ -18,14 +18,7 @@ void MainMenu::onFrame() {
 		context().systemRef<SceneSystem>().findNext("dev_menu");
 	}
 	if (ImGui::Button("Exit")) {
-		context().systemRef<SceneSystem>().exit();
+		context().systemRef<SceneSystem>().clear();
 	}
 	ImGui::End();
-}
-
-bool MainMenu::active() const {
-	return _active;
-}
-
-void MainMenu::active(bool active) {
 }

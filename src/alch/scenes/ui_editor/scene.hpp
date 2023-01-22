@@ -17,7 +17,7 @@ class UIEditorScene: public Scene {
   public:
 	explicit UIEditorScene(Context& context): Scene(context){};
 
-	void active(bool active) override;
+	// void active(bool active) override;
 
 	void onFrame() override;
 

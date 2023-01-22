@@ -18,13 +18,13 @@ class DefaultScene: public Scene {
   public:
 	explicit DefaultScene(Context& context): Scene(context){};
 
-	void active(bool active) override {
-		if (active) {
-			_root = std::make_unique<Entity>(context());
-		} else {
-			_root.reset();
-		}
-	};
+	// void active(bool active) override {
+	// 	if (active) {
+	// 		_root = std::make_unique<Entity>(context());
+	// 	} else {
+	// 		_root.reset();
+	// 	}
+	// };
 
 	Entity* root() override { return _root.get(); };
 

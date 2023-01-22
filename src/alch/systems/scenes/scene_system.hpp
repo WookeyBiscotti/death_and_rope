@@ -13,30 +13,33 @@ class SceneSystem: public System {
 	SceneSystem(Context& context);
 
 	const SharedPtr<Scene>& current() { return _current; }
+	void current(SharedPtr<Scene> scene);
 
-	bool newSceneRequired() const { return _newSceneRequired; }
+	inline bool onFrame();
 
-	bool findNext(const std::string& name) {
-		auto n = find(name);
-		auto loaded = !!n;
-		_newSceneRequired = true;
-		_next = std::move(n);
+	// bool newSceneRequired() const { return _newSceneRequired; }
 
-		return loaded;
-	}
+	// bool findNext(const std::string& name) {
+	// 	auto n = find(name);
+	// 	auto loaded = !!n;
+	// 	_newSceneRequired = true;
+	// 	_next = std::move(n);
 
-	void applyNext() {
-		if (_current) {
-			_current->active(false);
-		}
-		if (_next) {
-			_next->active(true);
-		}
-		_newSceneRequired = false;
-		_current = std::move(_next);
-	}
+	// 	return loaded;
+	// }
 
-	void exit() {
+	// void applyNext() {
+	// 	if (_current) {
+	// 		_current->active(false);
+	// 	}
+	// 	if (_next) {
+	// 		_next->active(true);
+	// 	}
+	// 	_newSceneRequired = false;
+	// 	_current = std::move(_next);
+	// }
+
+	void clear() {
 		_next = {};
 		_newSceneRequired = true;
 	}
@@ -44,13 +47,18 @@ class SceneSystem: public System {
 	std::vector<std::string> list() const;
 
 	void registerScene(const std::string& name, std::function<SharedPtr<Scene>()> creator);
+
 	void removeSceneCache(const std::string& name);
+
 	SharedPtr<Scene> find(const std::string& name);
+
+	void findNext(const std::string& name) { current(find(name)); }
 
 	void exportScriptFunctions(Context& context) override;
 
   private:
 	SharedPtr<Scene> _current;
+
 	bool _newSceneRequired{};
 	SharedPtr<Scene> _next;
 
@@ -59,7 +67,28 @@ class SceneSystem: public System {
 		SharedPtr<Scene> cache;
 	};
 
-	std::unordered_map<std::string, SceneCreator> _creator;
+	FlatMap<std::string, SceneCreator> _creator;
 };
+
+inline bool SceneSystem::onFrame() {
+	if (_newSceneRequired) {
+		_newSceneRequired = false;
+		if (_current) {
+			_current->onStop();
+		}
+		_current = _next;
+		if (_current) {
+			_current->onStart();
+		} else {
+			return false;
+		}
+	}
+	if (_current) {
+		_current->onFrame();
+		return true;
+	} else {
+		return false;
+	}
+}
 
 } // namespace al

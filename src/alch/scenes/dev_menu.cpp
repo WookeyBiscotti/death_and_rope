@@ -31,10 +31,3 @@ void DevMenu::onFrame() {
 	}
 	ImGui::End();
 }
-
-bool DevMenu::active() const {
-	return _active;
-}
-
-void DevMenu::active(bool active) {
-}

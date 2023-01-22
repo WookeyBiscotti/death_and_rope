@@ -6,14 +6,14 @@
 
 using namespace al;
 
-void EditorScene::active(bool active) {
-	if (!active) {
-		_root.reset();
-		return;
-	}
+// void EditorScene::active(bool active) {
+// 	if (!active) {
+// 		_root.reset();
+// 		return;
+// 	}
 
-	_root = std::make_unique<Entity>(context());
-};
+// 	_root = std::make_unique<Entity>(context());
+// };
 
 bool EditorScene::drawNode(Entity& entity, Entity*& selected) {
 	auto g = entity.get<Group>();

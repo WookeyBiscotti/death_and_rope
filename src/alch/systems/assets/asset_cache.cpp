@@ -2,6 +2,7 @@
 
 #include "alch/engine/engine.hpp"
 #include "alch/systems/config/config.hpp"
+#include "alch/systems/config/config_defs.hpp"
 #include "alch/systems/logging/logger.hpp"
 #include "builtin_font.hpp"
 //
@@ -38,7 +39,8 @@ Path AssetCache::texturesPath() const {
 	return fs::path(_root) / TEXTURES_PATH;
 }
 
-AssetCache::AssetCache(Context& context): System(context), _root(context.systemRef<Engine>().config().root) {
+AssetCache::AssetCache(Context& context):
+    System(context), _root(context.systemRef<ConfigSystem>().valueOr<String>(config::USER_DATA_PATH, "")) {
 	LINFO("Asset cache root: {}", _root);
 };
 

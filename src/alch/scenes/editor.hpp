@@ -18,8 +18,6 @@ class EditorScene: public Scene {
   public:
 	explicit EditorScene(Context& context): Scene(context){};
 
-	void active(bool active) override;
-
 	void onFrame() override;
 
 	Entity* root() override { return _root.get(); };

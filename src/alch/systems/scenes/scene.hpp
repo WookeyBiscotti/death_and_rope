@@ -24,8 +24,8 @@ class Scene: public Transmitter {
 
 	Context& context() { return _context; }
 
-	virtual bool active() const { return true; };
-	virtual void active(bool active){};
+	virtual void onStart() {}
+	virtual void onStop() {}
 
 	virtual Entity* root() { return nullptr; }
 

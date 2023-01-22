@@ -50,8 +50,8 @@ void SceneSystem::exportScriptFunctions(Context& context) {
 	auto& chai = context.systemRef<Scripts>().internal();
 	chai.add(var(this), "scene");
 	chai.add(user_type<SceneSystem>(), "SceneSystem");
-	chai.add(fun(&SceneSystem::findNext), "findNext");
-	chai.add(fun(&SceneSystem::applyNext), "applyNext");
+	// chai.add(fun(&SceneSystem::findNext), "findNext");
+	// chai.add(fun(&SceneSystem::applyNext), "applyNext");
 	chai.add(fun(&SceneSystem::list), "list");
 	chai.add(fun(&SceneSystem::find), "find");
 	chai.add_global_const(const_var(std::shared_ptr<Scene>{}), "nullScene");
@@ -59,5 +59,10 @@ void SceneSystem::exportScriptFunctions(Context& context) {
 	chai.add(fun(&Scene::root), "root");
 	chai.add(user_type<Scene>(), "Scene");
 
-	chai.add(fun(&SceneSystem::current), "current");
+	// chai.add(fun(&SceneSystem::current), "current");
+}
+
+void SceneSystem::current(SharedPtr<Scene> scene) {
+	_newSceneRequired = true;
+	_next = scene;
 }

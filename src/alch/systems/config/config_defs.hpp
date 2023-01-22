@@ -37,5 +37,8 @@ DEFAULT(WINDOW_FULLSCREEN, bool, true)
 constexpr char WINDOW_BORDERLESS[] = "window.borderless";
 constexpr char WINDOW_VERTICAL_SYNC[] = "window.vertical_sync";
 
+constexpr char ENABLE_DEFAULT_SCENES[] = "enable_default_scenes";
+DEFAULT(ENABLE_DEFAULT_SCENES, bool, false)
+
 #undef DEFAULT
 } // namespace al::config

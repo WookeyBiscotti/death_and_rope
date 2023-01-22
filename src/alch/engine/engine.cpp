@@ -7,6 +7,7 @@
 #include "alch/systems/assets/asset_cache.hpp"
 #include "alch/systems/broker/broker.hpp"
 #include "alch/systems/config/config.hpp"
+#include "alch/systems/config/config_defs.hpp"
 #include "alch/systems/debug/debug_system.hpp"
 #include "alch/systems/filesystem/filesystem.hpp"
 #include "alch/systems/group/group_system.hpp"
@@ -49,23 +50,7 @@
 
 using namespace al;
 
-Engine::Engine(Context& context): System(context) {
-}
-
-static void addStandardScenes(Context& context) {
-	auto& scenes = context.systemRef<SceneSystem>();
-	scenes.registerScene("default", [&context] { return SharedPtr<DefaultScene>::make(context); });
-	scenes.registerScene("dev_menu", [&context] { return SharedPtr<DevMenu>::make(context); });
-	scenes.registerScene("test", [&context] { return SharedPtr<TestScene>::make(context); });
-	scenes.registerScene("test_physics", [&context] { return SharedPtr<TestPhysicsScene>::make(context); });
-	scenes.registerScene("editor", [&context] { return SharedPtr<EditorScene>::make(context); });
-	scenes.registerScene("ui_example", [&context] { return SharedPtr<GuiExempleScene>::make(context); });
-	scenes.registerScene("__ui_editor", [&context] { return SharedPtr<GuiExempleScene>::make(context); });
-}
-
-void Engine::run(const char** argv, int argc, const EngineConfig& engineConfig) {
-	_config = engineConfig;
-
+Engine::Engine(Context& c, ConfigSystem::ConfigTree config, const char** argv, int argc): System(c) {
 	IF_NOT_PROD_BUILD(context().createSystem<Logger>());
 	auto& broker = context().systemRef<Broker>();
 	context().createSystem<ConfigSystem>(ConfigSystem::ConfigTree{}, argv, argc);
@@ -81,7 +66,20 @@ void Engine::run(const char** argv, int argc, const EngineConfig& engineConfig) 
 	context().createSystem<Physics>();
 	context().createSystem<NameSystem>();
 	IF_NOT_PROD_BUILD(context().createSystem<DebugSystem>());
+}
 
+static void addStandardScenes(Context& context) {
+	auto& scenes = context.systemRef<SceneSystem>();
+	scenes.registerScene("default", [&context] { return SharedPtr<DefaultScene>::make(context); });
+	scenes.registerScene("dev_menu", [&context] { return SharedPtr<DevMenu>::make(context); });
+	scenes.registerScene("test", [&context] { return SharedPtr<TestScene>::make(context); });
+	scenes.registerScene("test_physics", [&context] { return SharedPtr<TestPhysicsScene>::make(context); });
+	scenes.registerScene("editor", [&context] { return SharedPtr<EditorScene>::make(context); });
+	scenes.registerScene("ui_example", [&context] { return SharedPtr<GuiExempleScene>::make(context); });
+	scenes.registerScene("__ui_editor", [&context] { return SharedPtr<GuiExempleScene>::make(context); });
+}
+
+void Engine::registerStdComponents() {
 	Entity::registerComponent<Transform>(context());
 	Entity::registerComponent<Group>(context());
 	Entity::registerComponent<Name>(context());
@@ -93,8 +91,14 @@ void Engine::run(const char** argv, int argc, const EngineConfig& engineConfig) 
 
 	Entity::registerComponent<Body>(context());
 	Entity::registerComponent<Collider>(context());
+}
 
-	if (engineConfig.enableDefaultScenes) {
+void Engine::run(SharedPtr<Scene> scene) {
+	registerStdComponents();
+
+	auto& config = context().systemRef<ConfigSystem>();
+
+	if (config.valueOr(config::ENABLE_DEFAULT_SCENES, false)) {
 		addStandardScenes(context());
 	}
 
@@ -106,9 +110,13 @@ void Engine::run(const char** argv, int argc, const EngineConfig& engineConfig) 
 		s->exportScriptFunctions(context());
 	}
 
-	scenes.findNext(_config.startScene);
-	scenes.applyNext();
+	auto& scenes = context().systemRef<SceneSystem>();
+	scenes.current(scene);
 
+	auto& window = context().systemRef<Window>();
+	auto& broker = context().systemRef<Broker>();
+	auto& render = context().systemRef<Render>();
+	auto& ui = context().systemRef<UISystem>();
 	float lastFps = 60;
 	while (true) {
 		const auto t1 = std::chrono::steady_clock::now();
@@ -116,9 +124,7 @@ void Engine::run(const char** argv, int argc, const EngineConfig& engineConfig) 
 
 		broker.send(EngineOnFrameStart{.lastFps = lastFps});
 
-		if (scenes.current()) {
-			scenes.current()->onFrame();
-		} else {
+		if (!scenes.onFrame()) {
 			break;
 		}
 
@@ -132,10 +138,6 @@ void Engine::run(const char** argv, int argc, const EngineConfig& engineConfig) 
 
 		window.window().display();
 		window.window().clear();
-
-		if (scenes.newSceneRequired()) {
-			scenes.applyNext();
-		}
 
 		broker.send(EngineOnFrameEnd{});
 
@@ -159,7 +161,7 @@ void Engine::exportScriptFunctions(Context& context) {
 	auto& chai = context.systemRef<Scripts>().internal();
 	chai.add(fun([&context] {
 		auto& scene = context.systemRef<SceneSystem>();
-		scene.exit();
+		scene.clear();
 	}),
 	    "exit");
 
@@ -185,10 +187,8 @@ void Engine::exportScriptFunctions(Context& context) {
 	auto& lua = context.systemRef<Scripts>().internal2();
 	scripts.add_func("exit", [&context] {
 		auto& scene = context.systemRef<SceneSystem>();
-		scene.exit();
+		scene.clear();
 	});
-	scripts.add_func("context", [&context] {
-		return &context;
-	});
+	scripts.add_func("context", [&context] { return &context; });
 	lua.new_usertype<Entity>("Entity", sol::constructors<Entity(Context&)>());
 }

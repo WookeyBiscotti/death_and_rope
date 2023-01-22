@@ -8,11 +8,5 @@ class DevMenu: public Scene {
 	explicit DevMenu(Context& context): Scene(context) {}
 
 	void onFrame() override;
-
-	bool active() const override;
-	void active(bool active) override;
-
-  private:
-	bool _active = false;
 };
-}
+} // namespace al
