@@ -15,6 +15,8 @@ class Context;
 class UIElement;
 
 class UISystem final: public System {
+	friend UIElement;
+
   public:
 	explicit UISystem(Context& context);
 	~UISystem();
@@ -26,6 +28,7 @@ class UISystem final: public System {
 
 	static UIElement* getElementUnderPoint(UIElement* el, Vector2f p);
 
+  private:
 	void remove(UIElement* el);
 
 	UIElement* lastDraged(sf::Mouse::Button b) const;
@@ -60,6 +63,7 @@ inline void UISystem::remove(UIElement* el) {
 	for (auto& [k, v] : _lastDraged) {
 		if (v.second == el) {
 			_lastDraged.erase(k);
+			break;
 		}
 	}
 }

@@ -11,20 +11,12 @@ class Context;
 
 class UIWindow: public UIProxy {
   public:
-	UIWindow(Context& context, WeakPtr<UIElement> parent, String content);
+	UIWindow(Context& context, WeakPtr<UIElement> parent, String content, bool noHeader = false /*refactor*/);
 
-	// void draw(sf::RenderTarget& target) override;
-
-  protected:
-	// void onSizeChange(const Vector2f& old) override;
-
-	enum class Flags {
-		IDLE,
-		FOCUSED,
-		SELECTING,
-	} _state = Flags::IDLE;
+	void moveable(bool moveable) { _moveable = moveable; }
 
   protected:
+	bool _moveable{true};
 	String _content;
 	SharedPtr<Font> _font;
 	sf::Text _text;

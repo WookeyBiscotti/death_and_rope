@@ -75,10 +75,11 @@ void UIButton::onHovered(const UIHovered&) {
 }
 
 void UIButton::onReleased(const UIMouseButtonReleased& e) {
+	send(UIElementOnReleased{});
 	if (_state == State::PRESSED) {
 		_state = State::IDLE;
 		if (isEventInside(e)) {
-			send(UIElementOnReleased{});
+			send(UIButtonPressed{});
 		}
 	}
 }
@@ -87,7 +88,6 @@ void UIButton::onPressed(const UIMouseButtonPressed&) {
 	_state = State::PRESSED;
 	send(UIElementOnPressed{});
 }
-
 
 void UIButton::onSizeChange() {
 	if (_font) {
@@ -98,6 +98,9 @@ void UIButton::onSizeChange() {
 	_text.setCharacterSize(style<StyleName::TEXT_SIZE, float>());
 	_text.setFillColor(style<StyleName::TEXT_COLOR, Color>());
 	// _text.setStyle(sf::Text::Bold | sf::Text::Underlined);
+	if (style<StyleName::TEXT_BOLD, bool>()) {
+		_text.setStyle(sf::Text::Bold);
+	}
 
 	auto gb = _text.getGlobalBounds();
 	auto gp = toWorldCoords(position());

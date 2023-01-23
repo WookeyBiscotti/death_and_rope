@@ -10,6 +10,8 @@ namespace al {
 
 class Context;
 
+struct UIButtonPressed {};
+
 class UIButton: public UIElement {
   public:
 	UIButton(Context& context, WeakPtr<UIElement> parent, std::string content);

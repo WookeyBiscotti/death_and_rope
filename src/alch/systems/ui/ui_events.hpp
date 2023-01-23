@@ -1,6 +1,7 @@
 #pragma once
 
 #include "alch/common/vector2.hpp"
+
 #include <SFML/Window/Event.hpp>
 
 namespace al {
@@ -46,4 +47,4 @@ struct UITextEntered {
 	const sf::Event::TextEvent event;
 };
 
-}
+} // namespace al

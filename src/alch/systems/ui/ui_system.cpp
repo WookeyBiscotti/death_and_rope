@@ -133,11 +133,18 @@ UISystem::UISystem(Context& context): System(context) {
 			} else if (eType == sf::Event::MouseButtonReleased) {
 				if (auto f = _lastDraged.find(e.general.event.mouseButton.button); f != _lastDraged.end()) {
 					f->second.second->onReleased(UIMouseButtonReleased{e.general.event.mouseButton});
+				}
+				// коллбек может инвализировать итератор
+				if (auto f = _lastDraged.find(e.general.event.mouseButton.button); f != _lastDraged.end()) {
 					f->second.second->onDragStop(UIMouseDragStop{e.general.event.mouseButton});
+				}
+				// коллбек может инвализировать итератор
+				if (auto f = _lastDraged.find(e.general.event.mouseButton.button); f != _lastDraged.end()) {
 					_lastDraged.erase(f);
 				}
 			} else if (eType == sf::Event::MouseWheelScrolled) {
-				auto w = _root->isPointElement(Vector2f(e.general.event.mouseMove.x, e.general.event.mouseButton.y));
+				auto w = _root->isPointElement(
+				    Vector2f(e.general.event.mouseWheelScroll.x, e.general.event.mouseWheelScroll.y));
 				if (w) {
 					if (!w->onMouseWheel(UIMouseWheel{e.general.event.mouseWheelScroll})) {
 						auto p = w->parent().lock();

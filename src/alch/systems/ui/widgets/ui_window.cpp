@@ -5,23 +5,29 @@
 
 using namespace al;
 
-UIWindow::UIWindow(Context& context, WeakPtr<UIElement> parent, String content): UIProxy(context, parent) {
+UIWindow::UIWindow(Context& context, WeakPtr<UIElement> parent, String content, bool noHeader):
+    UIProxy(context, parent) {
 	_layout = UIElement::VERICAL;
-	auto header = SharedPtr<UIText>::make(context, parent, content);
-	header->style<StyleName::FOREGROUND_COLOR>(styleDefault<StyleName::HEADER_COLOR, Color>);
-	UIElement::add(header);
-	header->maxSize({UIUnitMax, 30});
+	if (!noHeader) {
+		auto header = SharedPtr<UIPanel>::make(context, parent);
+		header->style<StyleName::FLAT_COLOR>(styleDefault<StyleName::HEADER_COLOR, Color>);
+		header->layout(UIElement::HORIZONTAL);
+		auto text = header->create<UIText>(content);
+		UIElement::add(header);
+		header->maxSize({UIUnitMax, style<StyleName::HEADER_HEIGHT, float>()});
+		subscribe<UIElementOnDrag>(text, [this](const UIElementOnDrag& e) {
+			if (_moveable) {
+				auto newP = position() + e.dr;
+				auto p = _parent.lock();
+				LASSERT(p);
+				const auto pSize = p->size();
+				if (Rect<float>(0, 0, pSize.x - _size.x, pSize.y - _size.y).contains(newP)) {
+					position(position() + e.dr);
+				}
+			}
+		});
+	}
 	auto body = SharedPtr<UIPanel>::make(context, parent);
-	UIElement::add(body);
-
 	_proxy = body.get();
-	subscribe<UIElementOnDrag>(header.get(), [this](const UIElementOnDrag& e) {
-		auto newP = position() + e.dr;
-		auto p = _parent.lock();
-		LASSERT(p);
-		const auto pSize = p->size();
-		if (Rect<float>(0, 0, pSize.x - _size.x, pSize.y - _size.y).contains(newP)) {
-			position(position() + e.dr);
-		}
-	});
+	UIElement::add(body);
 }

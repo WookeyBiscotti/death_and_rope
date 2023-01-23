@@ -13,7 +13,7 @@
 
 using namespace al;
 
-Window::Window(Context& context): System(context) {
+Window::Window(Context& context): System(context), _config(context.systemRef<ConfigSystem>()) {
 	updateWindowFromConfig();
 }
 
@@ -51,6 +51,8 @@ void Window::updateWindowFromConfig() {
 	}
 	_window->setPosition(
 	    Vector2i(config.valueOr<int64_t>(WINDOW_POSITION_X, 0), config.valueOr<int64_t>(WINDOW_POSITION_Y, 0)));
+
+	_config.subscribe(config::WINDOW_FULLSCREEN, [this](const String&) { updateWindowFromConfig(); });
 }
 
 void Window::pullEvents() {

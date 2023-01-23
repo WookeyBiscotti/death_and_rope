@@ -16,16 +16,6 @@ UIText::UIText(Context& context, WeakPtr<UIElement> parent, String content):
 }
 
 void UIText::draw(sf::RenderTarget& target) {
-	using enum StyleName;
-	sf::RectangleShape rs;
-	rs.setSize(_size);
-	rs.setPosition(toWorldCoords(_position));
-
-	rs.setFillColor(style<FOREGROUND_COLOR, Color>());
-	rs.setOutlineColor(style<BORDER_COLOR, Color>());
-	rs.setOutlineThickness(-style<BORDER_THICKNESS, float>());
-
-	target.draw(rs);
 	target.draw(_text);
 }
 
@@ -38,6 +28,9 @@ void UIText::onSizeChange() {
 	_text.setCharacterSize(style<StyleName::TEXT_SIZE, float>());
 	_text.setFillColor(style<StyleName::TEXT_COLOR, Color>());
 	// _text.setStyle(sf::Text::Bold | sf::Text::Underlined);
+	if (style<StyleName::TEXT_BOLD, bool>()) {
+		_text.setStyle(sf::Text::Bold);
+	}
 
 	auto gb = _text.getGlobalBounds();
 	auto gp = toWorldCoords(position());

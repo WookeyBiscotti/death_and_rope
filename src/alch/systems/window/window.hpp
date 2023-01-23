@@ -4,6 +4,7 @@
 #include "alch/common/smart_ptr.hpp"
 #include "alch/common/vector2.hpp"
 #include "alch/engine/system.hpp"
+#include "alch/systems/config/config_handler.hpp"
 
 namespace sf {
 class RenderWindow;
@@ -31,6 +32,7 @@ class Window: public System {
 
   private:
 	SharedPtr<RenderWindow> _window;
+	ConfigHandler _config;
 };
 
 } // namespace al

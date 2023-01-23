@@ -229,9 +229,13 @@ Vector2<UIUnit> UIElement::position() const {
 }
 
 void UIElement::position(Vector2<UIUnit> position) {
-	_position = position;
-	for (const auto& c : _childs) {
-		c->onPositionChange();
+	if (_position != position) {
+		_position = position;
+		for (const auto& c : _childs) {
+			c->onPositionChange();
+		}
+		send(UIElementPositionChange{});
+		onGlobalPositionChange();
 	}
 }
 
@@ -447,4 +451,11 @@ const UIElement* UIElement::find(const String& name) const {
 
 UIElement* UIElement::find(const String& name) {
 	return const_cast<UIElement*>(find(name));
+}
+
+void UIElement::onGlobalPositionChange() {
+	send(UIElementGlobalPositionChange{});
+	for (const auto& c : _childs) {
+		c->onGlobalPositionChange();
+	}
 }

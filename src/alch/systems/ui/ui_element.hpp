@@ -69,6 +69,9 @@ struct UIElementOnSpecialText {};
 struct UIElementOnFocused {};
 struct UIElementOnUnfocused {};
 
+struct UIElementPositionChange {};
+struct UIElementGlobalPositionChange {};
+
 class UIElement: public Transmitter, public EnableSharedFromThis<UIElement> {
 	friend class UISystem;
 
@@ -149,6 +152,8 @@ class UIElement: public Transmitter, public EnableSharedFromThis<UIElement> {
 
 	virtual void onSizeChange();
 	virtual void onPositionChange();
+
+	virtual void onGlobalPositionChange();
 
 	virtual void onHovered(const UIHovered&) { send(UIElementOnHovered{}); }
 	virtual void onMouseMove(const UIMouseMove&) { send(UIElementOnMouseMove{}); }
