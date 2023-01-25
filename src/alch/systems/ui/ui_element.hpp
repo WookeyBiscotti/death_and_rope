@@ -61,7 +61,9 @@ struct UIElementOnDrag {
 };
 struct UIElementOnDragStop {};
 
-struct UIElementOnMouseWheel {};
+struct UIElementOnMouseWheel {
+	const UIMouseWheel& e;
+};
 
 struct UIElementOnText {};
 struct UIElementOnSpecialText {};
@@ -166,7 +168,10 @@ class UIElement: public Transmitter, public EnableSharedFromThis<UIElement> {
 	virtual void onDrag(const UIMouseDrag& e) { send(UIElementOnDrag{e.dr}); }
 	virtual void onDragStop(const UIMouseDragStop&) { send(UIElementOnDragStop{}); }
 
-	virtual bool onMouseWheel(const UIMouseWheel&) { return false; }
+	virtual bool onMouseWheel(const UIMouseWheel& e) {
+		send(UIElementOnMouseWheel{e});
+		return false;
+	}
 
 	virtual void onText(const UITextEntered&) { send(UIElementOnText{}); }
 	virtual void onSpecialText(const UITextEntered&) { send(UIElementOnSpecialText{}); }

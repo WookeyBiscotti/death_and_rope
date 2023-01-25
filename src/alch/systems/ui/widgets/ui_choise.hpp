@@ -28,6 +28,7 @@ class UIChoise: public UIElement {
 
   protected:
 	UIElement* _chosesUI{};
+	Vector2f _chosesUIDR{};
 	std::size_t _idx{};
 	std::vector<String> _choices;
 

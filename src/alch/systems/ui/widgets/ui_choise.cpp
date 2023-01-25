@@ -36,9 +36,9 @@ void UIChoise::draw(sf::RenderTarget& target) {
 	c.setPointCount(3);
 
 	auto gp = toWorldCoords(position());
-	c.setPoint(0, gp + Vector2f{_size.x, 0});
-	c.setPoint(1, c.getPoint(0) + Vector2f{0, h});
-	c.setPoint(2, c.getPoint(1) - Vector2f{w, 0});
+	c.setPoint(0, gp + Vector2f{_size.x, h * 0.5f});
+	c.setPoint(1, c.getPoint(0) + Vector2f{0, h * 0.5f});
+	c.setPoint(2, c.getPoint(1) - Vector2f{w * 0.5f, 0});
 	auto color = style<FLAT_COLOR, Color>();
 	color.a = 100;
 	c.setFillColor(color);
@@ -102,6 +102,7 @@ void UIChoise::onPressed(const UIMouseButtonPressed&) {
 		system().popout()->remove(_chosesUI);
 	}
 	_chosesUI = system().popout()->create<UIWindow>("", true);
+	_chosesUIDR = {};
 	_chosesUI->size({_size.x, _size.y * _choices.size()});
 	auto gp = toWorldCoords(position());
 	_chosesUI->position(gp);
@@ -114,18 +115,27 @@ void UIChoise::onPressed(const UIMouseButtonPressed&) {
 			onSizeChange();
 			system().popout()->remove(_chosesUI);
 			_chosesUI = {};
+			_chosesUIDR = {};
 		});
 		idx++;
+		subscribe<UIElementOnMouseWheel>(b, [=](const UIElementOnMouseWheel& e) {
+			const auto dir = e.e.event.delta > 0 ? -1 : 1;
+			_chosesUIDR += {0, -10 * e.e.event.delta};
+			_chosesUIDR.y = std::max(0.0f, _chosesUIDR.y);
+			_chosesUIDR.y = std::min(_size.y * (_choices.size() - 1), _chosesUIDR.y);
+			_chosesUI->position(globalPosition() - _chosesUIDR);
+		});
 	}
 	subscribe<UIElementGlobalPositionChange>(this, [=](const UIElementGlobalPositionChange&) {
 		if (this->_chosesUI) {
-			this->_chosesUI->position(globalPosition());
+			this->_chosesUI->position(globalPosition() - _chosesUIDR);
 		}
 	});
 
 	subscribe<UIElementOnUnhovered>(_chosesUI, [&](const UIElementOnUnhovered&) {
 		system().popout()->remove(_chosesUI);
 		_chosesUI = {};
+		_chosesUIDR = {};
 	});
 }
 
