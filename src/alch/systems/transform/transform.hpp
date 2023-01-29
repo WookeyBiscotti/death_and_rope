@@ -1,9 +1,9 @@
 #pragma once
 
-#include "alch/common/archive.hpp"
 #include "alch/common/vector2.hpp"
 #include "alch/engine/component.hpp"
 //
+#include "alch/common/archive.hpp"
 
 namespace al {
 
@@ -30,8 +30,8 @@ class Transform: public Component {
 	void rotation(float rotation);
 	void r(float rotation) { this->rotation(rotation); }
 
-	void serialize(OArchive& ar) const override;
-	void deserialize(IArchive& ar) override;
+	void save(VarOArchive& archive) const override;
+	void load(VarIArchive& archive) override;
 
 	ALCH_COMPONENT_NAME(Transform);
 
@@ -41,4 +41,4 @@ class Transform: public Component {
 	float _rotation{};
 };
 
-}
+} // namespace al

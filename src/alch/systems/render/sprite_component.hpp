@@ -8,6 +8,8 @@
 #include "alch/systems/broker/transmitter.hpp"
 #include "drawable.hpp"
 //
+#include "alch/common/archive.hpp"
+//
 #include <SFML/Graphics/Sprite.hpp>
 //
 #include <memory>
@@ -31,8 +33,8 @@ class Sprite: public Drawable, public Transmitter {
 
 	void draw(RenderTarget& target, const RenderStates& state) override;
 
-	void serialize(OArchive& ar) const override;
-	void deserialize(IArchive& ar) override;
+	void save(VarOArchive& archive) const override;
+	void load(VarIArchive& archive) override;
 
 	ALCH_COMPONENT_NAME(Sprite);
 

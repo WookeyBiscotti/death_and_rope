@@ -165,17 +165,17 @@ void Engine::exportScriptFunctions(Context& context) {
 	chai.add(fun(&Entity::get<Name>), "name");
 	chai.add(fun([](Entity& entity, const std::string& name) { entity.add<Name>(name); }), "addName");
 	chai.add(fun([&context](Entity& entity, const std::string& path) {
-		auto& asset = context.systemRef<AssetCache>();
-		std::ofstream f(asset.entityPath() / path);
-		OArchive ar(f);
-		entity.serialize(ar);
+		// auto& asset = context.systemRef<AssetCache>();
+		// std::ofstream f(asset.entityPath() / path);
+		// OArchive ar(f);
+		// entity.save(ar);
 	}),
 	    "save");
 	chai.add(fun([&context](Entity& entity, const std::string& path) {
-		auto& asset = context.systemRef<AssetCache>();
-		std::ifstream f(asset.entityPath() / path);
-		IArchive ar(f);
-		entity.deserialize(ar);
+		// auto& asset = context.systemRef<AssetCache>();
+		// std::ifstream f(asset.entityPath() / path);
+		// IArchive ar(f);
+		// entity.deserialize(ar);
 	}),
 	    "load");
 

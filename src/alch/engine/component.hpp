@@ -28,8 +28,8 @@ class Component {
 
 	virtual std::string_view cName() const = 0;
 
-	virtual void serialize(OArchive& archive) const = 0;
-	virtual void deserialize(IArchive& archive) = 0;
+	virtual void save(VarOArchive& archive) const = 0;
+	virtual void load(VarIArchive& archive) = 0;
 
 	virtual std::vector<type_id_t> dependsOn() const { return {}; }
 
@@ -43,7 +43,9 @@ class Component {
 		return name;                                \
 	};
 
-#define ALCH_COMPONENT_DEPENDS_ON(...) \
-	std::vector<type_id_t> dependsOn() const override { return TypeIds<__VA_ARGS__>(); }
+#define ALCH_COMPONENT_DEPENDS_ON(...)                  \
+	std::vector<type_id_t> dependsOn() const override { \
+		return TypeIds<__VA_ARGS__>();                  \
+	}
 
-}
+} // namespace al

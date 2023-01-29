@@ -25,16 +25,16 @@ void CircleShape::draw(RenderTarget& target, const RenderStates& state) {
 	target.draw(_shape, state);
 }
 
-void CircleShape::serialize(OArchive& ar) const {
-	ar(_shape.getRadius());
-	::serialize(ar, _shape.getFillColor());
+void CircleShape::save(VarOArchive& archive) const {
+	al::save(archive, _shape.getRadius());
+	al::save(archive, _shape.getFillColor());
 }
 
-void CircleShape::deserialize(IArchive& ar) {
+void CircleShape::load(VarIArchive& archive) {
 	float r;
 	Color c;
-	ar(r);
-	::serialize(ar, c);
+	al::load(archive, r);
+	al::load(archive, c);
 	_shape.setRadius(r);
 	_shape.setFillColor(c);
 	_shape.setOrigin(r, r);

@@ -13,8 +13,7 @@ using namespace al;
 
 Sprite::Sprite(Entity& entity): Drawable(entity), Transmitter(entity.context().systemRef<Broker>()) {
 	subscribe<PositionUpdate>(&entity, [this](const PositionUpdate& p) { _sprite.setPosition(p.neW); });
-	subscribe<RotationUpdate>(
-	    &entity, [this](const RotationUpdate& r) { _sprite.setRotation(180 * r.neW / kPIf); });
+	subscribe<RotationUpdate>(&entity, [this](const RotationUpdate& r) { _sprite.setRotation(180 * r.neW / kPIf); });
 }
 
 Sprite::Sprite(Entity& entity, const SharedPtr<Texture>& tex): Sprite(entity) {
@@ -32,35 +31,34 @@ void Sprite::draw(RenderTarget& target, const RenderStates& states) {
 	target.draw(_sprite, states);
 }
 
-void Sprite::serialize(OArchive& ar) const {
-	ar(!!_texture);
+void Sprite::save(VarOArchive& archive) const {
+	al::save(archive, !!_texture);
 	if (_texture) {
-		ar(_texture->name());
+		al::save(archive, _texture->name());
 	}
-	::serialize(ar, _sprite.getTextureRect());
-	::serialize(ar, _sprite.getPosition());
-	ar(_sprite.getRotation());
+	al::save(archive, _sprite.getTextureRect());
+	al::save(archive, _sprite.getPosition());
+	al::save(archive, _sprite.getRotation());
 }
 
-void Sprite::deserialize(IArchive& ar) {
+void Sprite::load(VarIArchive& archive) {
 	bool inited;
-	ar(inited);
+	std::decay_t<decltype(_sprite.getTextureRect())> rect;
+	std::decay_t<decltype(_sprite.getPosition())> position;
+	std::decay_t<decltype(_sprite.getRotation())> rotation;
+
+	al::load(archive, inited);
 	if (inited) {
 		std::string path;
-		ar(path);
+		al::load(archive, path);
 		_texture = entity().context().systemRef<AssetCache>().texture(path);
 		_sprite.setTexture(_texture->sf());
 	}
+	al::load(archive, rect);
+	al::load(archive, position);
+	al::load(archive, rotation);
 
-	std::decay_t<decltype(_sprite.getTextureRect())> rect;
-	::serialize(ar, rect);
 	_sprite.setTextureRect(rect);
-
-	std::decay_t<decltype(_sprite.getPosition())> position;
-	::serialize(ar, position);
 	_sprite.setPosition(position);
-
-	std::decay_t<decltype(_sprite.getRotation())> rotation;
-	ar(rotation);
 	_sprite.setRotation(rotation);
 }

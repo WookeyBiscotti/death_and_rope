@@ -1,9 +1,8 @@
 #include "transform.hpp"
 
-#include "events.hpp"
-
 #include "alch/engine/context.hpp"
 #include "alch/engine/entity.hpp"
+#include "events.hpp"
 
 using namespace al;
 
@@ -31,14 +30,10 @@ void Transform::rotation(float rotation) {
 	}
 }
 
-void Transform::serialize(OArchive& ar) const {
-	::serialize(ar, _position);
-	::serialize(ar, _size);
-	ar(_rotation);
+void Transform::save(VarOArchive& archive) const {
+	al::save(archive, _position, _size, _rotation);
 }
 
-void Transform::deserialize(IArchive& ar) {
-	::serialize(ar, _position);
-	::serialize(ar, _size);
-	ar(_rotation);
+void Transform::load(VarIArchive& archive) {
+	al::load(archive, _position, _size, _rotation);
 }

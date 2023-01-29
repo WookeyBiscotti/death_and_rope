@@ -1,12 +1,11 @@
 #pragma once
 
 #include "variant.hpp"
-
+//
 #include <cereal/archives/binary.hpp>
 #include <cereal/archives/json.hpp>
-#include <cereal/cereal.hpp>
 #include <cereal/types/string.hpp>
-
+//
 namespace al {
 
 // using OArchive = cereal::JSONOutputArchive;
@@ -24,13 +23,16 @@ using IJSONArchive = cereal::JSONInputArchive;
 using VarOArchive = Variant<OBinaryArchive, OJSONArchive>;
 using VarIArchive = Variant<IBinaryArchive, IJSONArchive>;
 
+template<class... Args>
+void save(al::VarOArchive& a, Args&&... args) {
+	OJSONArchive& archive = (*std::get_if<OJSONArchive>(&a));
+	archive(std::forward<Args>(args)...);
+	// std::visit([&](al::OBinaryArchive& archive) { archive(std::forward<Args>(args)...); },
+	//     [&](al::OJSONArchive& archive) { archive(std::forward<Args>(args)...); }, a);
+}
+template<class... Args>
+void load(al::VarIArchive& a, Args&&... args) {
+	// std::visit([&](al::IBinaryArchive& archive) { archive(std::forward<Args>(args)...); },
+	//     [&](al::IJSONArchive& archive) { archive(std::forward<Args>(args)...); }, a);
+}
 } // namespace al
-
-template<class T>
-void serialize(const al::VarOArchive& a, T& o) {
-	std::visit([&o](const al::OBinaryArchive& a) { a(o); }, [&o](const al::OJSONArchive& a) { a(o); }, a);
-}
-template<class T>
-void serialize(al::VarIArchive& a, const T& o) {
-	std::visit([&o](al::IBinaryArchive& a) { a(o); }, [&o](al::IJSONArchive& a) { a(o); }, a);
-}

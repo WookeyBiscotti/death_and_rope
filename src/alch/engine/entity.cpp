@@ -19,7 +19,6 @@
 #include <unordered_map>
 #include <vector>
 
-
 using namespace al;
 
 struct SerializerData {
@@ -31,7 +30,10 @@ struct SerializerData {
 static std::unordered_map<type_id_t, SerializerData> serializerData = {};
 static std::unordered_map<std::string, type_id_t> nameToTypeId = {};
 
-void Entity::serialize(OArchive& ar) const {
+// void save(VarOArchive& archive) const;
+// void load(VarIArchive& archive);
+
+void Entity::save(VarOArchive& archive) const {
 	auto SD = [this](type_id_t id) -> SerializerData& {
 		if (auto found = serializerData.find(id); found == serializerData.end()) {
 			LCRIT("Abort serialization. Serializer with id({}) don't exist", id);
@@ -43,14 +45,14 @@ void Entity::serialize(OArchive& ar) const {
 
 	std::unordered_set<type_id_t> componentInOrder;
 
-	ar(_components.size() + BuiltInCount);
+	al::save(archive, _components.size() + BuiltInCount);
 
-	ar(SD(TypeId<Transform>()).name);
-	_transform.serialize(ar);
+	al::save(archive, SD(TypeId<Transform>()).name);
+	_transform.save(archive);
 	componentInOrder.insert(TypeId<Transform>());
 
-	ar(SD(TypeId<Parent>()).name);
-	_parent.serialize(ar);
+	al::save(archive, SD(TypeId<Parent>()).name);
+	_parent.save(archive);
 
 	componentInOrder.insert(TypeId<Parent>());
 
@@ -70,8 +72,8 @@ void Entity::serialize(OArchive& ar) const {
 					continue;
 				}
 				componentInOrder.insert(id);
-				ar(sd.name);
-				c->serialize(ar);
+				al::save(archive, sd.name);
+				c->save(archive);
 			}
 		}
 		if (componentInOrder.size() == orderSize) {
@@ -80,16 +82,16 @@ void Entity::serialize(OArchive& ar) const {
 	}
 }
 
-void Entity::deserialize(IArchive& ar) {
+void Entity::load(VarIArchive& archive) {
 	if (!_components.empty()) {
 		_components.clear();
 	}
 
 	size_t count;
-	ar >> count;
+	al::load(archive, count);
 	while (count-- != 0) {
 		std::string name;
-		ar >> name;
+		al::load(archive, name);
 		type_id_t id;
 		if (auto found = nameToTypeId.find(name); found == nameToTypeId.end()) {
 			LCRIT("Abort deserialization: serializer with such name({}) don't registered", name);
@@ -107,7 +109,7 @@ void Entity::deserialize(IArchive& ar) {
 				auto c = sd.creator(*this);
 				this->add(id, std::move(c));
 			}
-			get(id)->deserialize(ar);
+			get(id)->load(archive);
 		}
 	}
 }

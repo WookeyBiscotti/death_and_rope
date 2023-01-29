@@ -121,8 +121,11 @@ class Entity: public Transmitter, public EnableSharedFromThis<Entity> {
 	auto& parent() { return _parent; }
 	void parent(WeakPtr<Entity> parent) { return _parent.parent(parent); }
 
-	void serialize(OArchive& ar) const;
-	void deserialize(IArchive& ar);
+	// void serialize(OArchive& ar) const;
+	// void deserialize(IArchive& ar);
+
+	void save(VarOArchive& archive) const;
+	void load(VarIArchive& archive);
 
 	template<class C>
 	static void registerComponent(Context& context) {

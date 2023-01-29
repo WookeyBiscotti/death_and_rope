@@ -10,6 +10,11 @@ namespace al {
 
 class Context;
 
+struct UIChoiseOnChoise {
+	const String& key;
+	const std::size_t idx;
+};
+
 class UIChoise: public UIElement {
   public:
 	UIChoise(Context& context, WeakPtr<UIElement> parent, const std::vector<String>& choses, std::size_t idx = 0);

@@ -28,8 +28,8 @@ class Body: public Component {
 
 	b2Body& body() { return *_body; }
 
-	void serialize(OArchive& ar) const override;
-	void deserialize(IArchive& ar) override;
+	void save(VarOArchive& ar) const override;
+	void load(VarIArchive& ar) override;
 
 	ALCH_COMPONENT_NAME(Body);
   private:

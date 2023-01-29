@@ -4,6 +4,7 @@ using namespace al;
 
 UICheckBox::UICheckBox(Context& context, WeakPtr<UIElement> parent, bool checked):
     UIElement(context, parent), _checked(checked) {
+	maxSize({maxSize().x, style<StyleName::CHECK_BOX_HEIGHT, float>()});
 }
 
 void UICheckBox::draw(sf::RenderTarget& target) {

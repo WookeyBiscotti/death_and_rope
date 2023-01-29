@@ -12,6 +12,7 @@ UIButton::UIButton(Context& context, WeakPtr<UIElement> parent, std::string cont
 	if (!_font) {
 		_font = context.systemRef<AssetCache>().font(style<StyleName::FONT, String>());
 	}
+	maxSize({maxSize().x, style<StyleName::BUTTON_HEIGHT, float>()});
 }
 
 void UIButton::draw(sf::RenderTarget& target) {

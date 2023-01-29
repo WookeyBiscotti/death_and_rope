@@ -4,8 +4,6 @@
 #include "alch/systems/render/camera.hpp"
 #include "alch/systems/render/render.hpp"
 
-#include <cstddef>
-
 using namespace al;
 
 Camera::~Camera() {
@@ -20,27 +18,19 @@ void Camera::makeCurrent() {
 	r.camera(this);
 }
 
-void Camera::deserialize(IArchive& ar) {
+void Camera::save(VarOArchive& archive) const {
+	al::save(archive, _view.getViewport(), _view.getCenter(), _view.getRotation(), _view.getSize());
+};
+void Camera::load(VarIArchive& archive) {
 	std::decay_t<decltype(_view.getViewport())> viewport;
-	::serialize(ar, viewport);
-	_view.setViewport(viewport);
-
 	std::decay_t<decltype(_view.getCenter())> center;
-	::serialize(ar, center);
-	_view.setCenter(center);
-
 	std::decay_t<decltype(_view.getRotation())> rotation;
-	ar(rotation);
-	_view.setRotation(rotation);
-
 	std::decay_t<decltype(_view.getSize())> size;
-	::serialize(ar, size);
-	_view.setSize(size);
-}
 
-void Camera::serialize(OArchive& ar) const {
-	::serialize(ar, _view.getViewport());
-	::serialize(ar, _view.getCenter());
-	ar(_view.getRotation());
-	::serialize(ar, _view.getSize());
-}
+	al::load(archive, viewport, center, rotation, size);
+
+	_view.setViewport(viewport);
+	_view.setCenter(center);
+	_view.setRotation(rotation);
+	_view.setSize(size);
+};

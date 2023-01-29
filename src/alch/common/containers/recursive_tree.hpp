@@ -1,5 +1,10 @@
 #pragma once
-
+#include <cereal/archives/binary.hpp>
+#include <cereal/archives/json.hpp>
+#include <cereal/cereal.hpp>
+#include <cereal/specialize.hpp>
+#include <cereal/types/variant.hpp>
+//
 #include "alch/common/containers/hash_map.hpp"
 #include "alch/common/containers/inline_vector.hpp"
 #include "alch/common/containers/map.hpp"
@@ -9,10 +14,6 @@
 #include "alch/common/containers/vector.hpp"
 #include "alch/common/variant.hpp"
 //
-#include <cereal/archives/json.hpp>
-#include <cereal/cereal.hpp>
-#include <cereal/specialize.hpp>
-#include <cereal/types/variant.hpp>
 
 namespace al {
 
@@ -52,7 +53,11 @@ class RecursiveTreeNode {
 	}
 
 	template<class Archive>
-	void serialize(Archive& ar) {
+	void save(Archive& ar) const {
+		ar(_value, _childs);
+	}
+	template<class Archive>
+	void load(Archive& ar) {
 		ar(_value, _childs);
 	}
 

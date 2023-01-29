@@ -1,6 +1,5 @@
 #pragma once
 
-#include "alch/common/archive.hpp"
 #include "alch/common/consts.hpp"
 //
 #include <SFML/System/Vector2.hpp>
@@ -66,21 +65,41 @@ inline Vector2f rotated(float rads) {
 }
 
 template<class Archive, class T>
-inline void serialize(Archive& archive, Vector2<T>& m) {
+void load(Archive& archive, Vector2<T>& m) {
 	archive(m.x, m.y);
 }
 
 template<class Archive, class T>
-inline void serialize(Archive& archive, const Vector2<T>& m) {
+void save(Archive& archive, const Vector2<T>& m) {
 	archive(m.x, m.y);
 }
 
 template<class Archive>
-inline void serialize(Archive& archive, b2Vec2& m) {
+void load(Archive& archive, Vector2f& m) {
+	archive(m.x, m.y);
+}
+
+template<class Archive>
+void save(Archive& archive, const Vector2f& m) {
+	archive(m.x, m.y);
+}
+
+// template<class Archive>
+// inline void load(Archive& archive, sf::Vector2f& m) {
+// 	archive(m.x, m.y);
+// }
+
+// template<class Archive>
+// inline void save(Archive& archive, const sf::Vector2f& m) {
+// 	archive(m.x, m.y);
+// }
+
+template<class Archive>
+void save(Archive& archive, const b2Vec2& m) {
 	archive(m.x, m.y);
 }
 template<class Archive>
-inline void serialize(Archive& archive, const b2Vec2& m) {
+void load(Archive& archive, b2Vec2& m) {
 	archive(m.x, m.y);
 }
 

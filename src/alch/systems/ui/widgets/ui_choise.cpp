@@ -14,6 +14,7 @@ UIChoise::UIChoise(Context& context, WeakPtr<UIElement> parent, const std::vecto
 	if (!_font) {
 		_font = context.systemRef<AssetCache>().font(style<StyleName::FONT, String>());
 	}
+	maxSize({maxSize().x, style<StyleName::CHOISE_HEIGHT, float>()});
 }
 
 void UIChoise::draw(sf::RenderTarget& target) {
@@ -116,6 +117,7 @@ void UIChoise::onPressed(const UIMouseButtonPressed&) {
 			system().popout()->remove(_chosesUI);
 			_chosesUI = {};
 			_chosesUIDR = {};
+			send(UIChoiseOnChoise{c, idx});
 		});
 		idx++;
 		subscribe<UIElementOnMouseWheel>(b, [=](const UIElementOnMouseWheel& e) {

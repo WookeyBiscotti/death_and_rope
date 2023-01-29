@@ -39,19 +39,25 @@ void Window::updateWindowFromConfig() {
 		flags |= sf::Style::Fullscreen;
 	}
 
-	if ((!config.value<int64_t>(WINDOW_SIZE_W) || !config.value<int64_t>(WINDOW_SIZE_H))) {
+	const auto pos = _window->getPosition();
+
+	if (auto winSize = config.value<Vector2f>(WINDOW_SIZE)) {
+		_window->create(sf::VideoMode(winSize->y, winSize->x),
+		    config.valueOr<String>(APPLICATION_NAME, ""), flags);
+	} else {
 		if (config.valueOr(WINDOW_FULLSCREEN, false)) {
 			_window->create(sf::VideoMode::getDesktopMode(), config.valueOr<String>(APPLICATION_NAME, ""), flags);
 		} else {
 			_window->create(sf::VideoMode(800, 600), config.valueOr<String>(APPLICATION_NAME, ""), flags);
 		}
-	} else {
-		_window->create(sf::VideoMode(*config.value<int64_t>(WINDOW_SIZE_W), *config.value<int64_t>(WINDOW_SIZE_H)),
-		    config.valueOr<String>(APPLICATION_NAME, ""), flags);
 	}
-	_window->setPosition(
-	    Vector2i(config.valueOr<int64_t>(WINDOW_POSITION_X, 0), config.valueOr<int64_t>(WINDOW_POSITION_Y, 0)));
-
+	if (auto size = config.value<Vector2f>(WINDOW_POSITION)) {
+		_window->setPosition(Vector2i(size->x, size->y));
+	} else {
+		_window->setPosition(pos);
+	}
+	_config.subscribe(config::WINDOW_POSITION, [this](const String&) { updateWindowFromConfig(); });
+	_config.subscribe(config::WINDOW_SIZE, [this](const String&) { updateWindowFromConfig(); });
 	_config.subscribe(config::WINDOW_FULLSCREEN, [this](const String&) { updateWindowFromConfig(); });
 }
 

@@ -24,13 +24,12 @@ DEFAULT(RESOURCES_PATH, String, "")
 constexpr char USER_DATA_PATH[] = "user.data.path";
 DEFAULT(USER_DATA_PATH, String, "")
 
-constexpr char WINDOW_SIZE_W[] = "window.size.w";
-DEFAULT(WINDOW_SIZE_W, int64_t, 800)
-constexpr char WINDOW_SIZE_H[] = "window.size.h";
-DEFAULT(WINDOW_SIZE_H, int64_t, 600)
+constexpr char WINDOW_SIZE[] = "window.size";
+DEFAULT(WINDOW_SIZE, Vector2f, Vector2f(800.0f, 600.0f));
 
 constexpr char WINDOW_POSITION_X[] = "window.position.x";
 constexpr char WINDOW_POSITION_Y[] = "window.position.y";
+constexpr char WINDOW_POSITION[] = "window.position";
 
 constexpr char WINDOW_FULLSCREEN[] = "window.fullscreen";
 DEFAULT(WINDOW_FULLSCREEN, bool, true)

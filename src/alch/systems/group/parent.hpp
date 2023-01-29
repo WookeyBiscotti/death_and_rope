@@ -19,8 +19,8 @@ class Parent: public Component {
 
 	void removeFromParent();
 
-	void serialize(OArchive& ar) const override {}
-	void deserialize(IArchive& ar) override {}
+	void save(VarOArchive& archive) const override {}
+	void load(VarIArchive& archive) override {}
 
 	ALCH_COMPONENT_NAME(Parent);
 

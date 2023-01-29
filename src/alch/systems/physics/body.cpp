@@ -42,8 +42,8 @@ void Body::position(Vector2f position) {
 	entity().tr().p(position);
 }
 
-void Body::serialize(OArchive& ar) const {
-	ar(                              //
+void Body::save(VarOArchive& archive) const {
+	al::save(archive,                //
 	    _body->GetType(),            //
 	    _body->GetPosition(),        //
 	    _body->GetAngle(),           //
@@ -59,9 +59,9 @@ void Body::serialize(OArchive& ar) const {
 	);
 }
 
-void Body::deserialize(IArchive& ar) {
+void Body::load(VarIArchive& archive) {
 	b2BodyDef bd;
-	ar(                     //
+	al::load(archive,       //
 	    bd.type,            //
 	    bd.position,        //
 	    bd.angle,           //

@@ -40,21 +40,40 @@ void Group::remove(Entity* entity) {
 	_childs.erase(entity);
 }
 
-void Group::deserialize(IArchive& ar) {
-	ar(_moveChilds);
-	int count;
-	ar(count);
-	while (count-- != 0) {
-		auto c = create();
-		c->deserialize(ar);
-		c->parent(entity().sharedFromThis());
+// void Group::deserialize(IArchive& ar) {
+// 	ar(_moveChilds);
+// 	int count;
+// 	ar(count);
+// 	while (count-- != 0) {
+// 		auto c = create();
+// 		c->deserialize(ar);
+// 		c->parent(entity().sharedFromThis());
+// 	}
+// }
+
+// void Group::serialize(OArchive& ar) const {
+// 	ar(_moveChilds);
+// 	ar(static_cast<int>(_childs.size()));
+// 	for (auto& c : _childs) {
+// 		c.first->serialize(ar);
+// 	}
+// }
+
+void Group::save(VarOArchive& archive) const {
+	al::save(archive, _moveChilds);
+	al::save(archive, static_cast<int>(_childs.size()));
+	for (const auto& c : _childs) {
+		c.first->save(archive);
 	}
 }
 
-void Group::serialize(OArchive& ar) const {
-	ar(_moveChilds);
-	ar(static_cast<int>(_childs.size()));
-	for (auto& c : _childs) {
-		c.first->serialize(ar);
+void Group::load(VarIArchive& archive) {
+	al::load(archive, _moveChilds);
+	int count;
+	al::load(archive, count);
+	while (count-- != 0) {
+		auto c = create();
+		c->load(archive);
+		c->parent(entity().sharedFromThis());
 	}
 }

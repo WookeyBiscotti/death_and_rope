@@ -1,9 +1,8 @@
 #include "name.hpp"
 
-#include "name_system.hpp"
-
 #include "alch/engine/context.hpp"
 #include "alch/engine/entity.hpp"
+#include "name_system.hpp"
 
 using namespace al;
 
@@ -16,14 +15,13 @@ void Name::name(const std::string& name) {
 	entity().context().systemRef<NameSystem>().add(_name, &entity());
 }
 
-void Name::serialize(OArchive& ar) const {
-	ar(_name);
+void Name::save(VarOArchive& archive) const {
+	al::save(archive, _name);
 }
-
-void Name::deserialize(IArchive& ar) {
+void Name::load(VarIArchive& archive) {
 	if (!_name.empty()) {
 		name("");
 	}
-	ar(_name);
+	al::load(archive, _name);
 	name(_name);
 }

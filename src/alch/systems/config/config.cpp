@@ -1,6 +1,7 @@
 #include "config.hpp"
-
-#include "alch/common/archive.hpp"
+//
+#include "alch/common/vector2.hpp"
+//
 #include "alch/common/containers/recursive_tree.hpp"
 #include "alch/common/file.hpp"
 #include "alch/common/json.hpp"
@@ -11,10 +12,12 @@
 #include "alch/systems/config/config_value.hpp"
 #include "alch/systems/logging/logger.hpp"
 #include "events.hpp"
-
+//
+#include "alch/common/archive.hpp"
+//
 #include <cereal/archives/json.hpp>
 #include <cereal/cereal.hpp>
-//
+#include <cereal/specialize.hpp>
 #include <filesystem>
 #include <fstream>
 #include <future>
@@ -71,8 +74,7 @@ al::ConfigSystem::ConfigTree ConfigSystem::createDefaultConfig() {
 		config[name] = SystemConfigValue{access, defaultValue<T, name>};
 	};
 
-	setter.template operator()<int64_t, WINDOW_SIZE_W>(SystemConfigValue::USER);
-	setter.template operator()<int64_t, WINDOW_SIZE_H>(SystemConfigValue::USER);
+	setter.template operator()<Vector2f, WINDOW_SIZE>(SystemConfigValue::USER);
 	setter.template operator()<bool, WINDOW_FULLSCREEN>(SystemConfigValue::USER);
 	setter.template operator()<String, APPLICATION_NAME>(SystemConfigValue::USER);
 
@@ -132,7 +134,7 @@ void ConfigSystem::asyncConfigSave() {
 		if (configPath) {
 			std::ofstream stream(configPath->c_str());
 			OJSONArchive ar(stream);
-			_userConfig.serialize(ar);
+			ar(_userConfig);
 		} else {
 			LERR("Cant save config: no config path in variables");
 		}

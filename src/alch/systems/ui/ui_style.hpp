@@ -25,7 +25,11 @@ enum class StyleName {
 	TEXT_SIZE,
 	TEXT_COLOR,
 	TEXT_BOLD,
+
 	HEADER_HEIGHT,
+	BUTTON_HEIGHT,
+	CHOISE_HEIGHT,
+	CHECK_BOX_HEIGHT,
 
 	FONT,
 };
@@ -55,6 +59,12 @@ template<>
 static const float styleDefault<StyleName::TEXT_SIZE, float> = 18.0f;
 template<>
 static const float styleDefault<StyleName::HEADER_HEIGHT, float> = 30.0f;
+template<>
+static const float styleDefault<StyleName::BUTTON_HEIGHT, float> = 30.0f;
+template<>
+static const float styleDefault<StyleName::CHOISE_HEIGHT, float> = 30.0f;
+template<>
+static const float styleDefault<StyleName::CHECK_BOX_HEIGHT, float> = 15.0f;
 template<>
 static const bool styleDefault<StyleName::TEXT_BOLD, bool> = false;
 template<>

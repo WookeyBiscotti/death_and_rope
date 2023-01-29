@@ -1,5 +1,7 @@
 #pragma once
-#include "alch/common/archive.hpp"
+//
+#include "alch/common/vector2.hpp"
+//
 #include "alch/common/containers/hash_set.hpp"
 #include "alch/common/containers/recursive_tree.hpp"
 #include "alch/common/containers/string.hpp"
@@ -9,16 +11,10 @@
 #include "alch/systems/config/config_tree.hpp"
 #include "alch/systems/logging/logger.hpp"
 #include "config_handler.hpp"
-
-#include <cereal/archives/json.hpp>
-#include <cereal/cereal.hpp>
-
 //
 #include <future>
 #include <list>
 //
-#include "alch/common/archive.hpp"
-
 namespace al {
 
 class Context;
@@ -88,8 +84,10 @@ void ConfigSystem::value(const String& name, T&& val) {
 		}
 	}
 	auto found = _eventToHandler.find(name);
-	for (const auto& e : found->second) {
-		e.second(name);
+	if (found != _eventToHandler.end()) {
+		for (const auto& e : found->second) {
+			e.second(name);
+		}
 	}
 }
 
