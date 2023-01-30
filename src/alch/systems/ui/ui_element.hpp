@@ -233,6 +233,9 @@ class UIElement: public Transmitter, public EnableSharedFromThis<UIElement> {
 	virtual const UIElement* find(const String& s) const;
 	UIElement* find(const String& s);
 
+	virtual void save(VarOArchive& archive);
+	virtual void load(VarIArchive& archive);
+
   protected:
 	const Styles::Value* calculatedStyleValuePtr(StyleName name) const;
 

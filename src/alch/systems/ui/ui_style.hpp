@@ -40,9 +40,9 @@ static const T styleDefault;
 template<>
 static const Color styleDefault<StyleName::HEADER_COLOR, Color> = Color(0x102020ff);
 template<>
-static const Color styleDefault<StyleName::BACKGROUND_COLOR, Color> = Color(0x005050ff);
+static const Color styleDefault<StyleName::BACKGROUND_COLOR, Color> = Color(0x006060ff);
 template<>
-static const Color styleDefault<StyleName::BACKGROUND_COLOR2, Color> = Color(0x006969ff);
+static const Color styleDefault<StyleName::BACKGROUND_COLOR2, Color> = Color(0x004545ff);
 template<>
 static const Color styleDefault<StyleName::FLAT_COLOR, Color> = Color(0x008080ff);
 template<>

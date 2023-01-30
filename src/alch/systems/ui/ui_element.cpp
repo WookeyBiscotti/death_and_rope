@@ -459,3 +459,9 @@ void UIElement::onGlobalPositionChange() {
 		c->onGlobalPositionChange();
 	}
 }
+
+void UIElement::save(VarOArchive& archive) {
+}
+
+void UIElement::load(VarIArchive& archive) {
+}

@@ -117,10 +117,10 @@ void Entity::load(VarIArchive& archive) {
 void Entity::registerComponent(type_id_t id, SharedPtr<Component> (*creator)(Entity& ent), std::string name,
     std::vector<type_id_t> dependsOn) {
 	if (auto found = serializerData.find(id); found != serializerData.end()) {
-		LCRIT("Abort registration: serializer with such id({}) already registered. Registered info: id: {}, name: {}. "
+		LINFO("Abort registration: serializer with such id({}) already registered. Registered info: id: {}, name: {}. "
 		      "You try register: id: {}, name: {}",
 		    id, id, found->second.name, id, name);
-		exit(1);
+		return;
 	}
 	if (auto found = nameToTypeId.find(name); found != nameToTypeId.end()) {
 		const auto& registeredSer = serializerData[nameToTypeId[name]];

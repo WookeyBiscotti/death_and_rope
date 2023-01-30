@@ -121,9 +121,6 @@ class Entity: public Transmitter, public EnableSharedFromThis<Entity> {
 	auto& parent() { return _parent; }
 	void parent(WeakPtr<Entity> parent) { return _parent.parent(parent); }
 
-	// void serialize(OArchive& ar) const;
-	// void deserialize(IArchive& ar);
-
 	void save(VarOArchive& archive) const;
 	void load(VarIArchive& archive);
 
@@ -131,9 +128,14 @@ class Entity: public Transmitter, public EnableSharedFromThis<Entity> {
 	static void registerComponent(Context& context) {
 		Entity ent(context);
 		auto c = C(ent);
+		registerComponent<C>(c);
+	}
+
+	template<class C>
+	static void registerComponent(Component& component) {
 		registerComponent(
 		    TypeId<C>(), [](Entity& ent) -> SharedPtr<Component> { return SharedPtr<C>::make(ent); },
-		    std::string(c.cName()), c.dependsOn());
+		    std::string(component.cName()), component.dependsOn());
 	}
 
   private:
