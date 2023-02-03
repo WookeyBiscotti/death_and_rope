@@ -25,14 +25,10 @@ using VarIArchive = Variant<IBinaryArchive, IJSONArchive>;
 
 template<class... Args>
 void save(al::VarOArchive& a, Args&&... args) {
-	OJSONArchive& archive = (*std::get_if<OJSONArchive>(&a));
-	archive(std::forward<Args>(args)...);
-	// std::visit([&](al::OBinaryArchive& archive) { archive(std::forward<Args>(args)...); },
-	//     [&](al::OJSONArchive& archive) { archive(std::forward<Args>(args)...); }, a);
+	std::visit([&](auto& archive) { archive(std::forward<Args>(args)...); }, a);
 }
 template<class... Args>
 void load(al::VarIArchive& a, Args&&... args) {
-	// std::visit([&](al::IBinaryArchive& archive) { archive(std::forward<Args>(args)...); },
-	//     [&](al::IJSONArchive& archive) { archive(std::forward<Args>(args)...); }, a);
+	std::visit([&](auto& archive) { archive(std::forward<Args>(args)...); }, a);
 }
 } // namespace al
