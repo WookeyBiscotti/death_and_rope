@@ -50,34 +50,34 @@ void Collider::setGroupIndex(int idx) {
 	}
 }
 
-void Collider::save(VarOArchive& archive) const {
-	al::save(archive, static_cast<int>(_fixtures.size()));
+void Collider::save(OArchive& archive) const {
+	archive(static_cast<int>(_fixtures.size()));
 	for (auto fp : _fixtures) {
 		auto& f = *fp;
 		// f.Dump(1);
-		al::save(archive, f.GetFriction(), //
-		    f.GetRestitution(),               //
-		    f.GetRestitutionThreshold(),      //
-		    f.GetDensity(),                   //
-		    f.IsSensor(),                     //
-		    f.GetFilterData().categoryBits,   //
-		    f.GetFilterData().maskBits,       //
-		    f.GetFilterData().groupIndex      //
+		archive(f.GetFriction(),            //
+		    f.GetRestitution(),             //
+		    f.GetRestitutionThreshold(),    //
+		    f.GetDensity(),                 //
+		    f.IsSensor(),                   //
+		    f.GetFilterData().categoryBits, //
+		    f.GetFilterData().maskBits,     //
+		    f.GetFilterData().groupIndex    //
 		);
 
-		al::save(archive, f.GetShape()->m_type);
+		archive(f.GetShape()->m_type);
 
 		if (f.GetShape()->m_type == b2Shape::e_circle) {
 			const auto& s = *static_cast<b2CircleShape*>(f.GetShape());
-			al::save(archive, //
-			    s.m_radius,      //
-			    s.m_p            //
+			archive(        //
+			    s.m_radius, //
+			    s.m_p       //
 			);
 		} else if (f.GetShape()->m_type == b2Shape::e_polygon) {
 			const auto& s = *static_cast<b2PolygonShape*>(f.GetShape());
-			al::save(archive, s.m_count);
+			archive(s.m_count);
 			for (int i = 0; i != s.m_count; ++i) {
-				al::save(archive, s.m_vertices[i]);
+				archive(s.m_vertices[i]);
 			}
 		} else {
 			assert(false && "Other types not implemented yet");
@@ -85,38 +85,38 @@ void Collider::save(VarOArchive& archive) const {
 	}
 }
 
-void Collider::load(VarIArchive& archive) {
+void Collider::load(IArchive& archive) {
 	int count;
-	al::load(archive, count);
+	archive( count);
 	for (int i = 0; i != count; ++i) {
 		b2FixtureDef fd;
-		al::load(archive, fd.friction, //
-		    fd.restitution,               //
-		    fd.restitutionThreshold,      //
-		    fd.density,                   //
-		    fd.isSensor,                  //
-		    fd.filter.categoryBits,       //
-		    fd.filter.maskBits,           //
-		    fd.filter.groupIndex          //
+		archive( fd.friction, //
+		    fd.restitution,            //
+		    fd.restitutionThreshold,   //
+		    fd.density,                //
+		    fd.isSensor,               //
+		    fd.filter.categoryBits,    //
+		    fd.filter.maskBits,        //
+		    fd.filter.groupIndex       //
 		);
 
 		b2Shape::Type st;
-		al::load(archive, st);
+		archive( st);
 
 		if (st == b2Shape::e_circle) {
 			b2CircleShape s;
-			al::load(archive, //
-			    s.m_radius,      //
-			    s.m_p            //
+			archive( //
+			    s.m_radius,   //
+			    s.m_p         //
 			);
 			fd.shape = &s;
 			_fixtures.push_back(entity().ref<Body>()._body->CreateFixture(&fd));
 		} else if (st == b2Shape::e_polygon) {
 			decltype(b2PolygonShape{}.m_count) count;
-			al::load(archive, count);
+			archive( count);
 			std::array<b2Vec2, b2_maxPolygonVertices> verts;
 			for (int i = 0; i != count; ++i) {
-				al::load(archive, verts[i]);
+				archive( verts[i]);
 			}
 			b2PolygonShape s;
 			s.Set(verts.data(), count);

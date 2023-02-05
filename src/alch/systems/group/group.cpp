@@ -40,18 +40,18 @@ void Group::remove(Entity* entity) {
 	_childs.erase(entity);
 }
 
-void Group::save(VarOArchive& archive) const {
-	al::save(archive, _moveChilds);
-	al::save(archive, static_cast<int>(_childs.size()));
+void Group::save(OArchive& archive) const {
+	archive(_moveChilds);
+	archive(static_cast<int>(_childs.size()));
 	for (const auto& c : _childs) {
 		c.first->save(archive);
 	}
 }
 
-void Group::load(VarIArchive& archive) {
-	al::load(archive, _moveChilds);
+void Group::load(IArchive& archive) {
+	archive(_moveChilds);
 	int count;
-	al::load(archive, count);
+	archive(count);
 	while (count-- != 0) {
 		auto c = create();
 		c->load(archive);

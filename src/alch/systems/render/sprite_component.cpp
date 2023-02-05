@@ -31,32 +31,32 @@ void Sprite::draw(RenderTarget& target, const RenderStates& states) {
 	target.draw(_sprite, states);
 }
 
-void Sprite::save(VarOArchive& archive) const {
-	al::save(archive, !!_texture);
+void Sprite::save(OArchive& archive) const {
+	archive(!!_texture);
 	if (_texture) {
-		al::save(archive, _texture->name());
+		archive(_texture->name());
 	}
-	al::save(archive, _sprite.getTextureRect());
-	al::save(archive, _sprite.getPosition());
-	al::save(archive, _sprite.getRotation());
+	archive(_sprite.getTextureRect());
+	archive(_sprite.getPosition());
+	archive(_sprite.getRotation());
 }
 
-void Sprite::load(VarIArchive& archive) {
+void Sprite::load(IArchive& archive) {
 	bool inited;
 	std::decay_t<decltype(_sprite.getTextureRect())> rect;
 	std::decay_t<decltype(_sprite.getPosition())> position;
 	std::decay_t<decltype(_sprite.getRotation())> rotation;
 
-	al::load(archive, inited);
+	archive(inited);
 	if (inited) {
 		std::string path;
-		al::load(archive, path);
+		archive(path);
 		_texture = entity().context().systemRef<AssetCache>().texture(path);
 		_sprite.setTexture(_texture->sf());
 	}
-	al::load(archive, rect);
-	al::load(archive, position);
-	al::load(archive, rotation);
+	archive(rect);
+	archive(position);
+	archive(rotation);
 
 	_sprite.setTextureRect(rect);
 	_sprite.setPosition(position);

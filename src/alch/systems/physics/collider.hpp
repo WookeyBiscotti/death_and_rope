@@ -39,8 +39,8 @@ class Collider: public Component {
 
 	void setGroupIndex(int idx);
 
-	void save(VarOArchive& archive) const override;
-	void load(VarIArchive& archive) override;
+	void save(OArchive& archive) const override;
+	void load(IArchive& archive) override;
 
 	ALCH_COMPONENT_NAME(Collider);
 	ALCH_COMPONENT_DEPENDS_ON(Body);

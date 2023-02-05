@@ -3,6 +3,7 @@
 #include "alch/common/archive.hpp"
 //
 #include "alch/common/containers/hash_map.hpp"
+#include "alch/common/object.hpp"
 #include "alch/common/prod_build_utils.hpp"
 #include "alch/common/smart_ptr.hpp"
 #include "alch/common/type_id.hpp"
@@ -26,6 +27,8 @@ class Entity: public Transmitter, public EnableSharedFromThis<Entity> {
 	friend class RootEntity;
 
   public:
+	// AL_OBJECT_REGISTER();
+
 	explicit Entity(Context& context):
 	    Transmitter(context.systemRef<Broker>()), _context(context), _transform(*this), _parent(*this) {}
 
@@ -121,8 +124,8 @@ class Entity: public Transmitter, public EnableSharedFromThis<Entity> {
 	auto& parent() { return _parent; }
 	void parent(WeakPtr<Entity> parent) { return _parent.parent(parent); }
 
-	void save(VarOArchive& archive) const;
-	void load(VarIArchive& archive);
+	void save(OArchive& archive) const;
+	void load(IArchive& archive);
 
 	template<class C>
 	static void registerComponent(Context& context) {

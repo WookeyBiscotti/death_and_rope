@@ -323,6 +323,7 @@ void UIElement::remove(UIElement* element) {
 		}
 	}
 }
+
 void UIElement::removeAll() {
 	_childs.clear();
 }
@@ -460,8 +461,8 @@ void UIElement::onGlobalPositionChange() {
 	}
 }
 
-void UIElement::save(VarOArchive& archive) {
+void UIElement::save(OArchive& archive) {
 }
 
-void UIElement::load(VarIArchive& archive) {
+void UIElement::load(IArchive& archive) {
 }

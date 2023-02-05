@@ -25,16 +25,16 @@ void RectShape::draw(RenderTarget& target, const RenderStates& state) {
 	target.draw(_shape, state);
 }
 
-void RectShape::save(VarOArchive& ar) const {
-	al::save(ar, _shape.getSize());
-	al::save(ar, _shape.getFillColor());
+void RectShape::save(OArchive& archive) const {
+	archive(_shape.getSize());
+	archive(_shape.getFillColor());
 }
 
-void RectShape::load(VarIArchive& ar) {
+void RectShape::load(IArchive& archive) {
 	Vector2f size;
 	Color c;
-	al::load(ar, size);
-	al::load(ar, c);
+	archive(size);
+	archive(c);
 	_shape.setSize(size);
 	_shape.setFillColor(c);
 	_shape.setOrigin(size.x / 2, size.y / 2);

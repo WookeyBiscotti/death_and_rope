@@ -18,16 +18,16 @@ void Camera::makeCurrent() {
 	r.camera(this);
 }
 
-void Camera::save(VarOArchive& archive) const {
-	al::save(archive, _view.getViewport(), _view.getCenter(), _view.getRotation(), _view.getSize());
+void Camera::save(OArchive& archive) const {
+	archive(_view.getViewport(), _view.getCenter(), _view.getRotation(), _view.getSize());
 };
-void Camera::load(VarIArchive& archive) {
+void Camera::load(IArchive& archive) {
 	std::decay_t<decltype(_view.getViewport())> viewport;
 	std::decay_t<decltype(_view.getCenter())> center;
 	std::decay_t<decltype(_view.getRotation())> rotation;
 	std::decay_t<decltype(_view.getSize())> size;
 
-	al::load(archive, viewport, center, rotation, size);
+	archive(viewport, center, rotation, size);
 
 	_view.setViewport(viewport);
 	_view.setCenter(center);

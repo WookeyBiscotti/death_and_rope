@@ -16,8 +16,8 @@ class Name: public Component {
 	const std::string& name() const { return _name; }
 	void name(const std::string& name);
 
-	void save(VarOArchive& archive) const override;
-	void load(VarIArchive& archive) override;
+	void save(OArchive& archive) const override;
+	void load(IArchive& archive) override;
 
 	ALCH_COMPONENT_NAME(Name);
   private:

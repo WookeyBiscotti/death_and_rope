@@ -33,7 +33,7 @@ static std::unordered_map<std::string, type_id_t> nameToTypeId = {};
 // void save(VarOArchive& archive) const;
 // void load(VarIArchive& archive);
 
-void Entity::save(VarOArchive& archive) const {
+void Entity::save(OArchive& archive) const {
 	auto SD = [this](type_id_t id) -> SerializerData& {
 		if (auto found = serializerData.find(id); found == serializerData.end()) {
 			LCRIT("Abort serialization. Serializer with id({}) don't exist", id);
@@ -45,13 +45,13 @@ void Entity::save(VarOArchive& archive) const {
 
 	std::unordered_set<type_id_t> componentInOrder;
 
-	al::save(archive, _components.size() + BuiltInCount);
+	archive(_components.size() + BuiltInCount);
 
-	al::save(archive, SD(TypeId<Transform>()).name);
+	archive(SD(TypeId<Transform>()).name);
 	_transform.save(archive);
 	componentInOrder.insert(TypeId<Transform>());
 
-	al::save(archive, SD(TypeId<Parent>()).name);
+	archive(SD(TypeId<Parent>()).name);
 	_parent.save(archive);
 
 	componentInOrder.insert(TypeId<Parent>());
@@ -72,7 +72,7 @@ void Entity::save(VarOArchive& archive) const {
 					continue;
 				}
 				componentInOrder.insert(id);
-				al::save(archive, sd.name);
+				archive( sd.name);
 				c->save(archive);
 			}
 		}
@@ -82,16 +82,16 @@ void Entity::save(VarOArchive& archive) const {
 	}
 }
 
-void Entity::load(VarIArchive& archive) {
+void Entity::load(IArchive& archive) {
 	if (!_components.empty()) {
 		_components.clear();
 	}
 
 	size_t count;
-	al::load(archive, count);
+	archive( count);
 	while (count-- != 0) {
 		std::string name;
-		al::load(archive, name);
+		archive( name);
 		type_id_t id;
 		if (auto found = nameToTypeId.find(name); found == nameToTypeId.end()) {
 			LCRIT("Abort deserialization: serializer with such name({}) don't registered", name);

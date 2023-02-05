@@ -55,3 +55,6 @@
 [submodule "3rdparty/LuaJIT"]
 	path = 3rdparty/LuaJIT
 	url = https://github.com/LuaJIT/LuaJIT.git
+[submodule "3rdparty/type_name"]
+	path = 3rdparty/type_name
+	url = https://github.com/adambadura/type_name.git

@@ -29,8 +29,8 @@ class Camera: public Component {
 
 	void makeCurrent();
 
-	void save(VarOArchive& archive) const override;
-	void load(VarIArchive& archive) override;
+	void save(OArchive& archive) const override;
+	void load(IArchive& archive) override;
 
 	ALCH_COMPONENT_NAME(Camera);
 

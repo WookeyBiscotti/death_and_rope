@@ -60,6 +60,7 @@ set(INCLUDES_DEPS_DIRS
     3rdparty/ChaiScript/include
     3rdparty/LuaJIT/LuaJIT/include
     3rdparty/LuaJIT/LuaJIT/include/luajit-2.1
+    3rdparty/type_name/include
     )
 
 set(DEPS_LIBS
@@ -126,6 +127,9 @@ target_link_libraries(AlchemyEngineLibBuiltinTests PUBLIC AlchemyEngineLib)
 
 add_executable(AlchemyEngineLibUiExperiments "${CMAKE_CURRENT_LIST_DIR}/tests/ui_experiments/main.cpp")
 target_link_libraries(AlchemyEngineLibUiExperiments PUBLIC AlchemyEngineLib)
+
+add_executable(AlchemyEngineEditor "${CMAKE_CURRENT_LIST_DIR}/editor/main.cpp")
+target_link_libraries(AlchemyEngineEditor PUBLIC AlchemyEngineLib)
 
 
 

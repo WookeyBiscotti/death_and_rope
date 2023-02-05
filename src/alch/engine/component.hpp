@@ -28,8 +28,8 @@ class Component {
 
 	virtual std::string_view cName() const = 0;
 
-	virtual void save(VarOArchive& archive) const = 0;
-	virtual void load(VarIArchive& archive) = 0;
+	virtual void save(OArchive& archive) const = 0;
+	virtual void load(IArchive& archive) = 0;
 
 	virtual std::vector<type_id_t> dependsOn() const { return {}; }
 

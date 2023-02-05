@@ -20,8 +20,8 @@ class CircleShape: public Drawable, public Transmitter {
 
 	void draw(RenderTarget& target, const RenderStates& state) override;
 
-	void save(VarOArchive& archive) const override;
-	void load(VarIArchive& archive) override;
+	void save(OArchive& archive) const override;
+	void load(IArchive& archive) override;
 
 	ALCH_COMPONENT_NAME(CircleShape);
 

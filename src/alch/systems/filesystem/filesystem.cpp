@@ -28,7 +28,7 @@ std::pair<std::unique_ptr<OArchive>, std::unique_ptr<std::ofstream>> FileSystem:
 	const auto& root = _context.systemRef<ConfigSystem>().valueOr<String>(USER_DATA_PATH, "");
 
 	result.second = std::make_unique<std::ofstream>(root / path);
-	result.first = std::make_unique<OArchive>(*result.second);
+	result.first = std::make_unique<OArchive>(OArchive::Json, *result.second);
 
 	return result;
 }
@@ -38,7 +38,7 @@ std::pair<std::unique_ptr<IArchive>, std::unique_ptr<std::ifstream>> FileSystem:
 	const auto& root = _context.systemRef<ConfigSystem>().valueOr<String>(USER_DATA_PATH, "");
 
 	result.second = std::make_unique<std::ifstream>(root / path);
-	result.first = std::make_unique<IArchive>(*result.second);
+	result.first = std::make_unique<IArchive>(IArchive::Json, *result.second);
 
 	return result;
 }

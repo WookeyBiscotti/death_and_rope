@@ -15,13 +15,13 @@ void Name::name(const std::string& name) {
 	entity().context().systemRef<NameSystem>().add(_name, &entity());
 }
 
-void Name::save(VarOArchive& archive) const {
-	al::save(archive, _name);
+void Name::save(OArchive& archive) const {
+	archive(_name);
 }
-void Name::load(VarIArchive& archive) {
+void Name::load(IArchive& archive) {
 	if (!_name.empty()) {
 		name("");
 	}
-	al::load(archive, _name);
+	archive(_name);
 	name(_name);
 }

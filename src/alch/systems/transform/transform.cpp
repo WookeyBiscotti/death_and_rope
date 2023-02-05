@@ -30,10 +30,10 @@ void Transform::rotation(float rotation) {
 	}
 }
 
-void Transform::save(VarOArchive& archive) const {
-	al::save(archive, _position, _size, _rotation);
+void Transform::save(OArchive& archive) const {
+	archive( _position, _size, _rotation);
 }
 
-void Transform::load(VarIArchive& archive) {
-	al::load(archive, _position, _size, _rotation);
+void Transform::load(IArchive& archive) {
+	archive( _position, _size, _rotation);
 }
