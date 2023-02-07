@@ -16,3 +16,15 @@ Context::~Context() {
 
 	_systems.clear();
 }
+
+void Context::registerObject(const String& name, std::function<void(Context&)> creator) {
+	auto found = _factory.find(name);
+	if (found != _factory.end()) {
+		LWARN("Factory for object name `{}` already exist", name);
+		found->second = creator;
+
+		return;
+	}
+
+	_factory[name] = creator;
+}

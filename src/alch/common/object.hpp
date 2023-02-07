@@ -9,13 +9,13 @@
 
 namespace al {
 
-class VarOArchive;
-class VarIArchive;
+class OArchive;
+class IArchive;
 
 class Object {
   public:
-	virtual void save(VarOArchive& archive) const = 0;
-	virtual void load(VarIArchive& archive) = 0;
+	virtual void save(OArchive& archive) const = 0;
+	virtual void load(IArchive& archive) = 0;
 
 	virtual std::string_view objName() const = 0;
 	virtual type_id_t objType() const = 0;
@@ -26,7 +26,7 @@ class Object {
 		return type_name_v<std::remove_cvref_t<decltype(*this)>>; \
 	}                                                             \
 	type_id_t objType() const override {                          \
-		return TypeId<std::remove_cvref_t<decltype(*this)>>();    \
+		return typeId<std::remove_cvref_t<decltype(*this)>>;      \
 	}
 
 } // namespace al

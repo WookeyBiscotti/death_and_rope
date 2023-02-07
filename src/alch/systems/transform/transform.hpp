@@ -9,6 +9,8 @@ namespace al {
 
 class Transform: public Component {
   public:
+	AL_OBJECT_REGISTER();
+
 	explicit Transform(Entity& entity, const Vector2f& vec = {}): Component(entity), _position(vec){};
 	explicit Transform(Entity& entity, float x, float y): Component(entity), _position({x, y}){};
 
@@ -32,8 +34,6 @@ class Transform: public Component {
 
 	void save(OArchive& archive) const override;
 	void load(IArchive& archive) override;
-
-	ALCH_COMPONENT_NAME(Transform);
 
   private:
 	Vector2f _position{};

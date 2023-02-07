@@ -11,6 +11,8 @@ class Entity;
 
 class Name: public Component {
   public:
+	AL_OBJECT_REGISTER();
+
 	Name(Entity& entity, std::string name = "");
 
 	const std::string& name() const { return _name; }
@@ -19,9 +21,8 @@ class Name: public Component {
 	void save(OArchive& archive) const override;
 	void load(IArchive& archive) override;
 
-	ALCH_COMPONENT_NAME(Name);
   private:
 	std::string _name;
 };
 
-}
+} // namespace al

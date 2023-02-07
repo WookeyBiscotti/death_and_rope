@@ -2,6 +2,7 @@
 
 #include "alch/common/containers/hash_map.hpp"
 #include "alch/common/containers/inline_vector.hpp"
+#include "alch/common/containers/string.hpp"
 #include "alch/common/prod_build_utils.hpp"
 #include "alch/common/smart_ptr.hpp"
 #include "alch/common/type_id.hpp"
@@ -72,9 +73,21 @@ class Context final {
 		return systems;
 	}
 
+	template<class T>
+	void registerObject(const String& name, std::function<void(T&)> creator) {
+		registerObject(name, typeId<T>,
+		    [creator = std::move(creator)](void* userData) { creator(*static_cast<T*>(userData)); });
+	}
+
+  private:
+	void registerObject(const String& name, type_id_t type, std::function<void(void*)> creator) {
+		_factory[type][name] = creator;
+	}
+
   private:
 	FlatMap<type_id_t, System*> _systems;
 	InlinedVector<std::unique_ptr<System>, 16> _store;
+	FlatMap<type_id_t, FlatMap<String, std::function<void(void*)>>> _factory;
 };
 
 } // namespace al

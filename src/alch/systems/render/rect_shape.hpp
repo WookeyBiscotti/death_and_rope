@@ -19,6 +19,8 @@ namespace al {
 
 class RectShape: public Drawable, public Transmitter {
   public:
+	AL_OBJECT_REGISTER();
+
 	explicit RectShape(Entity& entity);
 	RectShape(Entity& entity, Vector2f size, sf::Color color);
 
@@ -26,8 +28,6 @@ class RectShape: public Drawable, public Transmitter {
 
 	void save(OArchive& archive) const override;
 	void load(IArchive& archive) override;
-
-	ALCH_COMPONENT_NAME(RectShape);
 
   private:
 	sf::RectangleShape _shape;

@@ -23,11 +23,11 @@ namespace al {
 class Context;
 class RootEntity;
 
-class Entity: public Transmitter, public EnableSharedFromThis<Entity> {
+class Entity: public Transmitter, public EnableSharedFromThis<Entity>, public Object {
 	friend class RootEntity;
 
   public:
-	// AL_OBJECT_REGISTER();
+	AL_OBJECT_REGISTER();
 
 	explicit Entity(Context& context):
 	    Transmitter(context.systemRef<Broker>()), _context(context), _transform(*this), _parent(*this) {}
@@ -124,8 +124,8 @@ class Entity: public Transmitter, public EnableSharedFromThis<Entity> {
 	auto& parent() { return _parent; }
 	void parent(WeakPtr<Entity> parent) { return _parent.parent(parent); }
 
-	void save(OArchive& archive) const;
-	void load(IArchive& archive);
+	void save(OArchive& archive) const override;
+	void load(IArchive& archive) override;
 
 	template<class C>
 	static void registerComponent(Context& context) {
@@ -138,7 +138,7 @@ class Entity: public Transmitter, public EnableSharedFromThis<Entity> {
 	static void registerComponent(Component& component) {
 		registerComponent(
 		    TypeId<C>(), [](Entity& ent) -> SharedPtr<Component> { return SharedPtr<C>::make(ent); },
-		    std::string(component.cName()), component.dependsOn());
+		    std::string(component.objName()), component.dependsOn());
 	}
 
   private:

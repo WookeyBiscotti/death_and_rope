@@ -1,6 +1,7 @@
 #pragma once
 
 #include "alch/common/archive.hpp"
+#include "alch/common/object.hpp"
 #include "alch/common/prod_build_utils.hpp"
 #include "alch/common/type_id.hpp"
 #include "alch/common/type_id_utils.hpp"
@@ -11,7 +12,7 @@ namespace al {
 
 class Entity;
 
-class Component {
+class Component: public Object {
   public:
 	explicit Component(Entity& entity):
 	    _entity(entity){
@@ -26,24 +27,13 @@ class Component {
 
 	Entity& entity() { return _entity; }
 
-	virtual std::string_view cName() const = 0;
-
-	virtual void save(OArchive& archive) const = 0;
-	virtual void load(IArchive& archive) = 0;
-
 	virtual std::vector<type_id_t> dependsOn() const { return {}; }
 
   private:
 	Entity& _entity;
 };
 
-#define ALCH_COMPONENT_NAME(NAME)                   \
-	std::string_view cName() const override {       \
-		static const std::string_view name = #NAME; \
-		return name;                                \
-	};
-
-#define ALCH_COMPONENT_DEPENDS_ON(...)                  \
+#define AL_COMPONENT_DEPENDS_ON(...)                  \
 	std::vector<type_id_t> dependsOn() const override { \
 		return TypeIds<__VA_ARGS__>();                  \
 	}

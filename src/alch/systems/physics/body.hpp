@@ -12,6 +12,8 @@ class Body: public Component {
 	friend class Collider;
 
   public:
+	AL_OBJECT_REGISTER();
+
 	enum Type {
 		STATIC,
 		DYNAMIC,
@@ -31,9 +33,8 @@ class Body: public Component {
 	void save(OArchive& ar) const override;
 	void load(IArchive& ar) override;
 
-	ALCH_COMPONENT_NAME(Body);
   private:
 	b2Body* _body{};
 };
 
-}
+} // namespace al

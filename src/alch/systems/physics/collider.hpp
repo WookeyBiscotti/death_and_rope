@@ -14,6 +14,9 @@ class Collider: public Component {
 	friend class Physics;
 
   public:
+	AL_OBJECT_REGISTER();
+	AL_COMPONENT_DEPENDS_ON(Body);
+
 	struct Box_t {};
 	struct Circle_t {};
 	constexpr static auto Box = Box_t{};
@@ -42,11 +45,8 @@ class Collider: public Component {
 	void save(OArchive& archive) const override;
 	void load(IArchive& archive) override;
 
-	ALCH_COMPONENT_NAME(Collider);
-	ALCH_COMPONENT_DEPENDS_ON(Body);
-
   private:
 	std::vector<b2Fixture*> _fixtures;
 };
 
-}
+} // namespace al

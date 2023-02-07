@@ -8,12 +8,6 @@
 //
 namespace al {
 
-// using OArchive = cereal::JSONOutputArchive;
-// using IArchive = cereal::JSONInputArchive;
-
-// using OArchive = cereal::BinaryOutputArchive;
-// using IArchive = cereal::BinaryInputArchive;
-
 using OBinaryArchive = cereal::BinaryOutputArchive;
 using OJSONArchive = cereal::JSONOutputArchive;
 
@@ -29,11 +23,11 @@ struct OArchive {
 
 	OArchive(const OArchive&) = delete;
 
-	struct JsonType {};
-	inline static JsonType Json{};
+	struct JsonType {
+	} static inline const Json{};
 
-	struct BinType {};
-	inline static BinType Bin{};
+	struct BinType {
+	} static inline const Bin{};
 
 	template<class... Args>
 	OArchive(BinType, Args&&... args): a(std::in_place_type<OJSONArchive>, std::forward<Args>(args)...) {}
@@ -48,11 +42,11 @@ struct IArchive {
 		std::visit([&, this](auto& archive) { archive(std::forward<Args>(args)...); }, a);
 	}
 
-	struct JsonType {};
-	inline static JsonType Json{};
+	struct JsonType {
+	} static inline const Json{};
 
-	struct BinType {};
-	inline static BinType Bin{};
+	struct BinType {
+	} static inline const Bin{};
 
 	template<class... Args>
 	IArchive(BinType, Args&&... args): a(std::in_place_type<IJSONArchive>, std::forward<Args>(args)...) {}

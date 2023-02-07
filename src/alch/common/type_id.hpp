@@ -51,4 +51,7 @@ constexpr auto TypeId() noexcept -> type_id_t {
 	return &::detail::type_id_ptr<T>::id;
 }
 
-}
+template<typename T>
+constexpr type_id_t typeId = &::detail::type_id_ptr<T>::id;
+
+} // namespace al

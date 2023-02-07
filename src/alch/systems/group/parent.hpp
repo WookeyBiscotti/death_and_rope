@@ -12,6 +12,8 @@ class Entity;
 
 class Parent: public Component {
   public:
+	AL_OBJECT_REGISTER();
+
 	explicit Parent(Entity& entity);
 
 	void parent(WeakPtr<Entity> parent);
@@ -21,8 +23,6 @@ class Parent: public Component {
 
 	void save(OArchive& archive) const override {}
 	void load(IArchive& archive) override {}
-
-	ALCH_COMPONENT_NAME(Parent);
 
   private:
 	WeakPtr<Entity> _parent;

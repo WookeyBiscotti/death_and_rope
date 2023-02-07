@@ -18,6 +18,8 @@ namespace al {
 
 class Sprite: public Drawable, public Transmitter {
   public:
+	AL_OBJECT_REGISTER();
+
 	explicit Sprite(Entity& entity);
 	Sprite(Entity& entity, const SharedPtr<Texture>& tex);
 	Sprite(Entity& entity, const SharedPtr<Texture>& tex, const Recti& rect);
@@ -35,8 +37,6 @@ class Sprite: public Drawable, public Transmitter {
 
 	void save(OArchive& archive) const override;
 	void load(IArchive& archive) override;
-
-	ALCH_COMPONENT_NAME(Sprite);
 
   private:
 	SharedPtr<Texture> _texture;

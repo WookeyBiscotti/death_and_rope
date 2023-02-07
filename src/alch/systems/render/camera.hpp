@@ -15,6 +15,8 @@ namespace al {
 
 class Camera: public Component {
   public:
+	AL_OBJECT_REGISTER();
+
 	explicit Camera(Entity& entity): Component(entity) {}
 	~Camera();
 
@@ -31,8 +33,6 @@ class Camera: public Component {
 
 	void save(OArchive& archive) const override;
 	void load(IArchive& archive) override;
-
-	ALCH_COMPONENT_NAME(Camera);
 
   private:
 	sf::View _view;

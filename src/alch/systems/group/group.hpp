@@ -16,6 +16,8 @@ class Entity;
 
 class Group: public Component, public Transmitter {
   public:
+	AL_OBJECT_REGISTER();
+
 	struct SyncMove_t {};
 	inline static const SyncMove_t SyncMove;
 
@@ -42,8 +44,6 @@ class Group: public Component, public Transmitter {
 
 	void save(OArchive& archive) const override;
 	void load(IArchive& archive) override;
-
-	ALCH_COMPONENT_NAME(Group);
 
   private:
 	bool _moveChilds{};

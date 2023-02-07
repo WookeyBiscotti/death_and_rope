@@ -10,6 +10,8 @@
 template<size_t N>
 class ComponentNum: public Component {
   public:
+	AL_OBJECT_REGISTER();
+
 	explicit ComponentNum(Entity& e, size_t val): Component(e), val(val){};
 
 	constexpr auto num() { return N; };
@@ -18,8 +20,6 @@ class ComponentNum: public Component {
 
 	void serialize(OArchive& archive) const {};
 	void deserialize(IArchive& archive){};
-
-	ALCH_COMPONENT_NAME(ComponentN);
 };
 
 TEST_CASE("General", "[Entity]") {

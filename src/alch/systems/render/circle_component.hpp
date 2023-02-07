@@ -15,6 +15,8 @@ namespace al {
 
 class CircleShape: public Drawable, public Transmitter {
   public:
+	AL_OBJECT_REGISTER();
+
 	explicit CircleShape(Entity& entity);
 	CircleShape(Entity& entity, float r, sf::Color color);
 
@@ -22,8 +24,6 @@ class CircleShape: public Drawable, public Transmitter {
 
 	void save(OArchive& archive) const override;
 	void load(IArchive& archive) override;
-
-	ALCH_COMPONENT_NAME(CircleShape);
 
   private:
 	sf::CircleShape _shape;
